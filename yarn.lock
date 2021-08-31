@@ -20880,18 +20880,9 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"unique-filename@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "unique-filename@npm:1.1.1"
-  dependencies:
-    unique-slug: ^2.0.0
-  checksum: cf4998c9228cc7647ba7814e255dec51be43673903897b1786eff2ac2d670f54d4d733357eb08dea969aa5e6875d0e1bd391d668fbdb5a179744e7c7551a6f80
-  languageName: node
-  linkType: hard
-
-"unique-network-collection-builder@workspace:.":
+"unique-collections@workspace:.":
   version: 0.0.0-use.local
-  resolution: "unique-network-collection-builder@workspace:."
+  resolution: "unique-collections@workspace:."
   dependencies:
     "@babel/core": ^7.15.0
     "@babel/register": ^7.15.3
@@ -20951,6 +20942,15 @@ resolve@^2.0.0-next.3:
     xstate: ^4.15.0
   languageName: unknown
   linkType: soft
+
+"unique-filename@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "unique-filename@npm:1.1.1"
+  dependencies:
+    unique-slug: ^2.0.0
+  checksum: cf4998c9228cc7647ba7814e255dec51be43673903897b1786eff2ac2d670f54d4d733357eb08dea969aa5e6875d0e1bd391d668fbdb5a179744e7c7551a6f80
+  languageName: node
+  linkType: hard
 
 "unique-slug@npm:^2.0.0":
   version: 2.0.2

@@ -39,7 +39,7 @@ const MobileMenuHeader = (props: Props): React.ReactElement<Props> => {
         strict={true}
         to={'/wallet'}
       >
-        My tokens
+        Collection builder
       </NavLink>
     </div>
   );

@@ -65,6 +65,8 @@ function CollectionSearch ({ account, addCollection, collections }: Props): Reac
   const getCollections = useCallback(async () => {
     const collections = await presetTokensCollections();
 
+    console.log('collections', collections);
+
     if (collections && collections.length) {
       setCollectionsAvailable(collections);
     }

@@ -140,7 +140,7 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
                                   <Menu.Item
                                     active={location.pathname === '/wallet'}
                                     as={NavLink}
-                                    name='myTokens'
+                                    name='collectionBuilder'
                                     to='/wallet'
                                   />
                                 </>
