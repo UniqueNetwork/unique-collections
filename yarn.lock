@@ -103,7 +103,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:7.14.3, @babel/core@npm:>=7.9.0, @babel/core@npm:^7.1.0, @babel/core@npm:^7.13.15, @babel/core@npm:^7.7.2, @babel/core@npm:^7.7.5":
+"@babel/core@npm:7.14.3, @babel/core@npm:>=7.9.0, @babel/core@npm:^7.1.0, @babel/core@npm:^7.7.2, @babel/core@npm:^7.7.5":
   version: 7.14.3
   resolution: "@babel/core@npm:7.14.3"
   dependencies:
@@ -1764,21 +1764,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/register@npm:^7.13.14":
-  version: 7.13.16
-  resolution: "@babel/register@npm:7.13.16"
-  dependencies:
-    clone-deep: ^4.0.1
-    find-cache-dir: ^2.0.0
-    make-dir: ^2.1.0
-    pirates: ^4.0.0
-    source-map-support: ^0.5.16
-  peerDependencies:
-    "@babel/core": ^7.0.0-0
-  checksum: a2a4622292c281fa22e1e501c5c9cf5de41131b6824f3b96095275e315316d1f193593a1316f078bc43fb290f510c0419ae8d3515616c7607b4af4eefecc3d55
-  languageName: node
-  linkType: hard
-
 "@babel/register@npm:^7.15.3":
   version: 7.15.3
   resolution: "@babel/register@npm:7.15.3"
@@ -2848,41 +2833,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/app-accounts@workspace:packages/page-accounts":
-  version: 0.0.0-use.local
-  resolution: "@polkadot/app-accounts@workspace:packages/page-accounts"
-  dependencies:
-    "@babel/runtime": ^7.13.10
-    "@polkadot/phishing": ^0.6.20
-    "@polkadot/react-components": ^0.83.2-28
-    "@polkadot/test-support": 0.95.2-20
-    "@polkadot/vanitygen": ^0.30.2-2
-    detect-browser: ^5.2.0
-    file-saver: ^2.0.5
-  languageName: unknown
-  linkType: soft
-
 "@polkadot/app-faq@workspace:packages/page-faq":
   version: 0.0.0-use.local
   resolution: "@polkadot/app-faq@workspace:packages/page-faq"
-  dependencies:
-    "@babel/runtime": ^7.13.10
-    "@polkadot/react-components": ^0.83.2-28
-  languageName: unknown
-  linkType: soft
-
-"@polkadot/app-nft-market@workspace:packages/page-nft-market":
-  version: 0.0.0-use.local
-  resolution: "@polkadot/app-nft-market@workspace:packages/page-nft-market"
-  dependencies:
-    "@babel/runtime": ^7.13.10
-    "@polkadot/react-components": ^0.83.2-28
-  languageName: unknown
-  linkType: soft
-
-"@polkadot/app-nft-trades@workspace:packages/page-nft-trades":
-  version: 0.0.0-use.local
-  resolution: "@polkadot/app-nft-trades@workspace:packages/page-nft-trades"
   dependencies:
     "@babel/runtime": ^7.13.10
     "@polkadot/react-components": ^0.83.2-28
@@ -3139,18 +3092,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/phishing@npm:^0.6.257":
-  version: 0.6.268
-  resolution: "@polkadot/phishing@npm:0.6.268"
-  dependencies:
-    "@babel/runtime": ^7.15.3
-    "@polkadot/util": ^7.2.1
-    "@polkadot/util-crypto": ^7.2.1
-    "@polkadot/x-fetch": ^7.2.1
-  checksum: 195d01bef571764e8b9eaa715ce3b6f4d7a8764dc185a0f46c55348a1c0b4fe2249b47ff78baa7c4f8a4938c2a4262b1d22258b9125f1b2e6f87ccadd82def3d
-  languageName: node
-  linkType: hard
-
 "@polkadot/react-api@^0.94.2-95, @polkadot/react-api@workspace:packages/react-api":
   version: 0.0.0-use.local
   resolution: "@polkadot/react-api@workspace:packages/react-api"
@@ -3333,7 +3274,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/test-support@0.95.2-20, @polkadot/test-support@workspace:packages/test-support":
+"@polkadot/test-support@workspace:packages/test-support":
   version: 0.0.0-use.local
   resolution: "@polkadot/test-support@workspace:packages/test-support"
   dependencies:
@@ -3476,23 +3417,6 @@ __metadata:
     camelcase: ^5.3.1
     ip-regex: ^4.3.0
   checksum: 30d70065cde343e4df85218d2677f4e85df89656c8a6313c001ee88997ee571ea683619eeb78fa37040b1e6846146fa27f8dde803617f70206ab7223e55d346a
-  languageName: node
-  linkType: hard
-
-"@polkadot/vanitygen@npm:^0.30.2-2":
-  version: 0.30.2-4
-  resolution: "@polkadot/vanitygen@npm:0.30.2-4"
-  dependencies:
-    "@babel/core": ^7.13.15
-    "@babel/register": ^7.13.14
-    "@babel/runtime": ^7.13.10
-    "@polkadot/util": ^6.0.5
-    "@polkadot/util-crypto": ^6.0.5
-    chalk: ^4.1.0
-    yargs: ^16.2.0
-  bin:
-    polkadot-js-vanitygen: index.cjs
-  checksum: eeae087b947e4c19f6f9835454fcc6e1e2b0b93f9873223b3a250a8e662517862ccf31079bbe367d137ee9ed4cdf665d41f381345e5f40d2a79035c9eeca77a2
   languageName: node
   linkType: hard
 
@@ -8750,13 +8674,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detect-browser@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "detect-browser@npm:5.2.0"
-  checksum: 63b5c38fecc657ff12de01a41e6c8c97b3d610dffa37aef1983ec5bfb4314687d588c0c44c5ee03bd45ef15b7fe465bce9349c373369e6a7405f318e0aae56f9
-  languageName: node
-  linkType: hard
-
 "detect-indent@npm:^6.0.0":
   version: 6.1.0
   resolution: "detect-indent@npm:6.1.0"
@@ -10586,13 +10503,6 @@ __metadata:
   peerDependencies:
     webpack: ^4.0.0 || ^5.0.0
   checksum: faf43eecf233f4897b0150aaa874eeeac214e4f9de49738a9e0ef734a30b5260059e85b7edadf852b98e415f875bd5f12587768a93fd52aaf2e479ecf95fab20
-  languageName: node
-  linkType: hard
-
-"file-saver@npm:^2.0.5":
-  version: 2.0.5
-  resolution: "file-saver@npm:2.0.5"
-  checksum: c62d96e5cebc58b4bdf3ae8a60d5cf9607ad82f75f798c33a4ee63435ac2203002584d5256a2a780eda7feb5e19dc3b6351c2212e58b3f529e63d265a7cc79f7
   languageName: node
   linkType: hard
 
@@ -20146,9 +20056,9 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"tar@npm:^6.1.6":
-  version: 6.1.6
-  resolution: "tar@npm:6.1.6"
+"tar@npm:^6.1.9":
+  version: 6.1.11
+  resolution: "tar@npm:6.1.11"
   dependencies:
     chownr: ^2.0.0
     fs-minipass: ^2.0.0
@@ -20156,7 +20066,7 @@ resolve@^2.0.0-next.3:
     minizlib: ^2.1.1
     mkdirp: ^1.0.3
     yallist: ^4.0.0
-  checksum: 583f1165281746b4c48adee4ff7bab4895e73999eeda3c8d59779e47c29dc1dc714d832608a491fead4fd794bf9e0bd51b3d4a4fbad87f487a8b360321d70e8c
+  checksum: a04c07bb9e2d8f46776517d4618f2406fb977a74d914ad98b264fc3db0fe8224da5bec11e5f8902c5b9bcb8ace22d95fbe3c7b36b8593b7dfc8391a25898f32f
   languageName: node
   linkType: hard
 
