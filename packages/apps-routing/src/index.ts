@@ -3,11 +3,13 @@
 
 import type { TFunction } from 'i18next';
 import type { Routes } from './types';
-import nftWallet from './nft-wallet';
 
+import builder from './builder';
+import faq from './faq';
 
 export default function create (t: TFunction): Routes {
   return [
-    nftWallet(t),
+    faq(t),
+    builder(t)
   ];
 }
