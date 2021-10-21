@@ -17,29 +17,13 @@ module.exports = merge(
       open: false,
       port: 3000,
       proxy: {
-        '/health': {
-          changeOrigin: true,
-          target: process.env.UNIQUE_API
-        },
-        '/mint': {
-          changeOrigin: true,
-          target: process.env.UNIQUE_API
-        },
-        '/offers': {
-          changeOrigin: true,
-          target: process.env.UNIQUE_API
-        },
-        '/trades': {
-          changeOrigin: true,
-          target: process.env.UNIQUE_API
-        },
-        [process.env.UNIQUE_API]: {
-          changeOrigin: true,
-          target: process.env.UNIQUE_API
-        },
         [process.env.WHITE_LABEL_URL]: {
           changeOrigin: true,
           target: process.env.WHITE_LABEL_URL
+        },
+        [process.env.GRAPH_QL_API]: {
+          changeOrigin: true,
+          target: process.env.GRAPH_QL_API
         }
       },
       static: path.resolve(__dirname, 'build')
