@@ -74,6 +74,6 @@ export { default as Tooltip } from './Tooltip';
 export { default as TransferModal } from './TransferModal';
 export { default as TxButton } from './TxButton';
 export { default as TextArea } from './TextArea';
-export { default as WithdrawModal } from './WithdrawModal';
+export { default as Welcome } from './Welcome';
 
 export { default as media } from './media';

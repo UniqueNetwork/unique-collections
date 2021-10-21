@@ -3,51 +3,48 @@
 
 import './styles.scss';
 
-import React, { useCallback, useState } from 'react';
-import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header';
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import React, { useEffect } from 'react';
+import { Route, Switch, useHistory } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
-import clearIcon from '@polkadot/app-accounts/Accounts/clearIcon.svg';
-import searchIcon from '@polkadot/app-accounts/Accounts/searchIcon.svg';
-import Disclaimer from '@polkadot/app-builder/components/Disclaimer';
-import { Input } from '@polkadot/react-components';
+import envConfig from '@polkadot/apps-config/envConfig';
+import { AppProps as Props } from '@polkadot/react-components/types';
 
-function Builder (): React.ReactElement {
-  const [searchString, setSearchString] = useState<string>('');
+import CollectionsList from './containers/CollectionsList';
 
-  const handleClearSearch = useCallback(() => {
-    setSearchString('');
-  }, []);
+const { graphQlAdminSecret, graphQlApi } = envConfig;
+
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  headers: {
+    'content-type': 'application/json',
+    'x-hasura-admin-secret': graphQlAdminSecret
+  },
+  uri: graphQlApi
+});
+
+function Builder ({ account, basePath }: Props): React.ReactElement {
+  const location = useLocation();
+  const history = useHistory();
+
+  useEffect(() => {
+    if (location.pathname === '/builder') {
+      history.push('/builder/collections');
+    }
+  }, [history, location]);
 
   return (
     <main className='builder-page'>
-      <Header as='h1'>My Collections</Header>
-      <div className='create-and-search'>
-        <button className='create-btn'>Create new</button>
-        <Input
-          className='isSmall'
-          icon={
-            <img
-              alt='search'
-              className='search-icon'
-              src={searchIcon as string}
+      <Switch>
+        <Route path={`${basePath}/collections`}>
+          <ApolloProvider client={client}>
+            <CollectionsList
+              account={account}
             />
-          }
-          onChange={setSearchString}
-          placeholder='Search'
-          value={searchString}
-          withLabel
-        >
-          { searchString?.length > 0 && (
-            <img
-              alt='clear'
-              className='clear-icon'
-              onClick={handleClearSearch}
-              src={clearIcon as string}
-            />
-          )}
-        </Input>
-      </div>
-      <Disclaimer />
+          </ApolloProvider>
+        </Route>
+      </Switch>
     </main>
   );
 }
