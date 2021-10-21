@@ -48,14 +48,14 @@
 
   .disclaimer {
     display: flex;
-    justify-content: center;
     align-items: center;
     flex-direction: column;
+    justify-content: center;
     background: #FFFFFF;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
     border-radius: 4px 4px 0px 0px;
-    height: calc(100vh - 310px);
-    padding: 0 238px;
+    min-height: calc(100vh - 300px);
+    padding: 15px 238px;
 
     .disclaimer-content {
       ol{
@@ -146,9 +146,55 @@
     background: #FFFFFF;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
     border-radius: 4px;
+    display: flex;
+    padding: 32px;
+
+    .collection-card-img{
+      height: 64px;
+      min-width: 64px;
+      border-radius: 50%;
+      background-color: #81858E;
+      margin-right: 16px;
+    }
+
+    .collection-card-content{
+      display: flex;
+      justify-content: space-between;
+
+      .content-description{
+        flex: 3;
+
+        .content-description-title{
+          font-family: Inter;
+          color: var(--title-color);
+          font-weight: 600;
+          font-size: 20px;
+          line-height: 28px
+        }
+
+        .content-description-text{
+          font-family: Roboto;
+          line-height: 22px;
+          color: var(--tabs-color);
+        }
+      }
+      .content-buttons{
+        display: flex;
+        flex: 2;
+        align-items: flex-start;
+        justify-content: flex-end;
+        gap: 16px;
+
+        button{
+          font-family: Roboto;
+          font-weight: 500;
+          line-height: 22px;
+          padding: 5px 24px;
+        }
+      }
+    }
   }
 }
-
 
 .create-btn {
   width: 200px;
@@ -190,7 +236,25 @@
     .create-and-search {
      flex-direction: column;
     }
+
+    .collection-card{
+      .collection-card-content{
+        flex-direction: column;
+
+        .content-buttons {
+          align-items: stretch;
+          width: 100%;
+
+          button {
+            width: 100%;
+            margin: 0;
+          }
+        }
+
+        }
+    }
   }
+
   .create-btn{
     width: 100%;
     margin: 0;
