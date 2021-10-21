@@ -17,7 +17,6 @@ import NotFound from '@polkadot/apps/NotFound';
 import Status from '@polkadot/apps/Status';
 import { useTranslation } from '@polkadot/apps/translate';
 import { getSystemChainColor } from '@polkadot/apps-config';
-import envConfig from '@polkadot/apps-config/envConfig';
 import createRoutes from '@polkadot/apps-routing';
 import { AccountSelector, ErrorBoundary, StatusContext } from '@polkadot/react-components';
 import GlobalStyle from '@polkadot/react-components/styles';
@@ -37,8 +36,6 @@ import ScrollToTop from './ScrollToTop';
 import WarmUp from './WarmUp';
 
 export const PORTAL_ID = 'portals';
-
-const { walletMode } = envConfig;
 
 const NOT_FOUND: Route = {
   Component: NotFound,
@@ -135,16 +132,18 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
                                   to='/'
                                 />
                               )}
-                              { !walletMode && (
-                                <>
-                                  <Menu.Item
-                                    active={location.pathname === '/wallet'}
-                                    as={NavLink}
-                                    name='collectionBuilder'
-                                    to='/wallet'
-                                  />
-                                </>
-                              )}
+                              <Menu.Item
+                                active={location.pathname === '/builder'}
+                                as={NavLink}
+                                name='builder'
+                                to='/builder'
+                              />
+                              <Menu.Item
+                                active={location.pathname === '/faq'}
+                                as={NavLink}
+                                name='Faq'
+                                to='/faq'
+                              />
                             </Menu>
                             { (isApiReady) && (
                               <div className={`app-user${account ? '' : ' hidden'}`}>
@@ -203,13 +202,13 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
                                 { noAccounts && (
                                   <div className='no-account'>
                                     <div className='error-info-svg'>
-                                      <img src = {String(infoSvg)}/>
+                                      <img src = {String(infoSvg)} />
                                     </div>
                                     <div className='error-message-info'>
                                       <div>
                                         <p> Some features are currently hidden and will only become available once you connect your wallet.  </p>
                                         <p> You can create new or add your existing substrate account on the
-                                          <Link to='accounts' > <span> account page</span> </Link >
+                                          <Link to='accounts'> <span> account page</span> </Link>
                                         </p>
                                       </div>
                                     </div>
