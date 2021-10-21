@@ -185,7 +185,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:7.15.8, @babel/core@npm:^7.15.8":
+"@babel/core@npm:7.15.8, @babel/core@npm:^7.13.15, @babel/core@npm:^7.15.8":
   version: 7.15.8
   resolution: "@babel/core@npm:7.15.8"
   dependencies:
@@ -2292,7 +2292,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/register@npm:^7.15.3":
+"@babel/register@npm:^7.13.14, @babel/register@npm:^7.15.3":
   version: 7.15.3
   resolution: "@babel/register@npm:7.15.3"
   dependencies:
@@ -3642,6 +3642,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@polkadot/app-accounts@workspace:packages/page-accounts":
+  version: 0.0.0-use.local
+  resolution: "@polkadot/app-accounts@workspace:packages/page-accounts"
+  dependencies:
+    "@babel/runtime": ^7.13.10
+    "@polkadot/phishing": ^0.6.20
+    "@polkadot/react-components": ^0.83.2-28
+    "@polkadot/test-support": 0.95.2-20
+    "@polkadot/vanitygen": ^0.30.2-2
+    detect-browser: ^5.2.0
+    file-saver: ^2.0.5
+  languageName: unknown
+  linkType: soft
+
 "@polkadot/app-builder@workspace:packages/page-builder":
   version: 0.0.0-use.local
   resolution: "@polkadot/app-builder@workspace:packages/page-builder"
@@ -4004,6 +4018,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@polkadot/phishing@npm:^0.6.340":
+  version: 0.6.363
+  resolution: "@polkadot/phishing@npm:0.6.363"
+  dependencies:
+    "@babel/runtime": ^7.15.4
+    "@polkadot/util": ^7.5.1
+    "@polkadot/util-crypto": ^7.5.1
+    "@polkadot/x-fetch": ^7.5.1
+  checksum: 9abaccc925c35d4b9929eb15490853a7d8d46484e837246a0f8ad98d0f92e777aa582e30619ba77e6b1a07c879eb15e89eae30689843fd442cb5e881928654d6
+  languageName: node
+  linkType: hard
+
 "@polkadot/react-api@^0.94.2-95, @polkadot/react-api@workspace:packages/react-api":
   version: 0.0.0-use.local
   resolution: "@polkadot/react-api@workspace:packages/react-api"
@@ -4186,7 +4212,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/test-support@workspace:packages/test-support":
+"@polkadot/test-support@0.95.2-20, @polkadot/test-support@workspace:packages/test-support":
   version: 0.0.0-use.local
   resolution: "@polkadot/test-support@workspace:packages/test-support"
   dependencies:
@@ -4329,6 +4355,23 @@ __metadata:
     camelcase: ^6.2.0
     ip-regex: ^4.3.0
   checksum: ddfdbebc8d7f6a8c4baf5445e30e8cf2d245bb24d1cd3467d26648462b9e29f615e950167c1af1ed9ca190da8a64916a1fa40f8626dfe0ebcb2c04986557a9e7
+  languageName: node
+  linkType: hard
+
+"@polkadot/vanitygen@npm:^0.30.2-2":
+  version: 0.30.2-4
+  resolution: "@polkadot/vanitygen@npm:0.30.2-4"
+  dependencies:
+    "@babel/core": ^7.13.15
+    "@babel/register": ^7.13.14
+    "@babel/runtime": ^7.13.10
+    "@polkadot/util": ^6.0.5
+    "@polkadot/util-crypto": ^6.0.5
+    chalk: ^4.1.0
+    yargs: ^16.2.0
+  bin:
+    polkadot-js-vanitygen: index.cjs
+  checksum: eeae087b947e4c19f6f9835454fcc6e1e2b0b93f9873223b3a250a8e662517862ccf31079bbe367d137ee9ed4cdf665d41f381345e5f40d2a79035c9eeca77a2
   languageName: node
   linkType: hard
 
@@ -9908,6 +9951,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"detect-browser@npm:^5.2.0":
+  version: 5.2.1
+  resolution: "detect-browser@npm:5.2.1"
+  checksum: 6ba4cc9f45c8ae970e8b2c2cdfa13b1d9298e30eec85c801aeaed2f001b2ebd38352e1122d54ae4c85434ec61bf6491900156ff4d1d0acf32eced53cde9a8f38
+  languageName: node
+  linkType: hard
+
 "detect-indent@npm:^6.0.0":
   version: 6.1.0
   resolution: "detect-indent@npm:6.1.0"
@@ -11889,6 +11939,13 @@ __metadata:
   peerDependencies:
     webpack: ^4.0.0 || ^5.0.0
   checksum: faf43eecf233f4897b0150aaa874eeeac214e4f9de49738a9e0ef734a30b5260059e85b7edadf852b98e415f875bd5f12587768a93fd52aaf2e479ecf95fab20
+  languageName: node
+  linkType: hard
+
+"file-saver@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "file-saver@npm:2.0.5"
+  checksum: c62d96e5cebc58b4bdf3ae8a60d5cf9607ad82f75f798c33a4ee63435ac2203002584d5256a2a780eda7feb5e19dc3b6351c2212e58b3f529e63d265a7cc79f7
   languageName: node
   linkType: hard
 
