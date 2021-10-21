@@ -3674,15 +3674,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@polkadot/app-nft-wallet@workspace:packages/page-nft-wallet":
-  version: 0.0.0-use.local
-  resolution: "@polkadot/app-nft-wallet@workspace:packages/page-nft-wallet"
-  dependencies:
-    "@babel/runtime": ^7.13.10
-    "@polkadot/react-components": ^0.83.2-28
-  languageName: unknown
-  linkType: soft
-
 "@polkadot/apps-config@^0.83.2-28, @polkadot/apps-config@workspace:packages/apps-config":
   version: 0.0.0-use.local
   resolution: "@polkadot/apps-config@workspace:packages/apps-config"
