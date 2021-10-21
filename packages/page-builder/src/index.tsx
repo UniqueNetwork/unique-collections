@@ -6,9 +6,9 @@ import './styles.scss';
 import React, { useCallback, useState } from 'react';
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header';
 
+import clearIcon from '@polkadot/app-accounts/Accounts/clearIcon.svg';
+import searchIcon from '@polkadot/app-accounts/Accounts/searchIcon.svg';
 import Disclaimer from '@polkadot/app-builder/components/Disclaimer';
-import clearIcon from '@polkadot/app-nft-wallet/components/CollectionSearch/clearIcon.svg';
-import searchIcon from '@polkadot/app-nft-wallet/components/CollectionSearch/searchIcon.svg';
 import { Input } from '@polkadot/react-components';
 
 function Builder (): React.ReactElement {
