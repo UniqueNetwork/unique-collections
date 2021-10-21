@@ -29,7 +29,6 @@ import BalancesHeader from './BalancesHeader';
 import ManageAccounts from './ManageAccounts';
 import ManageBalances from './ManageBalances';
 import MobileAccountSelector from './MobileAccountSelector';
-import MobileBalancesHeader from './MobileBalancesHeader';
 import MobileMenu from './MobileMenu';
 import MobileMenuHeader from './MobileMenuHeader';
 import ScrollToTop from './ScrollToTop';
@@ -145,16 +144,16 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
                                 to='/faq'
                               />
                             </Menu>
-                            { (isApiReady) && (
-                              <div className={`app-user${account ? '' : ' hidden'}`}>
-                                <BalancesHeader account={account} />
-                                <MobileBalancesHeader
+                            { (isApiReady && isApiConnected) && (
+                              <div className='app-user'>
+                                <BalancesHeader
                                   account={account}
-                                  isMobileMenu={openPanel}
-                                  setIsMobileMenu={setOpenPanel}
                                 />
                                 <div className='account-selector-block'>
-                                  <AccountSelector onChange={setAccount} />
+                                  <AccountSelector
+                                    account={account}
+                                    onChange={setAccount}
+                                  />
                                   <MobileAccountSelector
                                     address={account}
                                     openPanel={openPanel}
@@ -162,17 +161,6 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
                                   />
                                 </div>
                               </div>
-                            )}
-                            { !account && (
-                              <Menu className='create-account'>
-                                <Menu.Item
-                                  active={location.pathname === '/accounts'}
-                                  as={NavLink}
-                                  className='crateAccountBtn'
-                                  name='Create or connect account'
-                                  to='/accounts'
-                                />
-                              </Menu>
                             )}
                           </div>
                         </header>
