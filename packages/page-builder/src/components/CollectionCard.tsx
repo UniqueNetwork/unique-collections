@@ -16,9 +16,9 @@ function CollectionCard (): React.ReactElement {
           Adopt yourself a Duckie and join The Flock.Each Duck is a 1 of 1 programmatically generated with a completely unique combination of traits. No two are identical. In total there are 5000 Duckies. Stay up to date on drops by joining the Discord and following
           </div>
           <div className='collection-info'>
-            <p>ID: 1234567</p>
-            <p>Prefix: 1234567</p>
-            <p>Items: 10 000</p>
+            <p><span>ID:</span> 1234567</p>
+            <p><span>Prefix:</span> 1234567</p>
+            <p><span>Items</span> 10 000</p>
           </div>
         </div>
         <div className='content-buttons'>

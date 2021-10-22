@@ -7,20 +7,7 @@
   .create-and-search{
     display: flex;
     align-items: center;
-    margin-bottom: 32px;
-
-    img{
-      position: absolute;
-      top: calc(var(--gap) / 2)
-    }
-
-   .search-icon{
-      left: 18px;
-    }
-
-    .clear-icon{
-      right: 18px;
-    }
+    margin-bottom: calc(var(--gap) *2);
 
     .isSmall{
       width: 100%;
@@ -62,11 +49,11 @@
         padding: 0 16px;
 
         li{
-          padding: 8px 0;
+          padding: calc(var(--gap)/2) 0;
           font-family: Roboto;
           font-style: normal;
           font-weight: normal;
-          font-size: 16px;
+          font-size: var(--gap);
           line-height: 24px;
           color: var(--title-color);
 
@@ -79,7 +66,7 @@
       .custom-checkbox {
         align-items: center;
         display: flex;
-        grid-column-gap: 8px;
+        grid-column-gap: calc(var(--gap)/2);
         font-family: var(--font-roboto);
 
         .checkbox-input {
@@ -105,7 +92,7 @@
           }
 
           input[type="checkbox"]:checked:before {
-            border-radius: 4px;
+            border-radius: calc(var(--gap)/4);
             content: "";
             display: block;
             position: absolute;
@@ -117,7 +104,7 @@
           input[type="checkbox"]:checked:after {
             content: "";
             display: block;
-            width: 8px;
+            width: calc(var(--gap)/2);
             height: 13px;
             border: 1px solid var(--input-background-color);
             border-width: 0 2px 2px 0;
@@ -131,8 +118,8 @@
         }
 
         .checkbox-title{
-          font-size: 16px;
-          line-height: 24px
+          font-size: var(--gap);
+          line-height: calc((var(--gap)*3)/2)
         }
     }
 
@@ -147,14 +134,14 @@
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
     border-radius: 4px;
     display: flex;
-    padding: 32px;
+    padding: calc(var(--gap)*2);
 
     .collection-card-img{
-      height: 64px;
-      min-width: 64px;
+      height: calc(var(--gap)*4);
+      min-width: calc(var(--gap)*4);
       border-radius: 50%;
       background-color: #81858E;
-      margin-right: 16px;
+      margin-right: var(--gap);
     }
 
     .collection-card-content{
@@ -177,13 +164,27 @@
           line-height: 22px;
           color: var(--tabs-color);
         }
+
+        .collection-info{
+          display: flex;
+          gap: var(--gap);
+          margin: var(--gap) 0;
+
+          p{
+            span{
+              font-family: Roboto;
+              line-height: 22px;
+              color: var(--tabs-color);
+            }
+          }
+        }
       }
       .content-buttons{
         display: flex;
         flex: 2;
         align-items: flex-start;
         justify-content: flex-end;
-        gap: 16px;
+        gap: var(--gap);
 
         button{
           font-family: Roboto;
@@ -199,20 +200,20 @@
 .create-btn {
   width: 200px;
   height: 40px;
-  font-size: 16px;
+  font-size: var(--gap);
   background: var(--create-button-color);
   color: var(--white-color);
   border: none;
-  border-radius: 4px;
+  border-radius: calc(var(--gap)/4);
   font-family: var(--font-roboto);
-  margin-right: 24px;
+  margin-right: calc((var(--gap)*3)/2);
   margin-left: 0;
   cursor: pointer;
 }
 
 @media (max-width: 1024px) {
   .builder-page  {
-    padding: 0 16px;
+    padding: 0 var(--gap);
 
     .no-collections{
       box-shadow: none;
@@ -250,7 +251,6 @@
             margin: 0;
           }
         }
-
         }
     }
   }
