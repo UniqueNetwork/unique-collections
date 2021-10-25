@@ -4,18 +4,27 @@
 import { gql, useQuery } from '@apollo/client';
 
 export type UserCollection = {
-  id: string;
+  'collection_id': string;
+  description: string;
+  name: string;
+  'offchain_schema': string;
+  owner: string;
+  'token_limit': number;
+}
+
+export type UserCollections = {
+  collections: UserCollection[];
 }
 
 export type UseGraphQlInterface = {
-  userCollections: UserCollection[];
+  userCollections: UserCollections;
   userCollectionsError: any;
   userCollectionsLoading: boolean;
 };
 
 const USER_COLLECTIONS = gql`
   query Collections($limit: Int!, $offset: Int!, $owner: String!) {
-    collection(limit: $limit, offset: $offset, where: { owner: { _eq: $owner } }) {
+    collections(limit: $limit, offset: $offset, where: { owner: { _eq: $owner } }) {
       collection_id
       description
       name
@@ -32,7 +41,7 @@ export const useGraphQlCollections = (account: string, limit: number, offset: nu
     fetchPolicy: 'network-only', // Used for first execution
     nextFetchPolicy: 'cache-first',
     variables: { limit, offset, owner: account }
-  }) as unknown as { data: UserCollection[], error: string, loading: boolean };
+  }) as unknown as { data: UserCollections, error: string, loading: boolean };
 
   return {
     userCollections,

@@ -247,11 +247,11 @@ h4.ui.header {
   color: var(--text-color);
 
   &:after {
-    left: 40%;
+    left: calc(50% - 12px);;
   }
 
   &:before {
-    left: 40%;
+    left: calc(50% - 12px);;
   }
 
   .load-more {
@@ -259,14 +259,10 @@ h4.ui.header {
     margin-bottom: 1rem;
   }
 
-  &.centered {
-    &:after {
-      left: 0;
-    }
-
-    &:before {
-      left: 0;
-    }
+  .load-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 

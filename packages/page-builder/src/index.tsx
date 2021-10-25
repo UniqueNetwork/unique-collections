@@ -15,13 +15,15 @@ import CollectionsList from './containers/CollectionsList';
 
 const { graphQlAdminSecret, graphQlApi } = envConfig;
 
+const graphQlUrl = process.env.NODE_ENV === 'production' ? graphQlApi : '/v1/graphql/';
+
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   headers: {
     'content-type': 'application/json',
     'x-hasura-admin-secret': graphQlAdminSecret
   },
-  uri: graphQlApi
+  uri: graphQlUrl
 });
 
 function Builder ({ account, basePath }: Props): React.ReactElement {
