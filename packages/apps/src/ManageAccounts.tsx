@@ -35,12 +35,13 @@ const ManageAccounts = (props: Props): React.ReactElement<Props> => {
 
   return (
     <div className='manage-accounts'>
-      <a
-        className='manage-accounts--link'
-        onClick={onAccounts}
-      >
-        Manage accounts
-      </a>
+      <div className='manage-accounts--link'>
+        <a
+          onClick={onAccounts}
+        >
+          Manage accounts
+        </a>
+      </div>
       <header>Choose the account</header>
       <div className='accounts-list'>
         { allAccounts?.map((address: string) => (

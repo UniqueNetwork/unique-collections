@@ -6,10 +6,10 @@ import './styles.scss';
 import React, { useState } from 'react';
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header';
 
+import CollectionCard from '@polkadot/app-builder/components/CollectionCard';
 import { useGraphQlCollections } from '@polkadot/react-hooks';
 
 import CreateCollectionOrSearch from '../../components/CreateCollectionOrSearch';
-import Disclaimer from '../../components/Disclaimer';
 
 interface Props {
   account: string;
@@ -29,7 +29,7 @@ function CollectionsList ({ account }: Props): React.ReactElement {
         searchString={searchString}
         setSearchString={setSearchString}
       />
-      <Disclaimer />
+      <CollectionCard />
     </div>
   );
 }

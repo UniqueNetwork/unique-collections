@@ -7,20 +7,7 @@
   .create-and-search{
     display: flex;
     align-items: center;
-    margin-bottom: 32px;
-
-    img{
-      position: absolute;
-      top: calc(var(--gap) / 2)
-    }
-
-   .search-icon{
-      left: 18px;
-    }
-
-    .clear-icon{
-      right: 18px;
-    }
+    margin-bottom: calc(var(--gap) *2);
 
     .isSmall{
       width: 100%;
@@ -48,25 +35,25 @@
 
   .disclaimer {
     display: flex;
-    justify-content: center;
     align-items: center;
     flex-direction: column;
+    justify-content: center;
     background: #FFFFFF;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
     border-radius: 4px 4px 0px 0px;
-    height: calc(100vh - 310px);
-    padding: 0 238px;
+    min-height: calc(100vh - 300px);
+    padding: 15px 238px;
 
     .disclaimer-content {
       ol{
         padding: 0 16px;
 
         li{
-          padding: 8px 0;
+          padding: calc(var(--gap)/2) 0;
           font-family: Roboto;
           font-style: normal;
           font-weight: normal;
-          font-size: 16px;
+          font-size: var(--gap);
           line-height: 24px;
           color: var(--title-color);
 
@@ -79,7 +66,7 @@
       .custom-checkbox {
         align-items: center;
         display: flex;
-        grid-column-gap: 8px;
+        grid-column-gap: calc(var(--gap)/2);
         font-family: var(--font-roboto);
 
         .checkbox-input {
@@ -105,7 +92,7 @@
           }
 
           input[type="checkbox"]:checked:before {
-            border-radius: 4px;
+            border-radius: calc(var(--gap)/4);
             content: "";
             display: block;
             position: absolute;
@@ -117,7 +104,7 @@
           input[type="checkbox"]:checked:after {
             content: "";
             display: block;
-            width: 8px;
+            width: calc(var(--gap)/2);
             height: 13px;
             border: 1px solid var(--input-background-color);
             border-width: 0 2px 2px 0;
@@ -131,8 +118,8 @@
         }
 
         .checkbox-title{
-          font-size: 16px;
-          line-height: 24px
+          font-size: var(--gap);
+          line-height: calc((var(--gap)*3)/2)
         }
     }
 
@@ -146,27 +133,151 @@
     background: #FFFFFF;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
     border-radius: 4px;
+    display: flex;
+    padding: calc(var(--gap)*2);
+
+    .collection-card-img{
+      height: calc(var(--gap)*4);
+      width: calc(var(--gap)*4);
+      min-width: calc(var(--gap)*4);
+      border-radius: 50%;
+      background-color: #81858E;
+      margin-right: var(--gap);
+    }
+
+    .collection-card-content{
+      display: flex;
+      flex-direction: column;
+
+      .collection-card-content-main{
+        display: flex;
+        justify-content: space-between;
+
+        .content-description{
+          flex: 3;
+
+          .content-description-title{
+            font-family: Inter;
+            color: var(--title-color);
+            font-weight: 600;
+            font-size: 20px;
+            line-height: 28px
+          }
+
+          .content-description-text{
+            font-family: Roboto;
+            line-height: 22px;
+            color: var(--tabs-color);
+          }
+        }
+
+        .content-buttons{
+          display: flex;
+          flex: 2;
+          align-items: flex-start;
+          justify-content: flex-end;
+          gap: var(--gap);
+
+          button{
+            font-family: Roboto;
+            font-weight: 500;
+            line-height: 22px;
+            padding: 5px 23px;
+            border: none;
+            border-radius: 4px;
+          }
+          button:first-child{
+            color: var(--white-color);
+            background-color: var(--create-button-color);
+
+          }
+          button:last-child{
+            color:  var(--error-color);
+            border: 1px solid var(--error-color);
+            background-color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 9px;
+          }
+        }
+      }
+    }
+    .collection-info{
+      display: flex;
+      gap: var(--gap);
+      margin: var(--gap) 0;
+      flex-wrap: wrap;
+
+      p{
+        margin: 0;
+
+        span{
+          font-family: Roboto;
+          line-height: 22px;
+          color: var(--tabs-color);
+        }
+      }
+    }
+
+    .content-links{
+      display: flex;
+      gap: var(--gap);
+
+      a{
+        color: var(--button-color);
+        border: 1px solid var(--button-color);
+        border-radius: 4px;
+        font-family: Roboto;
+        font-weight: 500;
+        line-height: 22px;
+        padding: 5px calc( (var(--gap)/2)*3);
+      }
+    }
+
+    .content-tokens{
+      margin-top:calc( (var(--gap)/2)*3) ;
+
+
+      p{
+        font-family: Roboto;
+        line-height: 22px;
+        color: var(--tabs-color);
+      }
+
+      .content-tokens-list{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+
+        img{
+          width: 48px;
+          height: 48px;
+          border-radius: 4px;
+          background-color: #81858E;
+        }
+      }
+    }
   }
 }
-
 
 .create-btn {
   width: 200px;
   height: 40px;
-  font-size: 16px;
+  font-size: var(--gap);
   background: var(--create-button-color);
   color: var(--white-color);
   border: none;
-  border-radius: 4px;
+  border-radius: calc(var(--gap)/4);
   font-family: var(--font-roboto);
-  margin-right: 24px;
+  margin-right: calc((var(--gap)*3)/2);
   margin-left: 0;
   cursor: pointer;
 }
 
 @media (max-width: 1024px) {
   .builder-page  {
-    padding: 0 16px;
+    padding: 0 var(--gap);
 
     .no-collections{
       box-shadow: none;
@@ -190,7 +301,38 @@
     .create-and-search {
      flex-direction: column;
     }
+
+    .collection-card{
+      flex-direction: column;
+      gap: var(--gap);
+
+      .collection-card-content{
+
+        .collection-card-content-main{
+          flex-direction: column;
+          gap: var(--gap);
+
+          .content-buttons {
+            align-items: stretch;
+
+            button {
+              width: 100%;
+              margin: 0;
+              padding: 5px 0;
+            }
+          }
+        }
+      }
+
+  .content-links{
+        a{
+          border: none;
+          padding: 0;
+        }
+      }
+    }
   }
+
   .create-btn{
     width: 100%;
     margin: 0;

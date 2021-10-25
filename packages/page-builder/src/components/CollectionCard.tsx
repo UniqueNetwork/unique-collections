@@ -3,6 +3,8 @@
 
 import React from 'react';
 
+import burnIcon from '../images/burnIcon.svg';
+
 function CollectionCard (): React.ReactElement {
   return (
     <div className='collection-card'>
@@ -10,25 +12,38 @@ function CollectionCard (): React.ReactElement {
 
       </div>
       <div className='collection-card-content'>
-        <div className='content-header'>
-          <p>CryptoDuckies оч классные, позитивные,выглядят звездец прикольно </p>
-          <div className='content-header-buttons'>
+        <div className='collection-card-content-main'>
+          <div className='content-description'>
+            <p className='content-description-title'>CryptoDuckies оч классные, позитивные,выглядят звездец прикольно</p>
+            <div className='content-description-text'>
+          Adopt yourself a Duckie and join The Flock.Each Duck is a 1 of 1 programmatically generated with a completely unique combination of traits. No two are identical. In total there are 5000 Duckies. Stay up to date on drops by joining the Discord and following
+            </div>
+          </div>
+          <div className='content-buttons '>
             <button>Create NFT</button>
-            <button>Burn</button>
+            <button><img src={burnIcon as string} /> Burn</button>
           </div>
         </div>
-        <div>
-          Adopt yourself a Duckie and join The Flock.Each Duck is a 1 of 1 programmatically generated with a completely unique combination of traits. No two are identical. In total there are 5000 Duckies. Stay up to date on drops by joining the Discord and following
+        <div className='collection-info'>
+          <p><span>ID:</span> 1234567</p>
+          <p><span>Prefix:</span> 1234567</p>
+          <p><span>Items</span> 10 000</p>
         </div>
-        <div className='content-description'>
-          <p>ID: 1234567</p>
-          <p>Prefix: 1234567</p>
-          <p>Items: 10 000</p>
+        <div className='content-links'>
+          <a href=''>Go to Block Explorer</a>
+          <a href=''>Go to my Wallet</a>
         </div>
-      </div>
-      <div className='content-btns'>
-        <button>Go to Block Explorer</button>
-        <button>Go to my wallet</button>
+        <div className='content-tokens'>
+          <p>NFTs preview</p>
+          <div className='content-tokens-list'>
+            <img />
+            <img />
+            <img />
+            <img />
+            <img />
+            <img />
+          </div>
+        </div>
       </div>
     </div>
   );
