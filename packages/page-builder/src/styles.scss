@@ -138,6 +138,7 @@
 
     .collection-card-img{
       height: calc(var(--gap)*4);
+      width: calc(var(--gap)*4);
       min-width: calc(var(--gap)*4);
       border-radius: 50%;
       background-color: #81858E;
@@ -146,51 +147,114 @@
 
     .collection-card-content{
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
 
-      .content-description{
-        flex: 3;
+      .collection-card-content-main{
+        display: flex;
+        justify-content: space-between;
 
-        .content-description-title{
-          font-family: Inter;
-          color: var(--title-color);
-          font-weight: 600;
-          font-size: 20px;
-          line-height: 28px
+        .content-description{
+          flex: 3;
+
+          .content-description-title{
+            font-family: Inter;
+            color: var(--title-color);
+            font-weight: 600;
+            font-size: 20px;
+            line-height: 28px
+          }
+
+          .content-description-text{
+            font-family: Roboto;
+            line-height: 22px;
+            color: var(--tabs-color);
+          }
         }
 
-        .content-description-text{
+        .content-buttons{
+          display: flex;
+          flex: 2;
+          align-items: flex-start;
+          justify-content: flex-end;
+          gap: var(--gap);
+
+          button{
+            font-family: Roboto;
+            font-weight: 500;
+            line-height: 22px;
+            padding: 5px 23px;
+            border: none;
+            border-radius: 4px;
+          }
+          button:first-child{
+            color: var(--white-color);
+            background-color: var(--create-button-color);
+
+          }
+          button:last-child{
+            color:  var(--error-color);
+            border: 1px solid var(--error-color);
+            background-color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 9px;
+          }
+        }
+      }
+    }
+    .collection-info{
+      display: flex;
+      gap: var(--gap);
+      margin: var(--gap) 0;
+      flex-wrap: wrap;
+
+      p{
+        margin: 0;
+
+        span{
           font-family: Roboto;
           line-height: 22px;
           color: var(--tabs-color);
         }
-
-        .collection-info{
-          display: flex;
-          gap: var(--gap);
-          margin: var(--gap) 0;
-
-          p{
-            span{
-              font-family: Roboto;
-              line-height: 22px;
-              color: var(--tabs-color);
-            }
-          }
-        }
       }
-      .content-buttons{
-        display: flex;
-        flex: 2;
-        align-items: flex-start;
-        justify-content: flex-end;
-        gap: var(--gap);
+    }
 
-        button{
-          font-family: Roboto;
-          font-weight: 500;
-          line-height: 22px;
-          padding: 5px 24px;
+    .content-links{
+      display: flex;
+      gap: var(--gap);
+
+      a{
+        color: var(--button-color);
+        border: 1px solid var(--button-color);
+        border-radius: 4px;
+        font-family: Roboto;
+        font-weight: 500;
+        line-height: 22px;
+        padding: 5px calc( (var(--gap)/2)*3);
+      }
+    }
+
+    .content-tokens{
+      margin-top:calc( (var(--gap)/2)*3) ;
+
+
+      p{
+        font-family: Roboto;
+        line-height: 22px;
+        color: var(--tabs-color);
+      }
+
+      .content-tokens-list{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+
+        img{
+          width: 48px;
+          height: 48px;
+          border-radius: 4px;
+          background-color: #81858E;
         }
       }
     }
@@ -239,19 +303,33 @@
     }
 
     .collection-card{
+      flex-direction: column;
+      gap: var(--gap);
+
       .collection-card-content{
-        flex-direction: column;
 
-        .content-buttons {
-          align-items: stretch;
-          width: 100%;
+        .collection-card-content-main{
+          flex-direction: column;
+          gap: var(--gap);
 
-          button {
-            width: 100%;
-            margin: 0;
+          .content-buttons {
+            align-items: stretch;
+
+            button {
+              width: 100%;
+              margin: 0;
+              padding: 5px 0;
+            }
           }
         }
+      }
+
+  .content-links{
+        a{
+          border: none;
+          padding: 0;
         }
+      }
     }
   }
 

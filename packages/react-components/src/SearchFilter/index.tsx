@@ -28,7 +28,7 @@ function SearchFilter (props: Props): React.ReactElement<Props> {
         />
       }
       onChange={setSearchString}
-      placeholder='Search by account name'
+      placeholder='Search'
       value={searchString}
       withLabel
     >

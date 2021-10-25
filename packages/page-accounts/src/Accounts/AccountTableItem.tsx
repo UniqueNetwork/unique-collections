@@ -40,7 +40,7 @@ function AccountTableItem ({ account, setAccount }: Props): React.ReactElement<P
   }, [account.address, history, setAccount]);
 
   return (
-    <div className='accounts-table-item'>
+    <div className='accounts-table-item '>
       <div className='item'>
         <AddressSmall value={account.address} />
         <div className='item--address'>
@@ -53,8 +53,9 @@ function AccountTableItem ({ account, setAccount }: Props): React.ReactElement<P
         </div>
       </div>
       <a
-        onClick={viewAllTokens}>
-        View All Tokens
+        onClick={viewAllTokens}
+      >
+        View all collections
       </a>
     </div>
   );

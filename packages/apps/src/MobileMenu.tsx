@@ -34,7 +34,7 @@ const MobileMenuHeader = (props: Props): React.ReactElement<Props> => {
         />
       </div>
       <NavLink
-        className={`menu-mobile--link ${location.pathname === '/builder' ? 'active' : ''}`}
+        className={`menu-mobile--link ${location.pathname === '/builder/collections' ? 'active' : ''}`}
         exact={true}
         strict={true}
         to={'/builder'}
