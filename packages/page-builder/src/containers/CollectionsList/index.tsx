@@ -14,6 +14,7 @@ import CollectionCard from '@polkadot/app-builder/components/CollectionCard';
 import { useGraphQlCollections, useIsMountedRef } from '@polkadot/react-hooks';
 
 import CreateCollectionOrSearch from '../../components/CreateCollectionOrSearch';
+import NoCollections from '../../components/NoCollections';
 
 interface Props {
   account: string;
@@ -33,9 +34,6 @@ function CollectionsList ({ account }: Props): React.ReactElement {
   const hasMore = (userCollections?.collections && Object.keys(collectionsLoaded).length < userCollections.collections?.length);
   const mountedRef = useIsMountedRef();
   const currentAccount = useRef<string>();
-
-  console.log('userCollections', userCollections);
-  console.log('userCollectionsLoading', userCollectionsLoading);
 
   const fetchScrolledData = useCallback(() => {
     !userCollectionsLoading && setPage((prevPage: number) => prevPage + 1);
@@ -86,6 +84,9 @@ function CollectionsList ({ account }: Props): React.ReactElement {
             Loading collections...
           </Loader>
         )}
+        { (!userCollections?.collections?.length && !Object.values(collectionsLoaded)?.length && !userCollectionsLoading) && (
+          <NoCollections />
+        )}
         <InfiniteScroll
           hasMore={hasMore}
           initialLoad={false}
@@ -103,6 +104,7 @@ function CollectionsList ({ account }: Props): React.ReactElement {
           <div className='market-pallet__item'>
             {Object.values(collectionsLoaded).map((collection: UserCollection) => (
               <CollectionCard
+                collectionId={collection.collection_id}
                 key={collection.collection_id}
               />
             ))}
