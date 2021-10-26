@@ -6,6 +6,8 @@ import './styles.scss';
 import type { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
 import React, { memo, useCallback, useEffect, useState } from 'react';
+import { useHistory } from 'react-router';
+import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader';
 
 import { useCollection, useDecoder } from '@polkadot/react-hooks';
 
@@ -21,6 +23,7 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
   const [collectionTokensCount, setCollectionTokensCount] = useState<number>(0);
   const [collectionInfoLoading, setCollectionInfoLoading] = useState<boolean>(false);
   const { getCollectionTokensCount, getDetailedCollectionInfo } = useCollection();
+  const history = useHistory();
   // const [collectionImageUrl, setCollectionImageUrl] = useState<string>();
   const { collectionName16Decoder, hex2a } = useDecoder();
   // const { allMyTokens, allTokensCount, ownTokensCount, tokensOnPage } = useMyTokens(account, collection, currentPerPage);
@@ -35,6 +38,14 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
     setCollectionInfoLoading(false);
   }, [collectionId, getDetailedCollectionInfo, getCollectionTokensCount]);
 
+  const onCreateNft = useCallback(() => {
+    history.push('/myStuff/newCollection');
+  }, [history]);
+
+  const onBurnNft = useCallback(() => {
+    console.log('onBurnNft');
+  }, []);
+
   useEffect(() => {
     if (!collectionInfo) {
       void getCollectionInfo();
@@ -45,6 +56,15 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
 
   return (
     <div className='collection-card'>
+      { collectionInfoLoading && (
+        <Loader
+          active
+          className='load-info'
+          inline='centered'
+        >
+          Loading collection info...
+        </Loader>
+      )}
       { !!collectionInfo && !collectionInfoLoading && (
         <>
           <CollectionCover
@@ -54,14 +74,16 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
           <div className='collection-card-content'>
             <div className='collection-card-content-main'>
               <div className='content-description'>
-                <p className='content-description-title'>{collectionName16Decoder(collectionInfo.Name)}</p>
+                <p className='content-description-title'>
+                  {collectionName16Decoder(collectionInfo.Name)}
+                </p>
                 <div className='content-description-text'>
                   {collectionName16Decoder(collectionInfo.Description)}
                 </div>
               </div>
               <div className='content-buttons'>
-                <button>Create NFT</button>
-                <button>
+                <button onClick={onCreateNft}>Create NFT</button>
+                <button onClick={onBurnNft}>
                   <img src={burnIcon as string} /> Burn
                 </button>
               </div>
@@ -77,7 +99,7 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
               <a href=''>Go to Block Explorer</a>
               <a href=''>Go to my Wallet</a>
             </div>
-            <div className='content-tokens'>
+            {/* <div className='content-tokens'>
               <p>NFTs preview</p>
               <div className='content-tokens-list'>
                 <img />
@@ -87,7 +109,7 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
                 <img />
                 <img />
               </div>
-            </div>
+            </div> */}
           </div>
         </>
       )}

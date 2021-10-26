@@ -2,21 +2,30 @@
   background: #FFFFFF;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   border-radius: 4px;
-  display: flex;
-  padding: calc(var(--gap)*2);
+  display: grid;
+  grid-template-columns: calc(var(--gap) * 4) 1fr;
+  grid-column-gap: var(--gap);
+
+  padding: calc(var(--gap) * 2);
   margin-bottom: calc((var(--gap) / 2) * 3);
 
   &:last-child {
     margin-bottom: 0;
   }
 
-  .collection-card-img{
-    height: calc(var(--gap)*4);
-    width: calc(var(--gap)*4);
-    min-width: calc(var(--gap)*4);
+  .collection-card-img {
+    height: calc(var(--gap) * 4);
+    width: 100%;
     border-radius: 50%;
-    background-color: #81858E;
+    background-color: transparent;
     margin-right: var(--gap);
+    overflow-y: hidden;
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+    }
   }
 
   .collection-card-content{

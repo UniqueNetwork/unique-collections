@@ -16,6 +16,7 @@ interface CollectionCardProps {
   collectionInfo: NftCollectionInterface | null;
 }
 
+// @todo - modify this to show collection preview image from the unique file service
 function CollectionCover ({ collectionInfo }: CollectionCardProps): React.ReactElement {
   const [collectionCoverLoading, setCollectionCoverLoading] = useState<boolean>(false);
   const [collectionCover, setCollectionCover] = useState<string>(collectionEmptyImage as string);
