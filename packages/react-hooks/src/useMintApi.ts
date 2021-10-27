@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import envConfig from '@polkadot/apps-config/envConfig';
-import { useCollections } from '@polkadot/react-hooks/useCollections';
+import {useCollection} from "@polkadot/react-hooks/useCollection";
 
 const { uniqueCollectionIds } = envConfig;
 
@@ -33,7 +33,7 @@ export function useMintApi (): UseMintApiInterface {
   const [imgLoading, setImgLoading] = useState<boolean>(false);
   const [serverIsReady, setServerIsReady] = useState<boolean>(false);
   const [uploadingError, setUploadingError] = useState<string>();
-  const { getDetailedCollectionInfo } = useCollections();
+  const { getDetailedCollectionInfo } = useCollection();
   const history = useHistory();
 
   const addMintedTokenToWallet = useCallback(async () => {

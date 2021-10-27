@@ -11,7 +11,9 @@ import { useLocation } from 'react-router-dom';
 import envConfig from '@polkadot/apps-config/envConfig';
 import { AppProps as Props } from '@polkadot/react-components/types';
 
+import CollectionPage from './containers/CollectionPage';
 import CollectionsList from './containers/CollectionsList';
+import NftPage from './containers/NftPage';
 
 const { graphQlAdminSecret, graphQlApi } = envConfig;
 
@@ -26,7 +28,8 @@ const client = new ApolloClient({
   uri: graphQlUrl
 });
 
-function Builder ({ account, basePath }: Props): React.ReactElement {
+function Builder (props: Props): React.ReactElement {
+  const { account, basePath } = props;
   const location = useLocation();
   const history = useHistory();
 
@@ -45,6 +48,16 @@ function Builder ({ account, basePath }: Props): React.ReactElement {
               account={account}
             />
           </ApolloProvider>
+        </Route>
+        <Route path={`${basePath}/newCollection`}>
+          <CollectionPage
+            {...props}
+          />
+        </Route>
+        <Route path={`${basePath}/newNft`}>
+          <NftPage
+            {...props}
+          />
         </Route>
       </Switch>
     </main>

@@ -5,13 +5,15 @@ import './styles.scss';
 
 import React, { memo, ReactElement } from 'react';
 
-import { AppProps as Props } from '@polkadot/react-components/types';
-
-function CollectionPage ({ account, basePath }: Props): ReactElement {
+function AttributesRow (): ReactElement {
   return (
-    <div className='collection-page'>
+    <div className='text-field-row'>
+      <p>Name</p>
+      <p>Text</p>
+      <p>Required</p>
+      <p>Male, Female</p>
     </div>
   );
 }
 
-export default memo(CollectionPage);
+export default memo(AttributesRow);

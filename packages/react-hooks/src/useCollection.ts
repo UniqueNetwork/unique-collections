@@ -60,13 +60,13 @@ export function useCollection () {
   const { queueExtrinsic } = useContext(StatusContext);
   const { hex2a } = useDecoder();
 
-  const getCollectionTokensCount = useCallback(async (collectionId: string) => {
+  const getCollectionTokensCount = useCallback(async (collectionId: string): Promise<number> => {
     if (!api || !collectionId) {
-      return [];
+      return 0;
     }
 
     try {
-      return await api.query.nft.itemListIndex(collectionId);
+      return (await api.query.nft.itemListIndex(collectionId)).toJSON() as number;
     } catch (e) {
       console.log('getTokensOfCollection error', e);
     }
@@ -256,7 +256,7 @@ export function useCollection () {
       console.log('getDetailedCollectionInfo error', e);
     }
 
-    return {};
+    return null;
   }, [api]);
 
   const getCollectionOnChainSchema = useCallback((collectionInfo: NftCollectionInterface): { constSchema: ProtobufAttributeType | undefined, variableSchema: ProtobufAttributeType | undefined } => {
