@@ -51,7 +51,7 @@ function Builder (props: Props): React.ReactElement {
         </Route>
         <Route path={`${basePath}/newCollection`}>
           <CollectionPage
-            {...props}
+            account={account}
           />
         </Route>
         <Route path={`${basePath}/newNft`}>

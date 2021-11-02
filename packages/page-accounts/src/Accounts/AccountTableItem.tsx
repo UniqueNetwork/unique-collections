@@ -31,12 +31,16 @@ function AccountTableItem ({ account, setAccount }: Props): React.ReactElement<P
     [queueAction]
   );
 
-  const viewAllTokens = useCallback(() => {
+  const onCopyAddress = useCallback(() => {
+    copyAddress(account.address);
+  }, [account, copyAddress]);
+
+  const viewAllCollections = useCallback(() => {
     if (setAccount) {
       setAccount(account.address);
     }
 
-    history.push('/myStuff/Tokens');
+    history.push('/builder/collections');
   }, [account.address, history, setAccount]);
 
   return (
@@ -46,14 +50,14 @@ function AccountTableItem ({ account, setAccount }: Props): React.ReactElement<P
         <div className='item--address'>
           <span>{account.address}</span>
           <a
-            onClick={copyAddress.bind(null, account.address)}
+            onClick={onCopyAddress}
           >
             <CopyIcon />
           </a>
         </div>
       </div>
       <a
-        onClick={viewAllTokens}
+        onClick={viewAllCollections}
       >
         View all collections
       </a>

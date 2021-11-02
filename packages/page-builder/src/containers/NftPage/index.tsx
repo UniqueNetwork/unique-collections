@@ -5,9 +5,11 @@ import './styles.scss';
 
 import React, { memo, ReactElement } from 'react';
 
-import { AppProps as Props } from '@polkadot/react-components/types';
+interface NftPageProps {
+  account: string;
+}
 
-function NftPage ({ account, basePath }: Props): ReactElement {
+function NftPage ({ account }: NftPageProps): ReactElement {
   return (
     <div className='nft-page'>
       NftPage
