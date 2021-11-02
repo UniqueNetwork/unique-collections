@@ -39,7 +39,7 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
   }, [collectionId, getDetailedCollectionInfo, getCollectionTokensCount]);
 
   const onCreateNft = useCallback(() => {
-    history.push('/myStuff/newCollection');
+    history.push('/builder/newCollection');
   }, [history]);
 
   const onBurnNft = useCallback(() => {
