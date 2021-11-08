@@ -160,32 +160,8 @@
     margin:  24px 0  40px 16px;
   }
 
-  .warning-text{
-    display: flex;
-    background-color: var(--modal-warning-background-color);
-    color: var(--modal-warning-text-color);
-    align-items: center;
-    padding: calc(var(--gap) / 2);
-
-    img{
-      margin: 0 calc(var(--gap) / 2) ;
-    }
-  }
-
   .attributes-button{
     display: flex;
-
-    .confirm-button{
-      background-color: var(--create-button-color);
-      color: var(--white-color);
-      font-family: var(--font-roboto);
-      border-radius: 4px;
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 24px;
-      padding: 8px 35px;
-      margin-top: calc((var(--gap) / 2) * 3);
-    }
   }
 }
 

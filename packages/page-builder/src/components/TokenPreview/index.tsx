@@ -7,7 +7,7 @@ import React from 'react';
 
 function TokenPreview (): React.ReactElement {
   return (
-    <div className='token-preview '>
+    <div className='token-preview'>
       <div className='token-preview-header'>Token preview</div>
       <div className='token-preview-content'>
         <img />
