@@ -28,14 +28,36 @@
       margin-bottom: 16px;
     }
 
-  .upload-img{
+  .upload-block{
     display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 112px;
-    height: 112px;
-    border-radius: 50%;
-    border: 1px dashed var(--button-color);
+    gap: calc(var(--gap) / 2);
+    margin: 24px 0 48px;
+
+    .upload-img{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 112px;
+      height: 112px;
+      border-radius: 50%;
+      border: 1px dashed var(--button-color);
+      cursor: pointer;
+
+      &:hover{
+        background: var(--button-background-hover);
+      }
+
+
+      .token-img{
+        max-width: 96px;
+        max-height: 96px;
+        border-radius: 50%;
+      }
+    }
+
+    .clear-btn{
+      cursor: pointer;
+    }
   }
 }
 

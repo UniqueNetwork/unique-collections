@@ -5,13 +5,13 @@ import './styles.scss';
 
 import React, { memo, ReactElement } from 'react';
 
-import AddAttributesRow from '../TokenAttributes/AddAttributesRow';
+import { HelpTooltip } from '@polkadot/react-components';
 
 import plusIcon from '../../images/plusIcon.svg';
-import questionIcon from '../../images/questionIcon.svg';
+import Button from '../Button';
+import AddAttributesRow from '../TokenAttributes/AddAttributesRow';
+import WarningText from '../WarningText';
 import AttributesRow from './AttributesRow';
-import WarningText from "../WarningText";
-import Button from "../Button";
 
 function TokenAttributes (): ReactElement {
   return (
@@ -23,19 +23,35 @@ function TokenAttributes (): ReactElement {
       <div className='attributes-title'>
         <div className='row-title'>
           <p>Attribute type</p>
-          <img src={questionIcon as string} />
+          <HelpTooltip
+            className={'help attributes'}
+            content={<span>Textual traits that show up on Token</span>}
+            defaultPosition={'bottom left'}
+          />
         </div>
         <div className='row-title'>
           <p>Type</p>
-          <img src={questionIcon as string} />
+          <HelpTooltip
+            className={'help attributes'}
+            content={<span>Select type of information you want to create</span>}
+            defaultPosition={'bottom left'}
+          />
         </div>
         <div className='row-title'>
           <p>Rule</p>
-          <img src={questionIcon as string} />
+          <HelpTooltip
+            className={'help attributes'}
+            content={<span>Set a rule for your attribute</span>}
+            defaultPosition={'bottom left'}
+          />
         </div>
         <div className='row-title'>
           <p>Possible values</p>
-          <img src={questionIcon as string} />
+          <HelpTooltip
+            className={'help attributes'}
+            content={<span>Write down all the options you have </span>}
+            defaultPosition={'bottom left'}
+          />
         </div>
       </div>
       <AttributesRow />
@@ -44,9 +60,9 @@ function TokenAttributes (): ReactElement {
       <WarningText />
       <div className='attributes-button'>
         <Button
-          text="Confirm"
-          onClick={()=>console.log('Click on confirm')}
           disable={true}
+          onClick={() => console.log('Click on confirm')}
+          text='Confirm'
         />
       </div>
     </div>

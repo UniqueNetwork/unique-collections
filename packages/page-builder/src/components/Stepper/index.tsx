@@ -13,7 +13,7 @@ function Stepper (): React.ReactElement {
         <div className='step-line'></div>
         <div className='step'>2</div>
         <div className='step-line'></div>
-      <div className='step'>3</div>
+        <div className='step'>3</div>
       </div>
       <div className='steps-text'>
         <p className='active-line'>Main information</p>

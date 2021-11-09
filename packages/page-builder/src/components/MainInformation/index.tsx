@@ -4,9 +4,9 @@
 import './styles.scss';
 
 import React from 'react';
-import WarningText from "../WarningText";
-import Button from "../Button";
 
+import Button from '../Button';
+import WarningText from '../WarningText';
 
 function MainInformation (): React.ReactElement {
   return (
@@ -15,7 +15,7 @@ function MainInformation (): React.ReactElement {
       <div className='info-block'>
         <h2>Name*</h2>
         <p>Required field (max 64 symbols)</p>
-        <input/>
+        <input />
       </div>
       <div className='info-block'>
         <h2>Description</h2>
@@ -25,13 +25,13 @@ function MainInformation (): React.ReactElement {
       <div className='info-block'>
         <h2>Prefix*</h2>
         <p>Token name as displayed in Wallet (max 16 symbols)</p>
-        <input/>
+        <input />
       </div>
       <WarningText />
       <Button
-        text="Confirm"
-        onClick={()=>console.log('Click on confirm')}
         disable={false}
+        onClick={() => console.log('Click on confirm')}
+        text='Confirm'
       />
     </div>
   );

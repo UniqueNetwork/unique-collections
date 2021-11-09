@@ -712,6 +712,11 @@ button.ui.button, .button-link, .ui--Button {
 }
 
 @media (max-width: 1024px) {
+  h1.ui.header {
+    margin-top: calc(var(--gap) * 1.5) !important;
+    padding: 0 var(--gap);
+  }
+
   .ui.page.modals {
 
     .ui--Modal.modal {

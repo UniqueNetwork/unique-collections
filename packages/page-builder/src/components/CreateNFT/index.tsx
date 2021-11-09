@@ -5,6 +5,8 @@ import './styles.scss';
 
 import React, { useState } from 'react';
 
+import { Checkbox } from '@polkadot/react-components';
+
 import clearIcon from '../../images/closeIcon.svg';
 import uploadIcon from '../../images/uploadIcon.svg';
 import Button from '../Button';
@@ -14,12 +16,10 @@ function CreateNFT (): React.ReactElement {
   const [avatarImg, setAvatarImg] = useState(null);
 
   const uploadAvatar = (e: any) => {
-    console.log('upload');
     setAvatarImg(e.target.files[0]);
   };
 
   const clearTokenImg = () => {
-    console.log('aaaaaaaa');
     setAvatarImg(null);
   };
 
@@ -51,10 +51,10 @@ function CreateNFT (): React.ReactElement {
           className='clear-btn'
           onClick={clearTokenImg}
         >
-          <img
+          { avatarImg && <img
             alt='clear'
-            src={ clearIcon as string }
-          />
+            src={clearIcon as string}
+          />}
         </div>
       </div>
       <h1 className='header-text'>Attributes</h1>
@@ -74,11 +74,17 @@ function CreateNFT (): React.ReactElement {
       </div>
 
       <WarningText />
-      <Button
-        disable={true}
-        onClick={() => console.log('Click on confirm')}
-        text='Confirm'
-      />
+      <div className='footer-buttons'>
+        <Button
+          disable={false}
+          onClick={() => console.log('Click on confirm')}
+          text='Confirm'
+        />
+        <Checkbox
+          label={<>{'Create another'}</>}
+          value={false}
+        />
+      </div>
     </div>
   );
 }
