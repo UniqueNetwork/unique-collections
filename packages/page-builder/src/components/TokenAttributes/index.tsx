@@ -5,12 +5,13 @@ import './styles.scss';
 
 import React, { memo, ReactElement } from 'react';
 
-import AddAttributesRow from '@polkadot/app-builder/components/TokenAttributes/AddAttributesRow';
+import AddAttributesRow from '../TokenAttributes/AddAttributesRow';
 
-import infoIcon from '../../images/infoIcon.svg';
 import plusIcon from '../../images/plusIcon.svg';
 import questionIcon from '../../images/questionIcon.svg';
 import AttributesRow from './AttributesRow';
+import WarningText from "../WarningText";
+import Button from "../Button";
 
 function TokenAttributes (): ReactElement {
   return (
@@ -40,12 +41,13 @@ function TokenAttributes (): ReactElement {
       <AttributesRow />
       <AddAttributesRow />
       <div className='add-field'>Add field <img src={plusIcon as string} /></div>
-      <div className='warning-text'>
-        <img src={infoIcon as string} />
-        <p>A fee of ~ 0.000000000000052 testUNQ can be applied to the transaction unless the transaction is sponsored</p>
-      </div>
+      <WarningText />
       <div className='attributes-button'>
-        <div className='confirm-button'>Confirm</div>
+        <Button
+          text="Confirm"
+          onClick={()=>console.log('Click on confirm')}
+          disable={true}
+        />
       </div>
     </div>
   );

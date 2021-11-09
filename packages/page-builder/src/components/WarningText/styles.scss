@@ -1,0 +1,19 @@
+.warning-text{
+  display: flex;
+  background-color: var(--modal-warning-background-color);
+  align-items: center;
+  padding: calc(var(--gap) / 2);
+  border-radius: calc(var(--gap) / 4);
+  margin: 40px 0 24px;
+
+  img{
+    margin: 0 calc(var(--gap) / 2) ;
+  }
+
+  p{
+    color: var(--modal-warning-text-color);
+    font-family: var(--font-roboto);
+    font-size: 14px;
+    line-height: 22px;
+  }
+}
