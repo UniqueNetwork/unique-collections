@@ -3,10 +3,9 @@
 
 import React, { memo, ReactElement, useState } from 'react';
 
-import { Dropdown } from '@polkadot/react-components';
+import { Dropdown, HelpTooltip } from '@polkadot/react-components';
 import { SchemaVersionTypes } from '@polkadot/react-hooks/useCollection';
 
-import questionIcon from '../../images/questionIcon.svg';
 import trashIcon from '../../images/trashIcon.svg';
 
 const SchemaOptions = [
@@ -28,14 +27,22 @@ function AddAttributesRow (): ReactElement {
       <div className='row-section'>
         <div className='attribute-label'>
           <p>Attribute</p>
-          <img src={questionIcon as string} />
+          <HelpTooltip
+            className={'help'}
+            content={<span>Textual traits that show up on Token</span>}
+            mobilePosition={'bottom left'}
+          />
         </div>
         <input placeholder='Attribute' />
       </div>
       <div className='row-section type'>
         <div className='attribute-label'>
           <p>Type</p>
-          <img src={questionIcon as string} />
+          <HelpTooltip
+            className={'help'}
+            content={<span>Textual traits that show up on Token</span>}
+            mobilePosition={'bottom left'}
+          />
         </div>
         <div className='dropdown-container'>
           <Dropdown
@@ -50,7 +57,11 @@ function AddAttributesRow (): ReactElement {
       <div className='row-section rule'>
         <div className='attribute-label'>
           <p>Rule</p>
-          <img src={questionIcon as string} />
+          <HelpTooltip
+            className={'help'}
+            content={<span>Set a rule for your attribute</span>}
+            mobilePosition={'bottom center'}
+          />
         </div>
         <div className='dropdown-container'>
           <Dropdown
@@ -65,7 +76,11 @@ function AddAttributesRow (): ReactElement {
       <div className='row-section'>
         <div className='attribute-label'>
           <p>Possible values</p>
-          <img src={questionIcon as string} />
+          <HelpTooltip
+            className={'help'}
+            content={<span>Write down all the options you have </span>}
+            mobilePosition={'bottom center'}
+          />
         </div>
         <div className='last-section'>
           <input placeholder='Values' />

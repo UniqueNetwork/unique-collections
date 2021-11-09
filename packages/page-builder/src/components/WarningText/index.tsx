@@ -9,10 +9,10 @@ import infoIcon from '../../images/infoIcon.svg';
 
 function WarningText (): ReactElement {
   return (
-      <div className='warning-text'>
-        <img src={infoIcon as string} />
-        <p>A fee of ~ 0.000000000000052 testUNQ can be applied to the transaction unless the transaction is sponsored</p>
-      </div>
+    <div className='warning-text'>
+      <img src={infoIcon as string} />
+      <p>A fee of ~ 0.000000000000052 testUNQ can be applied to the transaction unless the transaction is sponsored</p>
+    </div>
   );
 }
 

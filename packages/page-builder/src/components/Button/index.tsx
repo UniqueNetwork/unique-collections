@@ -2,21 +2,22 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import './styles.scss';
-import React from "react";
+
+import React from 'react';
 
 interface Props {
-  text:string;
-  disable:boolean;
-  onClick:any;
+  text: string;
+  disable: boolean;
+  onClick: any;
 }
 
-function Button ({text, disable, onClick}: Props): React.ReactElement {
-
+function Button ({ disable, onClick, text }: Props): React.ReactElement {
   return (
     <button
-      onClick={onClick}
+      className={disable ? 'disable' : ''}
       disabled={disable}
-      className={disable ? 'disable': ''}>{text}</button>
+      onClick={onClick}
+    >{text}</button>
   );
 }
 
