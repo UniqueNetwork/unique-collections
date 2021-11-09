@@ -1,6 +1,7 @@
 .warning-text{
   display: flex;
   background-color: var(--modal-warning-background-color);
+  color: var(--modal-warning-text-color);
   align-items: center;
   padding: calc(var(--gap) / 2);
   border-radius: calc(var(--gap) / 4);

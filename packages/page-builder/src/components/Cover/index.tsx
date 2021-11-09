@@ -5,7 +5,7 @@ import './styles.scss';
 import uploadIcon from '../../images/uploadIcon.svg'
 
 import React from 'react';
-import WarningText from "@polkadot/app-builder/components/WarningText";
+import WarningText from "../WarningText";
 import Button from "../Button";
 
 function Cover (): React.ReactElement {

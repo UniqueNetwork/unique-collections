@@ -1,0 +1,98 @@
+.create-nft {
+  background-color: var(--white-color);
+  padding: calc(var(--gap) * 2);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: calc(var(--gap) / 4);
+  font-family: var(--font-roboto);
+
+  .header-text {
+    font-family: var(--font-inter);
+    font-weight: bold;
+    font-size: 28px;
+    line-height: 42px;
+    margin-bottom: 24px;
+  }
+
+  h2 {
+    color: var(--title-color);
+    font-family: var(--font-roboto);
+    font-size: 16px;
+    line-height: 24px;
+    margin-bottom: 4px;
+  }
+
+  p {
+    font-size: 14px;
+    line-height: 22px;
+    font-family: var(--font-roboto);
+    color: var(--tabs-color);
+    margin: 0;
+  }
+
+  .avatar{
+    display: flex;
+    gap: calc(var(--gap) / 2);
+    margin: 24px 0 48px;
+
+    .avatar-img{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 176px;
+      height: 176px;
+      border: 1px dashed var(--button-color);
+      border-radius: calc(var(--gap) / 4);
+      padding: calc(var(--gap) / 2);
+      border-radius: calc(var(--gap) / 4);
+      cursor: pointer;
+
+      input{
+        opacity: 0;
+        z-index: 9;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+
+      img{
+
+      }
+
+      .token-img{
+        max-width: 160px;
+        max-height: 160px;
+        border-radius: calc(var(--gap) / 4);
+      }
+    }
+
+    .clear-btn{
+      cursor: pointer;
+    }
+  }
+
+  .attributes{
+    display: flex;
+    flex-direction: column;
+    gap: 32px ;
+
+    .attributes-input{
+
+      h2{
+        margin-bottom: var(--gap);
+      }
+
+      input{
+        width: 100%;
+        height: 40px;
+        border: 1px solid var(--border-bottom);
+        box-sizing: border-box;
+        border-radius: calc(var(--gap) / 4);
+        font-family: var(--font-roboto);
+        color: var(--title-color);
+        font-size: 16px;
+        line-height: 24px
+      }
+    }
+  }
+
+}

@@ -4,6 +4,7 @@
 import './styles.scss';
 
 import React, { memo, ReactElement } from 'react';
+import CreateNFT from '@polkadot/app-builder/components/CreateNFT';
 
 interface NftPageProps {
   account: string;
@@ -12,7 +13,7 @@ interface NftPageProps {
 function NftPage ({ account }: NftPageProps): ReactElement {
   return (
     <div className='nft-page'>
-      NftPage
+      <CreateNFT />
     </div>
   );
 }
