@@ -3,7 +3,7 @@
 
 import './styles.scss';
 
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 
 import clearIcon from '@polkadot/app-builder/images/closeIcon.svg';
 
@@ -68,4 +68,4 @@ function Cover (): React.ReactElement {
   );
 }
 
-export default Cover;
+export default memo(Cover);

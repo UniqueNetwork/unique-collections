@@ -3,7 +3,7 @@
 
 import './styles.scss';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 function Stepper (): React.ReactElement {
   return (
@@ -24,4 +24,4 @@ function Stepper (): React.ReactElement {
   );
 }
 
-export default Stepper;
+export default memo(Stepper);
