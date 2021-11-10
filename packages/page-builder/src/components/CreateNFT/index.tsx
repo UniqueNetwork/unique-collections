@@ -3,7 +3,7 @@
 
 import './styles.scss';
 
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 
 import { Checkbox } from '@polkadot/react-components';
 
@@ -89,4 +89,4 @@ function CreateNFT (): React.ReactElement {
   );
 }
 
-export default CreateNFT;
+export default memo(CreateNFT);

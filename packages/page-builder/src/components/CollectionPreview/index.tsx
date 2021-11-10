@@ -3,7 +3,7 @@
 
 import './styles.scss';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 function CollectionPreview (): React.ReactElement {
   return (
@@ -21,4 +21,4 @@ function CollectionPreview (): React.ReactElement {
   );
 }
 
-export default CollectionPreview;
+export default memo(CollectionPreview);

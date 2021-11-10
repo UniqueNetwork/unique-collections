@@ -3,7 +3,7 @@
 
 import './styles.scss';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 import Button from '../Button';
 import WarningText from '../WarningText';
@@ -37,4 +37,4 @@ function MainInformation (): React.ReactElement {
   );
 }
 
-export default MainInformation;
+export default memo(MainInformation);

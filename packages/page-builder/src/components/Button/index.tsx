@@ -3,7 +3,7 @@
 
 import './styles.scss';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 interface Props {
   text: string;
@@ -21,4 +21,4 @@ function Button ({ disable, onClick, text }: Props): React.ReactElement {
   );
 }
 
-export default Button;
+export default memo(Button);
