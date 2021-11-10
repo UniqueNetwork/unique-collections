@@ -1,6 +1,7 @@
 build/
 coverage/
 node_modules/
+**/node_modules/*
 tmp/
 .DS_Store
 .env
@@ -9,6 +10,7 @@ tmp/
 .env.test.local
 .env.production.local
 .npmrc
+.vscodet
 .yarn/*
 !.yarn/releases
 !.yarn/plugins

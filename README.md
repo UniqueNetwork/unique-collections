@@ -14,6 +14,12 @@ For production build
 
 ### `yarn build`
 
+Docker build
+
+`docker build -t unique-marketplace:prod .`
+
+`docker run -p 8080:80 -t unique-marketplace:prod`
+
 apps - точка входа в приложение
 
 apps-config - настройки, включая envConfig, api endpoints и другое, касаемо разных сетей.

@@ -1,15 +1,10 @@
 .faq-page {
   font-family: var(--font-inter);
 
-  h1.ui.header  {
-    font-family: var(--font-inter);
-    letter-spacing: normal;
-  }
-
   .faq {
-    background: #FFFFFF;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
-    border-radius: 4px 4px 0px 0px;
+    background: var(--white-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 4px 4px 0 0;
     padding: calc(var(--gap) * 2);
     margin-top: calc(var(--gap) * 2);
 
@@ -29,20 +24,22 @@
     }
 
     p, ol li {
-      font-size: 16px;
+      font-size: var(--gap);
       line-height: 24px;
       font-family: var(--font-roboto);
       font-weight: 400;
       margin-bottom: 0;
       letter-spacing: normal;
+      list-style: disc;
     }
 
     a {
       color: var(--link-color);
+      cursor: pointer;
     }
 
     ol {
-      padding-left: 17px;
+      margin: 0;
     }
   }
 }
@@ -51,13 +48,7 @@
   .faq-page {
     overflow-y: auto;
     overflow-x: hidden;
-
     background-color: var(--card-background);
-
-    h1.ui.header {
-      margin-top: calc(var(--gap) * 2);
-      padding: 0 calc(var(--gap) * 2);
-    }
 
     .faq {
       margin-top: 0;
