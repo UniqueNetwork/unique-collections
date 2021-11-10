@@ -10,15 +10,15 @@ function Stepper (): React.ReactElement {
     <div className='stepper-main'>
       <div className='steps'>
         <div className='step active-step'>1</div>
-        <div className='step-line'></div>
+        <div className='step-line' />
         <div className='step'>2</div>
-        <div className='step-line'></div>
+        <div className='step-line' />
         <div className='step'>3</div>
       </div>
       <div className='steps-text'>
-        <p className='active-line'>Main information</p>
-        <p>Cover</p>
-        <p>Token attributes</p>
+        <span className='active-line'>Main information</span>
+        <span>Cover</span>
+        <span>Token attributes</span>
       </div>
     </div>
   );
