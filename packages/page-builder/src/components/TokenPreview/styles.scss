@@ -26,9 +26,10 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 64px 60.5px;
       background-color: var(--border-color);
       border-radius: calc(var(--gap) / 4);
+      height: 160px;
+      width: 160px;
     }
 
     .content-header{

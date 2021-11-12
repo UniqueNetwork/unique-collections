@@ -3,24 +3,38 @@
 
 import './styles.scss';
 
-import React, { memo, useState } from 'react';
+import React, { memo, SyntheticEvent, useCallback, useState } from 'react';
 
 import clearIcon from '@polkadot/app-builder/images/closeIcon.svg';
+import { useImageService } from '@polkadot/react-hooks/useImageService ';
 
 import uploadIcon from '../../images/uploadIcon.svg';
 import Button from '../Button';
 import WarningText from '../WarningText';
 
 function Cover (): React.ReactElement {
-  const [avatarImg, setAvatarImg] = useState(null);
+  const [avatarImg, setAvatarImg] = useState<File | null>(null);
+  const [imgHash, setImgHash] = useState<string>();
+  const { uploadCollectionImg } = useImageService();
 
-  const uploadAvatar = (e: any) => {
-    setAvatarImg(e.target.files[0]);
-  };
+  const uploadAvatar = useCallback((event: SyntheticEvent) => {
+    const target = event.target as HTMLInputElement;
+    const file: File = (target.files as FileList)[0];
 
-  const clearTokenImg = () => {
+    setAvatarImg(file);
+  }, []);
+
+  const clearTokenImg = useCallback(() => {
     setAvatarImg(null);
-  };
+  }, []);
+
+  const handleConfirm = useCallback(async () => {
+    const hash = await uploadCollectionImg('1', avatarImg);
+
+    setImgHash(hash);
+  }, [avatarImg, uploadCollectionImg]);
+
+  console.log('imgHash', imgHash);
 
   return (
     <div className='cover'>
@@ -61,7 +75,7 @@ function Cover (): React.ReactElement {
       <WarningText />
       <Button
         disable={false}
-        onClick={() => console.log('Click on confirm')}
+        onClick={handleConfirm}
         text='Confirm'
       />
     </div>

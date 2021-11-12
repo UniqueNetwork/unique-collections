@@ -8,6 +8,7 @@ export type EnvConfigType = {
   faviconPath: string;
   graphQlAdminSecret: string;
   graphQlApi: string;
+  imageServerUrl: string;
   kusamaApiUrl: string;
   kusamaBackupApiUrl: string;
   kusamaDecimals: number; // 12
@@ -30,6 +31,7 @@ declare global {
       FAVICON_PATH: string;
       GRAPH_QL_ADMIN_SECRET: string;
       GRAPH_QL_API: string;
+      IMAGE_SERVER_URL: string;
       KUSAMA_API: string;
       KUSAMA_BACKUP_API: string;
       KUSAMA_DECIMALS: number; // 12
@@ -53,6 +55,7 @@ const envConfig: EnvConfigType = {
   faviconPath: window.ENV.FAVICON_PATH,
   graphQlAdminSecret: window.ENV.GRAPH_QL_ADMIN_SECRET,
   graphQlApi: window.ENV.GRAPH_QL_API,
+  imageServerUrl: window.ENV.IMAGE_SERVER_URL,
   kusamaApiUrl: window.ENV.KUSAMA_API,
   kusamaBackupApiUrl: window.ENV.KUSAMA_BACKUP_API,
   kusamaDecimals: +window.ENV.KUSAMA_DECIMALS,
