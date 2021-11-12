@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React, { useCallback } from 'react';
+import {useHistory} from 'react-router';
 
 import clearIcon from '@polkadot/app-accounts/Accounts/clearIcon.svg';
 import searchIcon from '@polkadot/app-accounts/Accounts/searchIcon.svg';
@@ -13,13 +14,24 @@ interface Props {
 }
 
 function CreateCollectionOrSearch ({ searchString, setSearchString }: Props): React.ReactElement {
+  const history = useHistory();
+
   const handleClearSearch = useCallback(() => {
     setSearchString('');
   }, [setSearchString]);
 
+  const onCreateCollection = useCallback(() => {
+    history.push('/builder/newCollection');
+  }, [history]);
+
   return (
     <div className='create-and-search'>
-      <button className='create-btn'>Create new</button>
+      <button
+        className='create-btn'
+        onClick={onCreateCollection}
+      >
+        Create new
+      </button>
       <Input
         className='isSmall'
         icon={

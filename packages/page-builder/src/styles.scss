@@ -131,6 +131,9 @@
   width: 200px;
   height: 40px;
   font-size: var(--gap);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: var(--create-button-color);
   color: var(--white-color);
   border: none;
