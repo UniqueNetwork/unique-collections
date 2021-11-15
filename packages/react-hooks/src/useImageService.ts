@@ -13,22 +13,29 @@ interface UseImageServiceInterface {
   getTokenImg: (address: string) => Promise<string>;
   uploadCollectionImg: (file: Blob | null) => Promise<string>;
 }
+type ErrorType='ERR_INTERNAL_ERROR' | 'ERR_INVALID_FILE_TYPE' | 'ERR_INVALID_PAYLOAD'
 
 interface UploadDataInterface {
-  error: string,
+  error: ErrorType,
   address: string,
   success: boolean
 }
+
+const errorMessages = {
+  ERR_INTERNAL_ERROR: 'No file chosen',
+  ERR_INVALID_FILE_TYPE: 'Wrong image file type',
+  ERR_INVALID_PAYLOAD: 'Server error'
+};
 
 export const useImageService = (): UseImageServiceInterface => {
   const { queueAction } = useContext(StatusContext);
 
   const showError = useCallback(
-    (text: string) => {
+    (message: ErrorType) => {
       return queueAction({
         action: 'clipboard',
-        message: text,
-        status: 'queued'
+        message: errorMessages[message] || 'Error',
+        status: 'error'
       });
     },
     [queueAction]

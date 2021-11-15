@@ -6,7 +6,7 @@ import './styles.scss';
 import React, { memo, SyntheticEvent, useCallback, useState } from 'react';
 
 import clearIcon from '@polkadot/app-builder/images/closeIcon.svg';
-import { useImageService } from '@polkadot/react-hooks/useImageService ';
+import { useImageService } from '@polkadot/react-hooks';
 
 import uploadIcon from '../../images/uploadIcon.svg';
 import Button from '../Button';
@@ -27,6 +27,8 @@ function Cover (): React.ReactElement {
   const clearTokenImg = useCallback(() => {
     setAvatarImg(null);
   }, []);
+
+  console.log('imgAddress', imgAddress);
 
   const handleConfirm = useCallback(async () => {
     const address = await uploadCollectionImg(avatarImg);

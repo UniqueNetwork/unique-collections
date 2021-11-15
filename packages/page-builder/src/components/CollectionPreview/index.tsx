@@ -6,7 +6,7 @@ import './styles.scss';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 
 import defaultIcon from '@polkadot/app-builder/images/defaultIcon.svg';
-import { useImageService } from '@polkadot/react-hooks/useImageService ';
+import { useImageService } from '@polkadot/react-hooks';
 
 function CollectionPreview (): React.ReactElement {
   const [imgUrl, setImgUrl] = useState<string>('');

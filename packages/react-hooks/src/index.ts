@@ -22,6 +22,7 @@ export { useFetch } from './useFetch';
 export { useFormField } from './useFormField';
 export { useDebounce } from './useDebounce';
 export { useGraphQlCollections } from './useGraphQlCollections';
+export { useImageService } from './useImageService';
 export { useIncrement } from './useIncrement';
 export { calcInflation, useInflation } from './useInflation';
 export { useIpfs } from './useIpfs';

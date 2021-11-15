@@ -5,7 +5,7 @@ import './styles.scss';
 
 import React, { memo, useCallback, useEffect, useState } from 'react';
 
-import { useImageService } from '@polkadot/react-hooks/useImageService ';
+import { useImageService } from '@polkadot/react-hooks';
 
 import defaultIcon from '../../images/defaultIcon.svg';
 
