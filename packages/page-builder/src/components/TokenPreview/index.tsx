@@ -15,7 +15,7 @@ function TokenPreview (): React.ReactElement {
   const { getTokenImg } = useImageService();
 
   const getPreviewTokenImg = useCallback(async () => {
-    const image = await getTokenImg();
+    const image = await getTokenImg('QmTqZhR6f7jzdhLgPArDPnsbZpvvgxzCZycXK7ywkLxSyU');
 
     setImgUrl(image);
   }, [getTokenImg]);
@@ -23,8 +23,6 @@ function TokenPreview (): React.ReactElement {
   useEffect(() => {
     void getPreviewTokenImg();
   }, [getPreviewTokenImg]);
-
-  console.log('Token imgUrl', imgUrl);
 
   return (
     <div className='token-preview'>

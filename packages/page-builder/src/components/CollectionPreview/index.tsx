@@ -5,6 +5,7 @@ import './styles.scss';
 
 import React, { memo, useCallback, useEffect, useState } from 'react';
 
+import defaultIcon from '@polkadot/app-builder/images/defaultIcon.svg';
 import { useImageService } from '@polkadot/react-hooks/useImageService ';
 
 function CollectionPreview (): React.ReactElement {
@@ -12,7 +13,7 @@ function CollectionPreview (): React.ReactElement {
   const { getCollectionImg } = useImageService();
 
   const getPreviewCollectionImg = useCallback(async () => {
-    const image = await getCollectionImg();
+    const image = await getCollectionImg('QmTqZhR6f7jzdhLgPArDPnsbZpvvgxzCZycXK7ywkLxSyU');
 
     setImgUrl(image);
   }, [getCollectionImg]);
@@ -25,7 +26,9 @@ function CollectionPreview (): React.ReactElement {
     <div className='collection-preview '>
       <div className='collection-preview-header'>Collection preview</div>
       <div className='collection-preview-content'>
-        {imgUrl && <img src={imgUrl } />}
+        <div className='collection-img'>
+          <img src={imgUrl || defaultIcon as string} />
+        </div>
         <div className='content-description'>
           <h3 className='content-header'>CryptoDuckies</h3>
           <p className='content-text'>Adopt yourself a Duckie and join The Flock. Each Duck is a 1 of 1 programmatically generated with a completely unique combination of traits. No two are identical. In total, there are 5000 Duckies. Stay up to date on drops by joining the Discord and following</p>

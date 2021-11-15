@@ -14,7 +14,7 @@ import WarningText from '../WarningText';
 
 function Cover (): React.ReactElement {
   const [avatarImg, setAvatarImg] = useState<File | null>(null);
-  const [imgHash, setImgHash] = useState<string>();
+  const [imgAddress, setImgAddress] = useState<string>();
   const { uploadCollectionImg } = useImageService();
 
   const uploadAvatar = useCallback((event: SyntheticEvent) => {
@@ -29,12 +29,10 @@ function Cover (): React.ReactElement {
   }, []);
 
   const handleConfirm = useCallback(async () => {
-    const hash = await uploadCollectionImg('1', avatarImg);
+    const address = await uploadCollectionImg(avatarImg);
 
-    setImgHash(hash);
+    setImgAddress(address);
   }, [avatarImg, uploadCollectionImg]);
-
-  console.log('imgHash', imgHash);
 
   return (
     <div className='cover'>

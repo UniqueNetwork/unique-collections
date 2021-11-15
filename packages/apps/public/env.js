@@ -58,6 +58,7 @@
     GRAPH_QL_ADMIN_SECRET: defaults('${GRAPH_QL_ADMIN_SECRET}', 'hepM3wfsATBoI-ix2uhsAodr1j99MThPF5LBZJI2YtHAax7W9BIP9F8IWuzcNUC4'),
     GRAPH_QL_API: defaults('${GRAPH_QL_API}', 'https://dev-api-explorer.unique.network/v1/graphql'),
     IMAGE_SERVER_URL: defaults('${IMAGE_SERVER_URL}', 'https://dev-offchain-api.unique.network'),
+    IPFS_GATEWAY: defaults('${IPFS_GATEWAY}', 'https://dev-ipfs.unique.network'),
     KUSAMA_DECIMALS: defaults('${KUSAMA_DECIMALS}', 12),
     MAX_GAS: defaults('${MAX_GAS}', 1000000000000),
     MIN_PRICE: defaults('${MIN_PRICE}', 0.000001),
