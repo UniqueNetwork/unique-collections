@@ -27,9 +27,9 @@ function CreateCollectionOrSearch ({ searchString, setSearchString }: Props): Re
   return (
     <div className='create-and-search'>
       <UnqButton
-        classname='create-btn'
+        className='create-btn'
         content='Create new'
-        isFilled={true}
+        isFilled
         onClick={onCreateCollection}
         size='medium'
       />

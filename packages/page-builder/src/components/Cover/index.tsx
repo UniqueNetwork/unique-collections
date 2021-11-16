@@ -80,8 +80,8 @@ function Cover ({ collectionId }: CoverProps): React.ReactElement {
       <WarningText />
       <UnqButton
         content='Confirm'
-        isDisabled={true}
-        isFilled={true}
+        isDisabled
+        isFilled
         onClick={handleConfirm}
         size='medium'
       />

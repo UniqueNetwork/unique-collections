@@ -34,9 +34,9 @@ function Disclaimer (): React.ReactElement {
         </div>
         <div className='disclaimer-btn'>
           <UnqButton
-            classname='create-btn'
+            className='create-btn'
             content='Start Creating'
-            isFilled={true}
+            isFilled
             size='medium'
           />
         </div>

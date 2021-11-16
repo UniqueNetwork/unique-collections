@@ -76,7 +76,7 @@ function CreateNFT (): React.ReactElement {
       <div className='footer-buttons'>
         <UnqButton
           content='Confirm'
-          isFilled={true}
+          isFilled
           size={'medium'}
         />
         <Checkbox

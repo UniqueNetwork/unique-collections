@@ -224,9 +224,9 @@ function TokenAttributes ({ account, collectionId }: TokenAttributes): ReactElem
         <UnqButton
           content='Confirm'
           isDisabled={formErrors?.length > 0}
-          isFilled={true}
+          isFilled
           onClick={onSaveAll}
-          size={'medium'}
+          size='medium'
         />
       </div>
     </div>

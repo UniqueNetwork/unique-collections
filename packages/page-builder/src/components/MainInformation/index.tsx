@@ -79,7 +79,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
       <UnqButton
         content='Confirm'
         isDisabled={!name || !tokenPrefix || tokenPrefix.length > 16}
-        isFilled={true}
+        isFilled
         onClick={onCreateCollection}
         size='medium'
       />

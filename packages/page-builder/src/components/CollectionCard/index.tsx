@@ -85,11 +85,11 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
               <div className='content-buttons'>
                 <UnqButton
                   content='Create NFT'
-                  isFilled= {true}
+                  isFilled
                   onClick={onCreateNft}
                 />
                 <UnqButton
-                  classname='burn'
+                  className='burn'
                   content='Burn'
                   onClick={onBurnNft}
                 >
@@ -108,7 +108,7 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
               <UnqButton content='Go to Block Explorer' />
               <UnqButton
                 content='Go to my Wallet'
-                isDisabled={true}
+                isDisabled
               />
             </div>
             {/* <div className='content-tokens'>
