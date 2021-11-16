@@ -3,19 +3,33 @@
 
 import './styles.scss';
 
-import React, { memo } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
+
+import { useImageService } from '@polkadot/react-hooks';
 
 import defaultIcon from '../../images/defaultIcon.svg';
 
 function TokenPreview (): React.ReactElement {
   const attributes = ['Name:', 'Gender:', 'Traits:'];
+  const [imgUrl, setImgUrl] = useState<string>('');
+  const { getTokenImg } = useImageService();
+
+  const getPreviewTokenImg = useCallback(async () => {
+    const image = await getTokenImg('QmTqZhR6f7jzdhLgPArDPnsbZpvvgxzCZycXK7ywkLxSyU');
+
+    setImgUrl(image);
+  }, [getTokenImg]);
+
+  useEffect(() => {
+    void getPreviewTokenImg();
+  }, [getPreviewTokenImg]);
 
   return (
     <div className='token-preview'>
       <div className='token-preview-header'>Token preview</div>
       <div className='token-preview-content'>
         <div className='token-img'>
-          <img src={defaultIcon as string} />
+          <img src={imgUrl || defaultIcon as string} />
         </div>
         <div className='content-description'>
           <h3 className='content-header'>CryptoDuckies</h3>
