@@ -73,6 +73,7 @@ export { default as Toggle } from './Toggle';
 export { default as Tooltip } from './Tooltip';
 export { default as TransferModal } from './TransferModal';
 export { default as TxButton } from './TxButton';
+export { default as UnqButton } from './UnqButton';
 export { default as TextArea } from './TextArea';
 export { default as Welcome } from './Welcome';
 

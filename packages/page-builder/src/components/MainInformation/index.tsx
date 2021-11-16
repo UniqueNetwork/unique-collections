@@ -5,7 +5,8 @@ import './styles.scss';
 
 import React, { memo } from 'react';
 
-import Button from '../Button';
+import { UnqButton } from '@polkadot/react-components';
+
 import WarningText from '../WarningText';
 
 function MainInformation (): React.ReactElement {
@@ -28,10 +29,10 @@ function MainInformation (): React.ReactElement {
         <input />
       </div>
       <WarningText />
-      <Button
-        disable={false}
-        onClick={() => console.log('Click on confirm')}
-        text='Confirm'
+      <UnqButton
+        content='Confirm'
+        isFilled={true}
+        size={'medium'}
       />
     </div>
   );

@@ -3,7 +3,8 @@
   .create-and-search{
     display: flex;
     align-items: center;
-    margin-bottom: calc(var(--gap) *2);
+    margin-bottom: calc(var(--gap) * 2);
+    gap: calc(var(--gap) * 1.5);
 
     .isSmall{
       width: 100%;
@@ -15,13 +16,13 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background: #FFFFFF;
+    background: var(--white-color);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    border-radius: 4px 4px 0px 0;
+    border-radius: 4px 4px 0 0;
     height: calc(100vh - 310px);
 
     p{
-      font-family: Roboto;
+      font-family: var(--font-roboto);
       font-size: 18px;
       line-height: 26px;
       margin-top:24px ;
@@ -34,21 +35,19 @@
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    background: #FFFFFF;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+    background: var(--white-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     border-radius: 4px 4px 0 0;
     min-height: calc(100vh - 300px);
     padding: 15px 238px;
 
     .disclaimer-content {
       ol{
-        padding: 0 16px;
+        padding: 0 var(--gap);
 
         li{
-          padding: calc(var(--gap)/2) 0;
-          font-family: Roboto;
-          font-style: normal;
-          font-weight: normal;
+          padding: calc(var(--gap) / 2) 0;
+          font-family: var(--font-roboto);
           font-size: var(--gap);
           line-height: 24px;
           color: var(--title-color);
@@ -62,7 +61,7 @@
       .custom-checkbox {
         align-items: center;
         display: flex;
-        grid-column-gap: calc(var(--gap)/2);
+        grid-column-gap: calc(var(--gap) / 2);
         font-family: var(--font-roboto);
 
         .checkbox-input {
@@ -88,7 +87,7 @@
           }
 
           input[type="checkbox"]:checked:before {
-            border-radius: calc(var(--gap)/4);
+            border-radius: calc(var(--gap) / 4);
             content: "";
             display: block;
             position: absolute;
@@ -100,7 +99,7 @@
           input[type="checkbox"]:checked:after {
             content: "";
             display: block;
-            width: calc(var(--gap)/2);
+            width: calc(var(--gap) / 2);
             height: 13px;
             border: 1px solid var(--input-background-color);
             border-width: 0 2px 2px 0;
@@ -115,7 +114,7 @@
 
         .checkbox-title{
           font-size: var(--gap);
-          line-height: calc((var(--gap)*3)/2)
+          line-height: calc((var(--gap) * 1.5));
         }
     }
 
@@ -125,23 +124,6 @@
       }
     }
   }
-}
-
-.create-btn {
-  width: 200px;
-  height: 40px;
-  font-size: var(--gap);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--create-button-color);
-  color: var(--white-color);
-  border: none;
-  border-radius: calc(var(--gap)/4);
-  font-family: var(--font-roboto);
-  margin-right: calc((var(--gap)*3)/2);
-  margin-left: 0;
-  cursor: pointer;
 }
 
 @media (max-width: 1024px) {
@@ -163,20 +145,12 @@
 
 @media (max-width: 768px) {
   .builder-page {
-    padding: 0;
-
-    button {
-      margin-bottom: 15px;
-    }
+    padding: var(--gap);
 
     .create-and-search {
      flex-direction: column;
+      gap: var(--gap);
     }
-  }
-
-  .create-btn{
-    width: 100%;
-    margin: 0;
   }
 }
 

@@ -16,7 +16,6 @@
   .collection-card-img {
     height: calc(var(--gap) * 4);
     width: 100%;
-    border-radius: 50%;
     background-color: transparent;
     margin-right: var(--gap);
     overflow-y: hidden;
@@ -60,29 +59,6 @@
         align-items: flex-start;
         justify-content: flex-end;
         gap: var(--gap);
-
-        button{
-          font-family: Roboto;
-          font-weight: 500;
-          line-height: 22px;
-          padding: 5px 23px;
-          border: none;
-          border-radius: 4px;
-        }
-        button:first-child{
-          color: var(--white-color);
-          background-color: var(--create-button-color);
-
-        }
-        button:last-child{
-          color:  var(--error-color);
-          border: 1px solid var(--error-color);
-          background-color: transparent;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: 9px;
-        }
       }
     }
   }
@@ -96,7 +72,7 @@
       margin: 0;
 
       span{
-        font-family: Roboto;
+        font-family: var(--font-roboto);
         line-height: 22px;
         color: var(--tabs-color);
       }
@@ -106,21 +82,10 @@
   .content-links{
     display: flex;
     gap: var(--gap);
-
-    a{
-      color: var(--button-color);
-      border: 1px solid var(--button-color);
-      border-radius: 4px;
-      font-family: Roboto;
-      font-weight: 500;
-      line-height: 22px;
-      padding: 5px calc( (var(--gap) / 2)* 3);
-    }
   }
 
   .content-tokens{
     margin-top:calc( (var(--gap) / 2) * 3) ;
-
 
     p {
       font-family: var(--font-roboto);
@@ -145,6 +110,7 @@
 
 @media (max-width: 768px) {
   .collection-card {
+    display: flex;
     flex-direction: column;
     gap: var(--gap);
 
@@ -166,9 +132,10 @@
       }
     }
     .content-links{
-      a{
+      button{
         border: none;
         padding: 0;
+        background: transparent;
       }
     }
   }

@@ -4,6 +4,8 @@
 import React, { useCallback, useState } from 'react';
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header';
 
+import { UnqButton } from '@polkadot/react-components';
+
 function Disclaimer (): React.ReactElement {
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
@@ -31,10 +33,12 @@ function Disclaimer (): React.ReactElement {
           <div className='checkbox-title'>I have read and understood this disclaimer</div>
         </div>
         <div className='disclaimer-btn'>
-          <button
-            className='create-btn'
-            disabled
-          >Start creating</button>
+          <UnqButton
+            classname='create-btn'
+            content='Start Creating'
+            isFilled={true}
+            size='medium'
+          />
         </div>
       </div>
     </div>

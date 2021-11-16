@@ -1,0 +1,78 @@
+   .unq-button{
+     font-family: var(--font-roboto);
+     font-weight: 500;
+     line-height: 22px;
+     padding: 5px 24px;
+     background: transparent;
+     color: var(--button-color);
+     border: 1px solid var(--button-color);
+     border-radius: 4px;
+     cursor: pointer;
+
+     &:hover{
+       background-color: var(--button-background-hover);
+     }
+   }
+
+   .isFilled {
+     background: var(--create-button-color);
+     color: var(--white-color);
+     border: none;
+
+     &:hover{
+       background-color: var(--create-button-color);
+     }
+   }
+
+   .isDisabled {
+     background: var(--input-background-disabled-color);
+     border: 1px solid var(--button-background-disabled-border);
+     box-sizing: border-box;
+     color: var(--button-background-disabled);
+     cursor: not-allowed;
+
+     &:hover{
+       background: var(--input-background-disabled-color);
+     }
+   }
+
+   .burn{
+     color:  var(--error-color);
+     border: 1px solid var(--error-color);
+     background-color: transparent;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     gap: 9px;
+
+     &:hover{
+       background: transparent;
+     }
+   }
+
+   .create-btn{
+     width: 200px;
+     height: 40px;
+   }
+
+   .medium{
+     font-size: 16px;
+     line-height: 24px;
+     padding: 8px 35px;
+   }
+
+   .large{
+     box-sizing: border-box;
+     width: 288px;
+     height: 40px;
+     font-size: 16px;
+     line-height: 24px;
+   }
+
+   @media (max-width: 768px) {
+     .create-btn{
+       width: 100%;
+       margin: 0;
+     }
+   }
+

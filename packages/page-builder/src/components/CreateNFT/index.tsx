@@ -5,11 +5,10 @@ import './styles.scss';
 
 import React, { memo, useState } from 'react';
 
-import { Checkbox } from '@polkadot/react-components';
+import { Checkbox, UnqButton } from '@polkadot/react-components';
 
 import clearIcon from '../../images/closeIcon.svg';
 import uploadIcon from '../../images/uploadIcon.svg';
-import Button from '../Button';
 import WarningText from '../WarningText';
 
 function CreateNFT (): React.ReactElement {
@@ -75,10 +74,10 @@ function CreateNFT (): React.ReactElement {
 
       <WarningText />
       <div className='footer-buttons'>
-        <Button
-          disable={false}
-          onClick={() => console.log('Click on confirm')}
-          text='Confirm'
+        <UnqButton
+          content='Confirm'
+          isFilled={true}
+          size={'medium'}
         />
         <Checkbox
           label={<>{'Create another'}</>}

@@ -10,6 +10,7 @@ import CollectionPreview from '@polkadot/app-builder/components/CollectionPrevie
 import Cover from '@polkadot/app-builder/components/Cover';
 import Stepper from '@polkadot/app-builder/components/Stepper';
 import TokenPreview from '@polkadot/app-builder/components/TokenPreview';
+import { UnqButton } from '@polkadot/react-components';
 
 interface CollectionPageProps {
   account: string;
@@ -38,7 +39,11 @@ function CollectionPage ({ account }: CollectionPageProps): ReactElement {
           <TokenPreview />
         </div>
         <div className='preview-btn'>
-          <button onClick={handleOnBtnClick}>{isPreviewOpen ? 'Back' : 'Preview'}</button>
+          <UnqButton
+            content={isPreviewOpen ? 'Back' : 'Preview'}
+            onClick={handleOnBtnClick}
+            size='large'
+          />
         </div>
       </div>
     </div>

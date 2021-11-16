@@ -6,10 +6,10 @@ import './styles.scss';
 import React, { memo, SyntheticEvent, useCallback, useState } from 'react';
 
 import clearIcon from '@polkadot/app-builder/images/closeIcon.svg';
+import { UnqButton } from '@polkadot/react-components';
 import { useImageService } from '@polkadot/react-hooks';
 
 import uploadIcon from '../../images/uploadIcon.svg';
-import Button from '../Button';
 import WarningText from '../WarningText';
 
 function Cover (): React.ReactElement {
@@ -73,10 +73,12 @@ function Cover (): React.ReactElement {
         </div>
       </div>
       <WarningText />
-      <Button
-        disable={false}
+      <UnqButton
+        content='Confirm'
+        isDisabled={true}
+        isFilled={true}
         onClick={handleConfirm}
-        text='Confirm'
+        size='medium'
       />
     </div>
   );

@@ -5,10 +5,9 @@ import './styles.scss';
 
 import React, { memo, ReactElement } from 'react';
 
-import { HelpTooltip } from '@polkadot/react-components';
+import { HelpTooltip, UnqButton } from '@polkadot/react-components';
 
 import plusIcon from '../../images/plusIcon.svg';
-import Button from '../Button';
 import AddAttributesRow from '../TokenAttributes/AddAttributesRow';
 import WarningText from '../WarningText';
 import AttributesRow from './AttributesRow';
@@ -59,10 +58,10 @@ function TokenAttributes (): ReactElement {
       <div className='add-field'>Add field <img src={plusIcon as string} /></div>
       <WarningText />
       <div className='attributes-button'>
-        <Button
-          disable={true}
-          onClick={() => console.log('Click on confirm')}
-          text='Confirm'
+        <UnqButton
+          content='Confirm'
+          isFilled={true}
+          size={'medium'}
         />
       </div>
     </div>
