@@ -657,6 +657,13 @@ button.ui.button, .button-link, .ui--Button {
 
 .ui--Labelled {
   .ui.input.ui--Input {
+
+    &.left {
+      input {
+        padding-right: 4rem !important;
+      }
+    }
+
     .loader {
       position: absolute;
       left: 95%;
@@ -680,7 +687,6 @@ button.ui.button, .button-link, .ui--Button {
 
     input {
       border-radius: 4px;
-      padding-right: 4rem !important;
       height: 40px;
     }
   }

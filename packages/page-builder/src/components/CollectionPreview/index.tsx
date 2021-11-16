@@ -3,18 +3,40 @@
 
 import './styles.scss';
 
-import React, { memo } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
-function CollectionPreview (): React.ReactElement {
+import { useCollection } from '@polkadot/react-hooks';
+
+interface CollectionPreviewProps {
+  collectionDescription: string
+  collectionName: string;
+}
+
+function CollectionPreview ({ collectionDescription, collectionName }: CollectionPreviewProps): React.ReactElement {
+  const { getCreatedCollectionCount } = useCollection();
+  const [predictableCollectionId, setPredictableCollectionId] = useState<number>(1);
+  const { collectionId }: { collectionId: string } = useParams();
+
+  const getCollectionCount = useCallback(async () => {
+    const collectionCount = await getCreatedCollectionCount();
+
+    setPredictableCollectionId(collectionCount);
+  }, [getCreatedCollectionCount]);
+
+  useEffect(() => {
+    void getCollectionCount();
+  }, [getCollectionCount]);
+
   return (
     <div className='collection-preview '>
       <div className='collection-preview-header'>Collection preview</div>
       <div className='collection-preview-content'>
         <img />
         <div className='content-description'>
-          <h3 className='content-header'>CryptoDuckies</h3>
-          <p className='content-text'>Adopt yourself a Duckie and join The Flock. Each Duck is a 1 of 1 programmatically generated with a completely unique combination of traits. No two are identical. In total, there are 5000 Duckies. Stay up to date on drops by joining the Discord and following</p>
-          <p className='content-info'><span>ID:</span> 123456</p>
+          <h3 className='content-header'>{collectionName || 'Name'}</h3>
+          <p className='content-text'>{collectionDescription || 'Description'}</p>
+          <p className='content-info'><span>ID:</span> {collectionId || predictableCollectionId}</p>
         </div>
       </div>
     </div>

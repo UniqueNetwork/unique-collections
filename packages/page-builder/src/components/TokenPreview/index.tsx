@@ -7,7 +7,12 @@ import React, { memo } from 'react';
 
 import defaultIcon from '../../images/defaultIcon.svg';
 
-function TokenPreview (): React.ReactElement {
+interface TokenPreviewProps {
+  collectionName: string;
+  tokenPrefix: string;
+}
+
+function TokenPreview ({ collectionName, tokenPrefix }: TokenPreviewProps): React.ReactElement {
   const attributes = ['Name:', 'Gender:', 'Traits:'];
 
   return (
@@ -18,8 +23,8 @@ function TokenPreview (): React.ReactElement {
           <img src={defaultIcon as string} />
         </div>
         <div className='content-description'>
-          <h3 className='content-header'>CryptoDuckies</h3>
-          <p className='content-text'>CryptoDuckies text</p>
+          <h3 className='content-header'>{tokenPrefix || 'Prefix'}</h3>
+          <p className='content-text'>{collectionName || 'Collection name'}</p>
           <div className='token-attributes'>
             <h4>Token attributes  </h4>
             {attributes.map((item) => <p

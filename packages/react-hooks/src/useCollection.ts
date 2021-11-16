@@ -240,7 +240,7 @@ export function useCollection () {
     });
   }, [api, queueExtrinsic]);
 
-  const getDetailedCollectionInfo = useCallback(async (collectionId: string) => {
+  const getDetailedCollectionInfo = useCallback(async (collectionId: string): Promise<NftCollectionInterface | null> => {
     if (!api) {
       return null;
     }

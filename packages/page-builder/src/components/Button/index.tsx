@@ -8,16 +8,19 @@ import React, { memo } from 'react';
 interface Props {
   text: string;
   disable: boolean;
-  onClick: any;
+  onClick: () => void;
 }
 
+// @todo move this to react-components, name this UnqButton and add more props
 function Button ({ disable, onClick, text }: Props): React.ReactElement {
   return (
     <button
       className={disable ? 'disable' : ''}
       disabled={disable}
       onClick={onClick}
-    >{text}</button>
+    >
+      {text}
+    </button>
   );
 }
 

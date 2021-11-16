@@ -53,10 +53,17 @@
 
   .create-attributes {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 3fr ;
+    grid-template-columns: 2fr 130px 120px 3fr 24px;
+    align-items: center;
     padding: calc(var(--gap) / 4) 16px 4px 0;
     border-bottom: 1px solid var(--border-color);
     column-gap:calc(var(--gap) / 2);
+
+    .actions {
+      img {
+        cursor: pointer;
+      }
+    }
 
     .row-section {
       display: flex;
@@ -71,15 +78,11 @@
       }
 
       &:last-child{
+
         .last-section{
           display: flex;
           gap: calc(var(--gap) / 2);
           justify-content: space-between;
-
-          img{
-            width: 24px;
-            cursor: pointer;
-          }
         }
       }
 
@@ -112,13 +115,24 @@
 
       .ui.selection.dropdown {
         border: 1px solid var(--border-bottom);
-        padding: 5px 8px;
-        height: 34px;
+        height: 40px;
         min-height: unset;
         min-width: 50px;
+        padding: calc(var(--gap) / 2) var(--gap);
+
+        .text {
+          height: 100%;
+          color: var(--input-text-color);
+          line-height: 22px;
+          font-size: 16px;
+        }
+
+        .menu {
+          border-color: var(--border-bottom);
+        }
 
         .menu > .item{
-          padding: 10px 0 !important;
+          padding: calc(var(--gap) / 2) var(--gap) !important;
 
           &:hover{
             color: #009CF0 !important;
@@ -161,6 +175,7 @@
   }
 
   .add-field{
+    cursor: pointer;
     display: flex;
     gap:10px;
     color: var(--button-color);
@@ -183,7 +198,7 @@
 
     .create-attributes {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
       justify-content: stretch;
       border-top: 1px solid var(--border-color);
       padding-top: 24px;

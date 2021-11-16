@@ -21,7 +21,7 @@ function CreateCollectionOrSearch ({ searchString, setSearchString }: Props): Re
   }, [setSearchString]);
 
   const onCreateCollection = useCallback(() => {
-    history.push('/builder/newCollection');
+    history.push('/builder/new-collection');
   }, [history]);
 
   return (

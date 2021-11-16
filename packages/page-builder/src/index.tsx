@@ -34,7 +34,7 @@ function Builder (props: Props): React.ReactElement {
   const history = useHistory();
 
   useEffect(() => {
-    if (location.pathname === '/builder') {
+    if (location.pathname === '/builder' || location.pathname === '/builder/') {
       history.push('/builder/collections');
     }
   }, [history, location]);
@@ -46,15 +46,17 @@ function Builder (props: Props): React.ReactElement {
           <ApolloProvider client={client}>
             <CollectionsList
               account={account}
+              basePath={basePath}
             />
           </ApolloProvider>
         </Route>
-        <Route path={`${basePath}/newCollection`}>
+        <Route path={`${basePath}/new-collection`}>
           <CollectionPage
             account={account}
+            basePath={basePath}
           />
         </Route>
-        <Route path={`${basePath}/newNft`}>
+        <Route path={`${basePath}/new-nft`}>
           <NftPage
             {...props}
           />
