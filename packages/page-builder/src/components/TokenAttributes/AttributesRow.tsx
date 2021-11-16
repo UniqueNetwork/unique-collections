@@ -6,10 +6,19 @@ import './styles.scss';
 import React, { memo, ReactElement } from 'react';
 
 import { HelpTooltip } from '@polkadot/react-components';
+import { FieldRuleType, FieldType } from '@polkadot/react-components/util/protobufUtils';
 
-import trashIcon from '../../images/trashIcon.svg';
+interface AttributesRowProps {
+  attributeName: string;
+  attributeType: FieldType;
+  attributeCountType: FieldRuleType;
+  attributeValues: string[];
+  isOwner: boolean;
+}
 
-function AttributesRow (): ReactElement {
+function AttributesRow (props: AttributesRowProps): ReactElement {
+  const { attributeCountType, attributeName, attributeType, attributeValues } = props;
+
   return (
     <div className='text-field-row '>
       <div className='text-section'>
@@ -22,12 +31,12 @@ function AttributesRow (): ReactElement {
           />
         </div>
         <div className='text-content'>
-          Name
+          {attributeName}
         </div>
       </div>
       <div className='text-section type'>
         <div className='attribute-label'>
-          <p>Type</p>
+          <p></p>
           <HelpTooltip
             className={'help'}
             content={<span>Textual traits that show up on Token</span>}
@@ -35,7 +44,7 @@ function AttributesRow (): ReactElement {
           />
         </div>
         <div className='text-content'>
-          Select
+          {attributeCountType}
         </div>
       </div>
       <div className='text-section rule'>
@@ -48,7 +57,7 @@ function AttributesRow (): ReactElement {
           />
         </div>
         <div className='text-content'>
-          Required
+          {attributeType}
         </div>
       </div>
       <div className='text-section'>
@@ -62,11 +71,8 @@ function AttributesRow (): ReactElement {
         </div>
         <div className='last-section'>
           <div className='text-content'>
-            Black Lipstick, Red Lipstick, Smile, Teeth Smile,
-            Purple Lipstick, Nose Ring, Asian Eyes, Sunglasses,
-            Red Glasses, Round Eyes, Left Earring, Right Earring, Two Earrings, Brown Beard, Mustache Beard,
+            {attributeValues.join(', ')}
           </div>
-          <img src={trashIcon as string} />
         </div>
       </div>
     </div>

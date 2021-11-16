@@ -12,13 +12,14 @@ import { CountOptions, TypeOptions } from '@polkadot/react-components/ManageColl
 
 import trashIcon from '../../images/trashIcon.svg';
 
-interface AttributesRowEditable {
+interface AttributesRowEditableProps {
   attributeName: string;
   attributeNameError?: string;
   attributeType: FieldType;
   attributeCountType: FieldRuleType;
   attributeValues: string[];
   index: number;
+  isOwner: boolean;
   removeItem: (index: number) => void;
   setAttributeCountType: (attributeCountType: FieldRuleType, index: number) => void;
   setAttributeName: (attributeName: string, index: number) => void;
@@ -26,13 +27,10 @@ interface AttributesRowEditable {
   setAttributeValues: (attributeValues: string[], index: number) => void;
 }
 
-function AttributesRowEditable (props: AttributesRowEditable): ReactElement {
-  const { attributeCountType, attributeName, attributeNameError, attributeType, attributeValues, index, removeItem, setAttributeCountType, setAttributeName, setAttributeType, setAttributeValues } = props;
+function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement {
+  const { attributeCountType, attributeName, attributeNameError, attributeType, attributeValues, index, isOwner, removeItem, setAttributeCountType, setAttributeName, setAttributeType, setAttributeValues } = props;
   const [isRemoveConfirmationOpen, setIsRemoveConfirmationOpen] = useState<boolean>(false);
   const [currentAttributeName, setCurrentAttributeName] = useState<string>(attributeName);
-  // const [currentAttributeType, setCurrentAttributeType] = useState<FieldType>(attributeType);
-  const [currentAttributeCountType, setCurrentAttributeCountType] = useState<FieldRuleType>(attributeCountType);
-  const [currentAttributeValues, setCurrentAttributeValues] = useState<string[]>(attributeValues);
 
   console.log('attributeType', attributeType);
 
@@ -41,8 +39,10 @@ function AttributesRowEditable (props: AttributesRowEditable): ReactElement {
   }, []);
 
   const openRemoveConfirmation = useCallback(() => {
-    setIsRemoveConfirmationOpen(true);
-  }, []);
+    if (isOwner) {
+      setIsRemoveConfirmationOpen(true);
+    }
+  }, [isOwner]);
 
   const onRemoveItem = useCallback(() => {
     setIsRemoveConfirmationOpen(false);
@@ -153,6 +153,7 @@ function AttributesRowEditable (props: AttributesRowEditable): ReactElement {
           alt='deleteIcon'
           onClick={openRemoveConfirmation}
           src={trashIcon as string}
+          style={{ cursor: isOwner ? 'pointer' : 'not-allowed' }}
         />
       </div>
     </div>
