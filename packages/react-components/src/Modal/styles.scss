@@ -17,7 +17,7 @@
     justify-content: space-between;
   }
 
-  .actions{
+  .actions {
     .close-btn{
       position: absolute;
       top: 37.5px;
@@ -66,25 +66,86 @@
       }
     }
   }
-}
-@media (max-width: 767px) {
-  .footer {
-    flex-direction: column;
-    align-items: flex-start !important;
 
-    .actions {
-      width: 100%;
+  &.unique-modal {
 
-      .ui--Button-Group{
-        width: 100%;
+    .header {
+      padding: 1.71rem !important;
+
+      h2{
+        margin: 0 !important;
+      }
+
+      img {
+        position: absolute;
+        cursor: pointer;
+        right: 28.5px;
+        top: 27.5px;
       }
     }
-    .btn-container{
-      margin-top: 24px;
-      width: 100%;
 
-      button{
+    .content {
+      padding: 0 1.71rem !important;
+
+      .warning-block {
+        font-size: 18px;
+      }
+    }
+
+    .field {
+      margin-top: 2.28rem;
+
+      label {
+        font-family: var(--font-roboto);
+        font-weight: 400;
+        font-size: 18px;
+        margin-bottom: 16px;
+      }
+    }
+
+    .actions {
+      padding: calc((var(--gap) / 2) * 3) !important;
+      border-top: none;
+      display: flex;
+      justify-content: flex-end;
+      background: var(--card-background);
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .ui.modal {
+
+    &.unique-modal {
+
+      .actions {
         width: 100%;
+
+        button{
+          width: 100%;
+          margin: 0;
+        }
+      }
+    }
+
+    .footer {
+      flex-direction: column;
+      align-items: flex-start !important;
+
+      .actions {
+        width: 100%;
+
+        .ui--Button-Group{
+          width: 100%;
+        }
+      }
+      .btn-container{
+        margin-top: 24px;
+        width: 100%;
+
+        button{
+          width: 100%;
+        }
       }
     }
   }

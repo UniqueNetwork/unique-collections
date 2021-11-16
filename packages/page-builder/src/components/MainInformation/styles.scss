@@ -24,28 +24,12 @@
       margin-bottom: 4px;
     }
 
-    p{
+    p {
       font-size: 14px;
       line-height: 22px;
       font-family: var(--font-roboto);
       color: var(--tabs-color);
       margin-bottom: var(--gap);
-    }
-
-    input{
-      width: 100%;
-      height: 40px;
-      border: 1px solid var(--border-bottom);
-      box-sizing: border-box;
-      border-radius: calc(var(--gap) / 4);
-    }
-
-    textarea{
-      width: 100%;
-      height: 88px;
-      border: 1px solid var(--border-bottom);
-      box-sizing: border-box;
-      border-radius: calc(var(--gap) / 4);
     }
   }
 }

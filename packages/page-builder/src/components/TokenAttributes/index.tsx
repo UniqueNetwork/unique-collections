@@ -3,16 +3,152 @@
 
 import './styles.scss';
 
-import React, { memo, ReactElement } from 'react';
+import type { AttributeItemType, FieldRuleType, FieldType, ProtobufAttributeType } from '@polkadot/react-components/util/protobufUtils';
+
+import React, { memo, ReactElement, useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { HelpTooltip, UnqButton } from '@polkadot/react-components';
+import { fillAttributes, fillProtobufJson } from '@polkadot/react-components/util/protobufUtils';
+import { useCollection } from '@polkadot/react-hooks';
+import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
 import plusIcon from '../../images/plusIcon.svg';
-import AddAttributesRow from '../TokenAttributes/AddAttributesRow';
+import AttributesRowEditable from '../TokenAttributes/AttributesRowEditable';
 import WarningText from '../WarningText';
 import AttributesRow from './AttributesRow';
 
-function TokenAttributes (): ReactElement {
+interface TokenAttributes {
+  account: string;
+}
+
+type CurrentAttributeType = {
+  countType: FieldRuleType;
+  name: string;
+  type: FieldType;
+  values: string[];
+}
+
+function TokenAttributes ({ account }: TokenAttributes): ReactElement {
+  const { getCollectionOnChainSchema, getDetailedCollectionInfo, saveConstOnChainSchema } = useCollection();
+  const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
+  const [attributes, setAttributes] = useState<AttributeItemType[]>([]);
+  const [formErrors, setFormErrors] = useState<string[]>([]);
+  const { collectionId }: { collectionId: string } = useParams();
+
+  console.log('attributes', attributes);
+
+  const onAddItem = useCallback(() => {
+    /*
+      queueAction({
+        action: 'action',
+        message: 'You already have attribute with same name!',
+        status: 'error'
+      });
+     */
+    const newAttributes = [...attributes];
+
+    newAttributes.push({
+      fieldType: 'string',
+      id: attributes.length,
+      name: `attribute${attributes.length + 1}`,
+      rule: 'required',
+      values: []
+    });
+
+    setAttributes(newAttributes);
+  }, [attributes]);
+
+  const onSuccess = useCallback(() => {
+    console.log('onSuccess');
+  }, []);
+
+  const deleteAttribute = useCallback((index) => {
+    setAttributes([
+      ...attributes.filter((attribute: AttributeItemType) => attribute.id !== index)
+    ]);
+  }, [attributes]);
+
+  const fetchCollectionInfo = useCallback(async () => {
+    const info: NftCollectionInterface | null = await getDetailedCollectionInfo(collectionId);
+
+    if (info) {
+      setCollectionInfo(info);
+    }
+  }, [collectionId, getDetailedCollectionInfo]);
+
+  const onSaveAll = useCallback(() => {
+    try {
+      const protobufJson: ProtobufAttributeType = fillProtobufJson(attributes);
+
+      if (account && collectionId) {
+        saveConstOnChainSchema({ account, collectionId, schema: JSON.stringify(protobufJson), successCallback: onSuccess });
+      }
+    } catch (e) {
+      console.log('save onChain schema error', e);
+    }
+  }, [account, attributes, collectionId, onSuccess, saveConstOnChainSchema]);
+
+  const setAttributeCountType = useCallback((countType: FieldRuleType, index: number) => {
+    setAttributes((prevAttributes: AttributeItemType[]) => {
+      const newAttributes = [...prevAttributes];
+
+      newAttributes[index].rule = countType;
+
+      return newAttributes;
+    });
+  }, []);
+
+  const setAttributeName = useCallback((name: string, index: number) => {
+    setAttributes((prevAttributes: AttributeItemType[]) => {
+      const newAttributes = [...prevAttributes];
+
+      newAttributes[index].name = name;
+
+      return newAttributes;
+    });
+  }, []);
+
+  const setAttributeType = useCallback((type: FieldType, index: number) => {
+    setAttributes((prevAttributes: AttributeItemType[]) => {
+      const newAttributes = [...prevAttributes];
+
+      newAttributes[index].fieldType = type;
+
+      return newAttributes;
+    });
+  }, []);
+
+  const setAttributeValues = useCallback((values: string[], index: number) => {
+    setAttributes((prevAttributes: AttributeItemType[]) => {
+      const newAttributes = [...prevAttributes];
+
+      newAttributes[index].values = values;
+
+      return newAttributes;
+    });
+  }, []);
+
+  useEffect(() => {
+    void fetchCollectionInfo();
+  }, [fetchCollectionInfo]);
+
+  useEffect(() => {
+    if (collectionInfo?.ConstOnChainSchema) {
+      const onChainSchema = getCollectionOnChainSchema(collectionInfo);
+
+      if (onChainSchema) {
+        const { constSchema } = onChainSchema;
+
+        if (constSchema) {
+          setAttributes(fillAttributes(constSchema));
+        }
+      }
+    } else {
+      setAttributes([]);
+    }
+  }, [collectionInfo, getCollectionOnChainSchema]);
+
   return (
     <div className='token-attributes '>
       <div className='token-attributes-header'>
@@ -54,13 +190,39 @@ function TokenAttributes (): ReactElement {
         </div>
       </div>
       <AttributesRow />
-      <AddAttributesRow />
-      <div className='add-field'>Add field <img src={plusIcon as string} /></div>
+      { attributes.map((attribute: AttributeItemType, index) => (
+        <AttributesRowEditable
+          attributeCountType={attribute.rule}
+          attributeName={attribute.name}
+          attributeNameError={undefined}
+          attributeType={attribute.fieldType}
+          attributeValues={attribute.values}
+          index={index}
+          key={`${attribute.name}-${index}`}
+          removeItem={deleteAttribute}
+          setAttributeCountType={setAttributeCountType}
+          setAttributeName={setAttributeName}
+          setAttributeType={setAttributeType}
+          setAttributeValues={setAttributeValues}
+        />
+      ))}
+      <div
+        className='add-field'
+        onClick={onAddItem}
+      >
+        Add field
+        <img
+          alt='plus'
+          src={plusIcon as string}
+        />
+      </div>
       <WarningText />
       <div className='attributes-button'>
         <UnqButton
           content='Confirm'
+          isDisabled={formErrors?.length > 0}
           isFilled={true}
+          onClick={onSaveAll}
           size={'medium'}
         />
       </div>

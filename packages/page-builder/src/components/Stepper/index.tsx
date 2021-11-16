@@ -4,21 +4,24 @@
 import './styles.scss';
 
 import React, { memo } from 'react';
+import { useLocation } from 'react-router-dom';
 
 function Stepper (): React.ReactElement {
+  const location = useLocation();
+
   return (
     <div className='stepper-main'>
       <div className='steps'>
-        <div className='step active-step'>1</div>
+        <div className={`${location.pathname.includes('/main-information') ? 'step active-step' : 'step'}`}>1</div>
         <div className='step-line' />
-        <div className='step'>2</div>
+        <div className={`${location.pathname.includes('/cover') ? 'step active-step' : 'step'}`}>2</div>
         <div className='step-line' />
-        <div className='step'>3</div>
+        <div className={`${location.pathname.includes('/token-attributes') ? 'step active-step' : 'step'}`}>3</div>
       </div>
       <div className='steps-text'>
-        <span className='active-line'>Main information</span>
-        <span>Cover</span>
-        <span>Token attributes</span>
+        <span className={`${location.pathname.includes('/main-information') ? 'active-line' : 'step'}`}>Main information</span>
+        <span className={`${location.pathname.includes('/cover') ? 'active-line' : 'step'}`}>Cover</span>
+        <span className={`${location.pathname.includes('/token-attributes') ? 'active-line' : 'step'}`}>Token attributes</span>
       </div>
     </div>
   );

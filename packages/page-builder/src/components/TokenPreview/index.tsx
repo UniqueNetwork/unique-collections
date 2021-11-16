@@ -9,7 +9,12 @@ import { useImageService } from '@polkadot/react-hooks';
 
 import defaultIcon from '../../images/defaultIcon.svg';
 
-function TokenPreview (): React.ReactElement {
+interface TokenPreviewProps {
+  collectionName: string;
+  tokenPrefix: string;
+}
+
+function TokenPreview ({ collectionName, tokenPrefix }: TokenPreviewProps): React.ReactElement {
   const attributes = ['Name:', 'Gender:', 'Traits:'];
   const [imgUrl, setImgUrl] = useState<string>('');
   const { getTokenImg } = useImageService();
@@ -32,8 +37,8 @@ function TokenPreview (): React.ReactElement {
           <img src={imgUrl || defaultIcon as string} />
         </div>
         <div className='content-description'>
-          <h3 className='content-header'>CryptoDuckies</h3>
-          <p className='content-text'>CryptoDuckies text</p>
+          <h3 className='content-header'>{tokenPrefix || 'Prefix'}</h3>
+          <p className='content-text'>{collectionName || 'Collection name'}</p>
           <div className='token-attributes'>
             <h4>Token attributes  </h4>
             {attributes.map((item) => <p

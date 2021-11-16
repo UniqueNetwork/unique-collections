@@ -4,13 +4,28 @@
 import './styles.scss';
 
 import React, { memo, useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import defaultIcon from '@polkadot/app-builder/images/defaultIcon.svg';
-import { useImageService } from '@polkadot/react-hooks';
+import { useCollection, useImageService } from '@polkadot/react-hooks';
 
-function CollectionPreview (): React.ReactElement {
+interface CollectionPreviewProps {
+  collectionDescription: string
+  collectionName: string;
+}
+
+function CollectionPreview ({ collectionDescription, collectionName }: CollectionPreviewProps): React.ReactElement {
   const [imgUrl, setImgUrl] = useState<string>('');
   const { getCollectionImg } = useImageService();
+  const { getCreatedCollectionCount } = useCollection();
+  const [predictableCollectionId, setPredictableCollectionId] = useState<number>(1);
+  const { collectionId }: { collectionId: string } = useParams();
+
+  const getCollectionCount = useCallback(async () => {
+    const collectionCount = await getCreatedCollectionCount();
+
+    setPredictableCollectionId(collectionCount);
+  }, [getCreatedCollectionCount]);
 
   const getPreviewCollectionImg = useCallback(async () => {
     const image = await getCollectionImg('QmTqZhR6f7jzdhLgPArDPnsbZpvvgxzCZycXK7ywkLxSyU');
@@ -22,6 +37,10 @@ function CollectionPreview (): React.ReactElement {
     void getPreviewCollectionImg();
   }, [getPreviewCollectionImg]);
 
+  useEffect(() => {
+    void getCollectionCount();
+  }, [getCollectionCount]);
+
   return (
     <div className='collection-preview '>
       <div className='collection-preview-header'>Collection preview</div>
@@ -30,9 +49,9 @@ function CollectionPreview (): React.ReactElement {
           <img src={imgUrl || defaultIcon as string} />
         </div>
         <div className='content-description'>
-          <h3 className='content-header'>CryptoDuckies</h3>
-          <p className='content-text'>Adopt yourself a Duckie and join The Flock. Each Duck is a 1 of 1 programmatically generated with a completely unique combination of traits. No two are identical. In total, there are 5000 Duckies. Stay up to date on drops by joining the Discord and following</p>
-          <p className='content-info'><span>ID:</span> 123456</p>
+          <h3 className='content-header'>{collectionName || 'Name'}</h3>
+          <p className='content-text'>{collectionDescription || 'Description'}</p>
+          <p className='content-info'><span>ID:</span> {collectionId || predictableCollectionId}</p>
         </div>
       </div>
     </div>

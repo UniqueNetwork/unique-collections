@@ -31,7 +31,7 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
 
   const getCollectionInfo = useCallback(async () => {
     setCollectionInfoLoading(true);
-    const collection = await getDetailedCollectionInfo(collectionId) as NftCollectionInterface | null;
+    const collection = await getDetailedCollectionInfo(collectionId);
     const collectionTokensCount = await getCollectionTokensCount(collectionId);
 
     setCollectionInfo(collection);
@@ -40,7 +40,7 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
   }, [collectionId, getDetailedCollectionInfo, getCollectionTokensCount]);
 
   const onCreateNft = useCallback(() => {
-    history.push('/builder/newCollection');
+    history.push('/builder/collections/new-nft');
   }, [history]);
 
   const onBurnNft = useCallback(() => {

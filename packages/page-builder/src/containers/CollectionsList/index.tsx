@@ -7,17 +7,19 @@ import type { UserCollection } from '@polkadot/react-hooks/useGraphQlCollections
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
+import { Route, Switch } from 'react-router';
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header';
 import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader';
 
 import CollectionCard from '@polkadot/app-builder/components/CollectionCard';
+import CreateCollectionOrSearch from '@polkadot/app-builder/components/CreateCollectionOrSearch';
+import NoCollections from '@polkadot/app-builder/components/NoCollections';
+import CollectionPage from '@polkadot/app-builder/containers/CollectionPage';
 import { useGraphQlCollections, useIsMountedRef } from '@polkadot/react-hooks';
-
-import CreateCollectionOrSearch from '../../components/CreateCollectionOrSearch';
-import NoCollections from '../../components/NoCollections';
 
 interface Props {
   account: string;
+  basePath: string;
 }
 
 export type CollectionsListType = {
@@ -26,7 +28,7 @@ export type CollectionsListType = {
 
 const limit = 10;
 
-function CollectionsList ({ account }: Props): React.ReactElement {
+function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const [searchString, setSearchString] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const { userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit);
@@ -69,48 +71,65 @@ function CollectionsList ({ account }: Props): React.ReactElement {
 
   return (
     <div className='collections-list'>
-      <Header as='h1'>My Collections</Header>
-      <CreateCollectionOrSearch
-        searchString={searchString}
-        setSearchString={setSearchString}
-      />
-      <div className='collections-list'>
-        { (userCollectionsLoading && Object.keys(collectionsLoaded).length === 0) && (
-          <Loader
-            active
-            className='load-info'
-            inline='centered'
-          >
-            Loading collections...
-          </Loader>
-        )}
-        { (!userCollections?.collections?.length && !Object.values(collectionsLoaded)?.length && !userCollectionsLoading) && (
-          <NoCollections />
-        )}
-        <InfiniteScroll
-          hasMore={hasMore}
-          initialLoad={false}
-          loadMore={fetchScrolledData}
-          loader={<Loader
-            active
-            className='load-more'
-            inline='centered'
-            key={'nft-collections'}
-          />}
-          pageStart={1}
-          threshold={200}
-          useWindow={true}
+
+      <Switch>
+        <Route
+          exact
+          path={`${basePath}/collections`}
         >
-          <div className='market-pallet__item'>
-            {Object.values(collectionsLoaded).map((collection: UserCollection) => (
-              <CollectionCard
-                collectionId={collection.collection_id}
-                key={collection.collection_id}
-              />
-            ))}
+          <Header as='h1'>My Collections</Header>
+          <CreateCollectionOrSearch
+            searchString={searchString}
+            setSearchString={setSearchString}
+          />
+          <div className='collections-list'>
+            { (userCollectionsLoading && Object.keys(collectionsLoaded).length === 0) && (
+              <Loader
+                active
+                className='load-info'
+                inline='centered'
+              >
+                Loading collections...
+              </Loader>
+            )}
+            { (!userCollections?.collections?.length && !Object.values(collectionsLoaded)?.length && !userCollectionsLoading) && (
+              <NoCollections />
+            )}
+            <InfiniteScroll
+              hasMore={hasMore}
+              initialLoad={false}
+              loadMore={fetchScrolledData}
+              loader={<Loader
+                active
+                className='load-more'
+                inline='centered'
+                key={'nft-collections'}
+              />}
+              pageStart={1}
+              threshold={200}
+              useWindow={true}
+            >
+              <div className='market-pallet__item'>
+                {Object.values(collectionsLoaded).map((collection: UserCollection) => (
+                  <CollectionCard
+                    collectionId={collection.collection_id}
+                    key={collection.collection_id}
+                  />
+                ))}
+              </div>
+            </InfiniteScroll>
           </div>
-        </InfiniteScroll>
-      </div>
+        </Route>
+      </Switch>
+
+      <Switch>
+        <Route path={`${basePath}/collections/:collectionId`}>
+          <CollectionPage
+            account={account}
+            basePath={basePath}
+          />
+        </Route>
+      </Switch>
     </div>
   );
 }
