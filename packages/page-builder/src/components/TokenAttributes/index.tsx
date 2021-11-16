@@ -6,7 +6,6 @@ import './styles.scss';
 import type { AttributeItemType, FieldRuleType, FieldType, ProtobufAttributeType } from '@polkadot/react-components/util/protobufUtils';
 
 import React, { memo, ReactElement, useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 
 import { HelpTooltip, UnqButton } from '@polkadot/react-components';
 import { fillAttributes, fillProtobufJson } from '@polkadot/react-components/util/protobufUtils';
@@ -20,23 +19,17 @@ import AttributesRow from './AttributesRow';
 
 interface TokenAttributes {
   account: string;
+  collectionId: string;
 }
 
-type CurrentAttributeType = {
-  countType: FieldRuleType;
-  name: string;
-  type: FieldType;
-  values: string[];
-}
-
-function TokenAttributes ({ account }: TokenAttributes): ReactElement {
+function TokenAttributes ({ account, collectionId }: TokenAttributes): ReactElement {
   const { getCollectionOnChainSchema, getDetailedCollectionInfo, saveConstOnChainSchema } = useCollection();
   const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
   const [attributes, setAttributes] = useState<AttributeItemType[]>([]);
   const [formErrors, setFormErrors] = useState<string[]>([]);
-  const { collectionId }: { collectionId: string } = useParams();
+  const isOwner = collectionInfo?.Owner === account;
 
-  console.log('attributes', attributes);
+  console.log('attributes', attributes, 'collectionId', collectionId);
 
   const onAddItem = useCallback(() => {
     /*
@@ -157,7 +150,7 @@ function TokenAttributes ({ account }: TokenAttributes): ReactElement {
       </div>
       <div className='attributes-title'>
         <div className='row-title'>
-          <p>Attribute type</p>
+          <p>Attribute name</p>
           <HelpTooltip
             className={'help attributes'}
             content={<span>Textual traits that show up on Token</span>}
@@ -189,8 +182,17 @@ function TokenAttributes ({ account }: TokenAttributes): ReactElement {
           />
         </div>
       </div>
-      <AttributesRow />
-      { attributes.map((attribute: AttributeItemType, index) => (
+      { !isOwner && attributes.map((attribute: AttributeItemType, index) => (
+        <AttributesRow
+          attributeCountType={attribute.rule}
+          attributeName={attribute.name}
+          attributeType={attribute.fieldType}
+          attributeValues={attribute.values}
+          isOwner={isOwner}
+          key={`${attribute.name}-${index}`}
+        />
+      ))}
+      { isOwner && attributes.map((attribute: AttributeItemType, index) => (
         <AttributesRowEditable
           attributeCountType={attribute.rule}
           attributeName={attribute.name}
@@ -198,6 +200,7 @@ function TokenAttributes ({ account }: TokenAttributes): ReactElement {
           attributeType={attribute.fieldType}
           attributeValues={attribute.values}
           index={index}
+          isOwner={isOwner}
           key={`${attribute.name}-${index}`}
           removeItem={deleteAttribute}
           setAttributeCountType={setAttributeCountType}

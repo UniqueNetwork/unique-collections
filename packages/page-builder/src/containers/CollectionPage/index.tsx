@@ -35,8 +35,6 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
   const location = useLocation();
   const { collectionId }: { collectionId: string } = useParams();
 
-  console.log('collectionId', collectionId);
-
   const handleOnBtnClick = useCallback(() => {
     setIsPreviewOpen((prev) => !prev);
   }, []);
@@ -73,11 +71,15 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
               />
             </Route>
             <Route path={`${basePath}/collections/${collectionId}/cover`}>
-              <Cover />
+              <Cover
+                account={account}
+                collectionId={collectionId}
+              />
             </Route>
             <Route path={`${basePath}/collections/${collectionId}/token-attributes`}>
               <TokenAttributes
                 account={account}
+                collectionId={collectionId}
               />
             </Route>
           </Switch>

@@ -12,7 +12,12 @@ import { useImageService } from '@polkadot/react-hooks';
 import uploadIcon from '../../images/uploadIcon.svg';
 import WarningText from '../WarningText';
 
-function Cover (): React.ReactElement {
+interface CoverProps {
+  account: string;
+  collectionId: string;
+}
+
+function Cover ({ collectionId }: CoverProps): React.ReactElement {
   const [avatarImg, setAvatarImg] = useState<File | null>(null);
   const [imgAddress, setImgAddress] = useState<string>();
   const { uploadCollectionImg } = useImageService();
