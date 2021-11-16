@@ -21,20 +21,21 @@
     padding-top: calc((var(--gap)/2)*3);
     font-family: var(--font-roboto);
 
-    img{
+    .collection-img{
+      display: flex;
       height: calc(var(--gap)*4);
-      width: calc(var(--gap)*4);
       min-width: calc(var(--gap)*4);
-      border-radius: 50%;
-      background-color: #81858E;
       margin-right: var(--gap);
+      justify-content: center;
+      align-items: center;
+      background-color: var(--border-color);
+      border-radius: 50%;
     }
 
     .content-header{
       font-size: 18px;
       line-height: 26px;
       color: var(--title-color-color);
-
     }
 
     .content-text{
