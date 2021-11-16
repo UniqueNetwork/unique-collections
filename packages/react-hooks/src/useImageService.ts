@@ -13,6 +13,7 @@ interface UseImageServiceInterface {
   getTokenImg: (address: string) => Promise<string>;
   uploadCollectionImg: (file: Blob | null) => Promise<string>;
 }
+
 type ErrorType='ERR_INTERNAL_ERROR' | 'ERR_INVALID_FILE_TYPE' | 'ERR_INVALID_PAYLOAD'
 
 interface UploadDataInterface {

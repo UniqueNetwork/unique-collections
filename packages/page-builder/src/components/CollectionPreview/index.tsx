@@ -6,6 +6,7 @@ import './styles.scss';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import defaultIcon from '@polkadot/app-builder/images/defaultIcon.svg';
 import { useCollection, useImageService } from '@polkadot/react-hooks';
 
 interface CollectionPreviewProps {
