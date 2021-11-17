@@ -3,7 +3,7 @@
 
 import './styles.scss';
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 interface ButtonInterface{
   children?: React.ReactNode;
@@ -20,20 +20,20 @@ function UnqButton ({ children, className = '', content, isDisabled = false, isF
     onClick && onClick();
   }, [onClick]);
 
-  const getClasses = useCallback(() => {
-    let buttonClasses = 'unq-button';
+  const buttonClasses = useMemo(() => {
+    let value = 'unq-button';
 
-    isDisabled && (buttonClasses += ' isDisabled');
-    isFilled && (buttonClasses += ' isFilled');
-    className && (buttonClasses += ' ' + className);
-    size && (buttonClasses += ' ' + size);
+    isDisabled && (value += ' isDisabled');
+    isFilled && (value += ' isFilled');
+    className && (value += ' ' + className);
+    size && (value += ' ' + size);
 
-    return buttonClasses;
+    return value;
   }, [className, isDisabled, isFilled, size]);
 
   return (
     <button
-      className={getClasses()}
+      className={buttonClasses}
       disabled={isDisabled}
       onClick={handleOnClick}
     >
