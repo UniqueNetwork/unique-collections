@@ -14,6 +14,7 @@ import MainInformation from '@polkadot/app-builder/components/MainInformation';
 import Stepper from '@polkadot/app-builder/components/Stepper';
 import TokenAttributes from '@polkadot/app-builder/components/TokenAttributes';
 import TokenPreview from '@polkadot/app-builder/components/TokenPreview';
+import NftPage from '@polkadot/app-builder/containers/NftPage';
 
 interface CollectionPageProps {
   account: string;
@@ -43,22 +44,43 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
       history.push('/builder/new-collection/main-information');
     }
 
-    if (location.pathname === `/builder/collections/${collectionId}` || location.pathname === `/builder/collections/${collectionId}/main-information`) {
+    // if we have collectionId, we cannot
+    if (location.pathname === `/builder/collections/${collectionId}/main-information`) {
       history.push(`/builder/collections/${collectionId}/cover`);
     }
   }, [collectionId, history, location]);
 
+  console.log('CollectionPage', location.pathname, 'basePath', basePath);
+
   return (
     <div className='collection-page'>
-      <Header
-        as='h1'
-        className={`${isPreviewOpen ? 'hidden' : ''}`}
-      >Create Collection</Header>
+      { location.pathname !== `/builder/collections/${collectionId}/new-nft` && (
+        <Header
+          as='h1'
+          className={`${isPreviewOpen ? 'hidden' : ''}`}
+        >
+          Create Collection
+        </Header>
+      )}
+      { location.pathname === `/builder/collections/${collectionId}/new-nft` && (
+        <Header
+          as='h1'
+          className={`${isPreviewOpen ? 'hidden' : ''}`}
+        >
+          Create Nft
+        </Header>
+      )}
       <div className='page-main '>
         <div className={`main-section ${isPreviewOpen ? 'hidden' : ''}`}>
-          <Stepper />
+          { location.pathname !== `/builder/collections/${collectionId}/new-nft` && (
+            <Stepper />
+          )}
           <Switch>
-            <Route path={`${basePath}/new-collection/main-information`}>
+            <Route
+              exact
+              path={`${basePath}/new-collection/main-information`}
+            >
+
               <MainInformation
                 account={account}
                 description={collectionDescription}
@@ -69,17 +91,30 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
                 tokenPrefix={tokenPrefix}
               />
             </Route>
-            <Route path={`${basePath}/collections/${collectionId}/cover`}>
-              <Cover
-                account={account}
-                collectionId={collectionId}
-              />
-            </Route>
-            <Route path={`${basePath}/collections/${collectionId}/token-attributes`}>
-              <TokenAttributes
-                account={account}
-                collectionId={collectionId}
-              />
+            <Route
+              path={`${basePath}/collections/:collectionId`}
+            >
+              <Switch>
+                <Route path={`${basePath}/collections/${collectionId}/cover`}>
+                  <Cover
+                    account={account}
+                    collectionId={collectionId}
+                  />
+                </Route>
+                <Route path={`${basePath}/collections/${collectionId}/token-attributes`}>
+                  <TokenAttributes
+                    account={account}
+                    collectionId={collectionId}
+                  />
+                </Route>
+                <Route path={`${basePath}/collections/${collectionId}/new-nft`}>
+                  <NftPage
+                    account={account}
+                    basePath={basePath}
+                    collectionId={collectionId}
+                  />
+                </Route>
+              </Switch>
             </Route>
           </Switch>
         </div>

@@ -13,7 +13,6 @@ import { AppProps as Props } from '@polkadot/react-components/types';
 
 import CollectionPage from './containers/CollectionPage';
 import CollectionsList from './containers/CollectionsList';
-import NftPage from './containers/NftPage';
 
 const { graphQlAdminSecret, graphQlApi } = envConfig;
 
@@ -54,11 +53,6 @@ function Builder (props: Props): React.ReactElement {
           <CollectionPage
             account={account}
             basePath={basePath}
-          />
-        </Route>
-        <Route path={`${basePath}/new-nft`}>
-          <NftPage
-            {...props}
           />
         </Route>
       </Switch>

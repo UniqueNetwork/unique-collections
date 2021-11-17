@@ -120,9 +120,12 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
             </InfiniteScroll>
           </div>
         </Route>
-      </Switch>
-
-      <Switch>
+        <Route path={`${basePath}/collections/:collectionId`}>
+          <CollectionPage
+            account={account}
+            basePath={basePath}
+          />
+        </Route>
         <Route path={`${basePath}/collections/:collectionId`}>
           <CollectionPage
             account={account}

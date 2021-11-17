@@ -123,11 +123,7 @@ function TokenAttributes ({ account, collectionId }: TokenAttributes): ReactElem
     });
   }, []);
 
-  useEffect(() => {
-    void fetchCollectionInfo();
-  }, [fetchCollectionInfo]);
-
-  useEffect(() => {
+  const fillCollectionAttributes = useCallback(() => {
     if (collectionInfo?.ConstOnChainSchema) {
       const onChainSchema = getCollectionOnChainSchema(collectionInfo);
 
@@ -142,6 +138,16 @@ function TokenAttributes ({ account, collectionId }: TokenAttributes): ReactElem
       setAttributes([]);
     }
   }, [collectionInfo, getCollectionOnChainSchema]);
+
+  useEffect(() => {
+    void fetchCollectionInfo();
+  }, [fetchCollectionInfo]);
+
+  useEffect(() => {
+    fillCollectionAttributes();
+  }, [fillCollectionAttributes]);
+
+  console.log('token attributes', attributes, 'owner', isOwner);
 
   return (
     <div className='token-attributes '>
