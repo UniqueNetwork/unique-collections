@@ -26,7 +26,7 @@ function TokenAttributes ({ account, collectionId }: TokenAttributes): ReactElem
   const { getCollectionOnChainSchema, getDetailedCollectionInfo, saveConstOnChainSchema } = useCollection();
   const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
   const [attributes, setAttributes] = useState<AttributeItemType[]>([]);
-  const [formErrors, setFormErrors] = useState<string[]>([]);
+  const [formErrors, setFormErrors] = useState<number[]>([]);
   const isOwner = collectionInfo?.Owner === account;
 
   console.log('attributes', attributes, 'collectionId', collectionId);
@@ -192,13 +192,14 @@ function TokenAttributes ({ account, collectionId }: TokenAttributes): ReactElem
           key={`${attribute.name}-${index}`}
         />
       ))}
-      { isOwner && attributes.map((attribute: AttributeItemType, index) => (
+      { attributes.map((attribute: AttributeItemType, index) => (
         <AttributesRowEditable
           attributeCountType={attribute.rule}
           attributeName={attribute.name}
-          attributeNameError={undefined}
           attributeType={attribute.fieldType}
           attributeValues={attribute.values}
+          attributes={attributes}
+          formErrors={formErrors}
           index={index}
           isOwner={isOwner}
           key={`${attribute.name}-${index}`}
@@ -207,18 +208,20 @@ function TokenAttributes ({ account, collectionId }: TokenAttributes): ReactElem
           setAttributeName={setAttributeName}
           setAttributeType={setAttributeType}
           setAttributeValues={setAttributeValues}
+          setFormErrors={setFormErrors}
         />
       ))}
-      <div
-        className='add-field'
+      <UnqButton
+        className='add-field '
         onClick={onAddItem}
+        size='medium'
       >
-        Add field
+          Add field
         <img
           alt='plus'
           src={plusIcon as string}
         />
-      </div>
+      </UnqButton>
       <WarningText />
       <div className='attributes-button'>
         <UnqButton

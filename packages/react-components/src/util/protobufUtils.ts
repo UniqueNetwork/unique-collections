@@ -127,7 +127,7 @@ export function deserializeNft (onChainSchema: ProtobufAttributeType, buffer: Ui
             (newObjectItem[key] as string[])[index] = convertEnumToString(value, key, NFTMeta, locale);
           });
         } else {
-          newObjectItem[key] = convertEnumToString(objectItem[key], key, NFTMeta, locale);
+          newObjectItem[key] = convertEnumToString(objectItem[key] as string, key, NFTMeta, locale);
         }
       }
     }

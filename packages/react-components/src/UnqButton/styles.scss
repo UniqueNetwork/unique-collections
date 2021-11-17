@@ -69,10 +69,28 @@
      line-height: 24px;
    }
 
+   .add-field {
+     display: flex;
+     align-items: center;
+     gap: 10px;
+     border: none;
+     width: fit-content;
+     padding: 0;
+     margin:  24px 0 0 var(--gap);
+
+     &:hover{
+       background: transparent;
+     }
+   }
+
    @media (max-width: 768px) {
      .create-btn{
        width: 100%;
        margin: 0;
+     }
+
+     .add-field {
+        margin-left: 0;
      }
    }
 
