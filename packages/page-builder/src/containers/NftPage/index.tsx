@@ -38,6 +38,8 @@ function NftPage ({ account, collectionId }: NftPageProps): ReactElement {
     <div className='nft-page'>
       { collectionInfo && (
         <CreateNFT
+          account={account}
+          collectionId={collectionId}
           collectionInfo={collectionInfo}
         />
       )}

@@ -3,28 +3,35 @@
 
 import './styles.scss';
 
-import React, {memo, useCallback, useEffect, useState} from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 
-import {Checkbox, Dropdown, Input} from '@polkadot/react-components';
+import { Checkbox } from '@polkadot/react-components';
+import { TokenAttribute } from '@polkadot/react-components/ManageCollection/ManageTokenAttributes';
+import { AttributeItemType, fillAttributes, ProtobufAttributeType, serializeNft } from '@polkadot/react-components/util/protobufUtils';
+import { useToken } from '@polkadot/react-hooks';
+import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/useCollection';
 
 import clearIcon from '../../images/closeIcon.svg';
 import uploadIcon from '../../images/uploadIcon.svg';
 import Button from '../Button';
 import WarningText from '../WarningText';
-import {AttributeItemType, fillAttributes} from "@polkadot/react-components/util/protobufUtils";
-import {TokenAttribute} from "@polkadot/react-components/ManageCollection/ManageTokenAttributes";
-import {NftCollectionInterface, useCollection} from "@polkadot/react-hooks/useCollection";
 import TokenAttributesRowEditable from './TokenAttributesRowEditable';
 
 interface CreateNFTProps {
+  account: string;
+  collectionId: string;
   collectionInfo: NftCollectionInterface
 }
 
-function CreateNFT ({ collectionInfo }: CreateNFTProps): React.ReactElement {
+function CreateNFT ({ account, collectionId, collectionInfo }: CreateNFTProps): React.ReactElement {
   const { getCollectionOnChainSchema } = useCollection();
+  const { createNft } = useToken();
   const [tokenConstAttributes, setTokenConstAttributes] = useState<{ [key: string]: TokenAttribute }>({});
   const [constAttributes, setConstAttributes] = useState<AttributeItemType[]>([]);
+  const [constOnChainSchema, setConstOnChainSchema] = useState<ProtobufAttributeType>();
   const [avatarImg, setAvatarImg] = useState(null);
+  const [formErrors, setFormErrors] = useState<string[]>([]);
+  const [createAnother, setCreateAnother] = useState<boolean>(false);
 
   console.log('constAttributes', constAttributes);
 
@@ -32,9 +39,9 @@ function CreateNFT ({ collectionInfo }: CreateNFTProps): React.ReactElement {
     setAvatarImg(e.target.files[0]);
   };
 
-  const clearTokenImg = () => {
+  const clearTokenImg = useCallback(() => {
     setAvatarImg(null);
-  };
+  }, []);
 
   const setAttributeValue = useCallback((attribute: AttributeItemType, value: string | number[]) => {
     setTokenConstAttributes((prevAttributes: { [key: string]: TokenAttribute }) =>
@@ -72,6 +79,7 @@ function CreateNFT ({ collectionInfo }: CreateNFTProps): React.ReactElement {
         const { constSchema } = onChainSchema;
 
         if (constSchema) {
+          setConstOnChainSchema(constSchema);
           setConstAttributes(fillAttributes(constSchema));
         }
       }
@@ -79,6 +87,28 @@ function CreateNFT ({ collectionInfo }: CreateNFTProps): React.ReactElement {
       setConstAttributes([]);
     }
   }, [collectionInfo, getCollectionOnChainSchema]);
+
+  const onCreateSuccess = useCallback(() => {
+
+  }, []);
+
+  const onCreateNft = useCallback(() => {
+    if (account) {
+      const constAttributes: { [key: string]: string | number | number[] } = {};
+      let constData = '';
+
+      if (constOnChainSchema) {
+        Object.keys(tokenConstAttributes).forEach((key: string) => {
+          constAttributes[tokenConstAttributes[key].name] = tokenConstAttributes[key].values?.length ? (tokenConstAttributes[key].values as number[]) : (tokenConstAttributes[key].value as string);
+        });
+        const cData = serializeNft(constOnChainSchema, constAttributes);
+
+        constData = '0x' + Buffer.from(cData).toString('hex');
+      }
+
+      createNft({ account, collectionId, constData, owner: account, successCallback: onCreateSuccess, variableData: '' });
+    }
+  }, [account, createNft, collectionId, constOnChainSchema, onCreateSuccess, tokenConstAttributes]);
 
   useEffect(() => {
     if (constAttributes && constAttributes.length) {
@@ -151,13 +181,14 @@ function CreateNFT ({ collectionInfo }: CreateNFTProps): React.ReactElement {
       <WarningText />
       <div className='footer-buttons'>
         <Button
-          disable={false}
-          onClick={() => console.log('Click on confirm')}
+          disable={formErrors?.length > 0}
+          onClick={onCreateNft}
           text='Confirm'
         />
         <Checkbox
-          label={<>{'Create another'}</>}
-          value={false}
+          label='Create another'
+          onChange={setCreateAnother}
+          value={createAnother}
         />
       </div>
     </div>
