@@ -10,7 +10,7 @@ import { useApi } from '@polkadot/react-hooks/useApi';
 import { useDecoder } from '@polkadot/react-hooks/useDecoder';
 import { strToUTF16 } from '@polkadot/react-hooks/utils';
 
-export type SchemaVersionTypes = 'ImageURL' | 'Unique';
+export type SchemaVersionTypes = 'ImageURL' | 'Unique' | 'ImageIPFS';
 
 export interface NftCollectionInterface {
   Access?: 'Normal' | 'WhiteList'

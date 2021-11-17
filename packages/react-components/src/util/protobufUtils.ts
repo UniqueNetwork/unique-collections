@@ -116,6 +116,7 @@ export function deserializeNft (onChainSchema: ProtobufAttributeType, buffer: Ui
       objects: true, // populates empty objects (map fields) even if defaults=false
       oneofs: true
     });
+
     const newObjectItem = { ...objectItem };
 
     for (const key in objectItem) {

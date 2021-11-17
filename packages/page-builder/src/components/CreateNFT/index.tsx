@@ -3,16 +3,29 @@
 
 import './styles.scss';
 
-import React, { memo, useState } from 'react';
+import React, {memo, useCallback, useEffect, useState} from 'react';
 
 import { Checkbox, UnqButton } from '@polkadot/react-components';
 
 import clearIcon from '../../images/closeIcon.svg';
 import uploadIcon from '../../images/uploadIcon.svg';
 import WarningText from '../WarningText';
+import {AttributeItemType, fillAttributes} from "@polkadot/react-components/util/protobufUtils";
+import {TokenAttribute} from "@polkadot/react-components/ManageCollection/ManageTokenAttributes";
+import {NftCollectionInterface, useCollection} from "@polkadot/react-hooks/useCollection";
+import TokenAttributesRowEditable from './TokenAttributesRowEditable';
 
-function CreateNFT (): React.ReactElement {
+interface CreateNFTProps {
+  collectionInfo: NftCollectionInterface
+}
+
+function CreateNFT ({ collectionInfo }: CreateNFTProps): React.ReactElement {
+  const { getCollectionOnChainSchema } = useCollection();
+  const [tokenConstAttributes, setTokenConstAttributes] = useState<{ [key: string]: TokenAttribute }>({});
+  const [constAttributes, setConstAttributes] = useState<AttributeItemType[]>([]);
   const [avatarImg, setAvatarImg] = useState(null);
+
+  console.log('constAttributes', constAttributes);
 
   const uploadAvatar = (e: any) => {
     setAvatarImg(e.target.files[0]);
@@ -21,6 +34,60 @@ function CreateNFT (): React.ReactElement {
   const clearTokenImg = () => {
     setAvatarImg(null);
   };
+
+  const setAttributeValue = useCallback((attribute: AttributeItemType, value: string | number[]) => {
+    setTokenConstAttributes((prevAttributes: { [key: string]: TokenAttribute }) =>
+      ({ ...prevAttributes,
+        [attribute.name]: {
+          name: prevAttributes[attribute.name].name,
+          value: attribute.rule === 'repeated' ? prevAttributes[attribute.name].value : value as string,
+          values: attribute.rule === 'repeated' ? value as number[] : prevAttributes[attribute.name].values
+        } }));
+  }, []);
+
+  const presetAttributesFromArray = useCallback((attributes: AttributeItemType[]) => {
+    try {
+      const tokenAttributes: { [key: string]: TokenAttribute } = {};
+
+      attributes?.forEach((attribute) => {
+        tokenAttributes[attribute.name] = {
+          name: attribute.name,
+          value: '',
+          values: []
+        };
+      });
+
+      setTokenConstAttributes(tokenAttributes);
+    } catch (e) {
+      console.log('presetAttributesFromArray error', e);
+    }
+  }, []);
+
+  const presetTokenAttributes = useCallback(() => {
+    if (collectionInfo?.ConstOnChainSchema) {
+      const onChainSchema = getCollectionOnChainSchema(collectionInfo);
+
+      if (onChainSchema) {
+        const { constSchema } = onChainSchema;
+
+        if (constSchema) {
+          setConstAttributes(fillAttributes(constSchema));
+        }
+      }
+    } else {
+      setConstAttributes([]);
+    }
+  }, [collectionInfo, getCollectionOnChainSchema]);
+
+  useEffect(() => {
+    if (constAttributes && constAttributes.length) {
+      presetAttributesFromArray(constAttributes);
+    }
+  }, [constAttributes, presetAttributesFromArray]);
+
+  useEffect(() => {
+    presetTokenAttributes();
+  }, [presetTokenAttributes]);
 
   return (
     <div className='create-nft'>
@@ -58,7 +125,15 @@ function CreateNFT (): React.ReactElement {
       </div>
       <h1 className='header-text'>Attributes</h1>
       <div className='attributes'>
-        <div className='attributes-input'>
+        { Object.keys(tokenConstAttributes).length > 0 && constAttributes?.map((collectionAttribute: AttributeItemType, index) => (
+          <TokenAttributesRowEditable
+            collectionAttribute={collectionAttribute}
+            key={`${collectionAttribute.name}-${index}`}
+            setAttributeValue={setAttributeValue}
+            tokenConstAttributes={tokenConstAttributes}
+          />
+        ))}
+        {/* <div className='attributes-input'>
           <h2>Name*</h2>
           <input />
         </div>
@@ -69,7 +144,7 @@ function CreateNFT (): React.ReactElement {
         <div className='attributes-input'>
           <h2>Traits</h2>
           <input />
-        </div>
+        </div> */}
       </div>
 
       <WarningText />

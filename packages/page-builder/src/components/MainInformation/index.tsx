@@ -29,7 +29,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
   const goToNextStep = useCallback(async () => {
     const collectionCount = await getCreatedCollectionCount();
 
-    history.push(`/builder/${collectionCount}/cover`);
+    history.push(`/builder/collections/${collectionCount}/cover`);
   }, [getCreatedCollectionCount, history]);
 
   const onCreateCollection = useCallback(() => {
