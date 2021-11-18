@@ -60,6 +60,12 @@
       }
     }
   }
+
+  .error{
+    input{
+     border-color: var(--input-error-color) !important;
+   }
+  }
 }
 /*
 .ui.input.focus > input::-webkit-input-placeholder,

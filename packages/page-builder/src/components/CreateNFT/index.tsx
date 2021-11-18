@@ -6,7 +6,7 @@ import './styles.scss';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 
-import { Checkbox } from '@polkadot/react-components';
+import { Checkbox, UnqButton } from '@polkadot/react-components';
 import { TokenAttribute } from '@polkadot/react-components/ManageCollection/ManageTokenAttributes';
 import { AttributeItemType, fillAttributes, ProtobufAttributeType, serializeNft } from '@polkadot/react-components/util/protobufUtils';
 import { useToken } from '@polkadot/react-hooks';
@@ -14,7 +14,6 @@ import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/use
 
 import clearIcon from '../../images/closeIcon.svg';
 import uploadIcon from '../../images/uploadIcon.svg';
-import Button from '../Button';
 import WarningText from '../WarningText';
 import TokenAttributesRowEditable from './TokenAttributesRowEditable';
 
@@ -202,10 +201,10 @@ function CreateNFT ({ account, collectionId, collectionInfo, isOwner }: CreateNF
 
       <WarningText />
       <div className='footer-buttons'>
-        <Button
-          disable={formErrors?.length > 0}
-          onClick={onCreateNft}
-          text='Confirm'
+        <UnqButton
+          content='Confirm'
+          isFilled
+          size={'medium'}
         />
         <Checkbox
           label='Create another'

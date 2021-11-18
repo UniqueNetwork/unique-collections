@@ -9,6 +9,7 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader';
 
+import { UnqButton } from '@polkadot/react-components';
 import { useCollection, useDecoder } from '@polkadot/react-hooks';
 
 import burnIcon from '../../images/burnIcon.svg';
@@ -82,10 +83,18 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
                 </div>
               </div>
               <div className='content-buttons'>
-                <button onClick={onCreateNft}>Create NFT</button>
-                <button onClick={onBurnNft}>
-                  <img src={burnIcon as string} /> Burn
-                </button>
+                <UnqButton
+                  content='Create NFT'
+                  isFilled
+                  onClick={onCreateNft}
+                />
+                <UnqButton
+                  className='burn'
+                  content='Burn'
+                  onClick={onBurnNft}
+                >
+                  <img src={burnIcon as string} />
+                </UnqButton>
               </div>
             </div>
             <div className='collection-info'>
@@ -96,8 +105,11 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
               )}
             </div>
             <div className='content-links'>
-              <a href=''>Go to Block Explorer</a>
-              <a href=''>Go to my Wallet</a>
+              <UnqButton content='Go to Block Explorer' />
+              <UnqButton
+                content='Go to my Wallet'
+                isDisabled
+              />
             </div>
             {/* <div className='content-tokens'>
               <p>NFTs preview</p>

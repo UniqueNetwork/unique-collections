@@ -6,10 +6,9 @@ import './styles.scss';
 import React, { memo, useCallback } from 'react';
 import { useHistory } from 'react-router';
 
-import { Input, TextArea } from '@polkadot/react-components';
+import { Input, TextArea, UnqButton } from '@polkadot/react-components';
 import { useCollection } from '@polkadot/react-hooks';
 
-import Button from '../Button';
 import WarningText from '../WarningText';
 
 interface MainInformationProps {
@@ -77,10 +76,12 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         />
       </div>
       <WarningText />
-      <Button
-        disable={!name || !tokenPrefix || tokenPrefix.length > 16}
+      <UnqButton
+        content='Confirm'
+        isDisabled={!name || !tokenPrefix || tokenPrefix.length > 16}
+        isFilled
         onClick={onCreateCollection}
-        text='Confirm'
+        size='medium'
       />
     </div>
   );

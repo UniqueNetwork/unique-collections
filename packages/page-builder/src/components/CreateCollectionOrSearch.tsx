@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React, { useCallback } from 'react';
-import {useHistory} from 'react-router';
+import { useHistory } from 'react-router';
 
 import clearIcon from '@polkadot/app-accounts/Accounts/clearIcon.svg';
 import searchIcon from '@polkadot/app-accounts/Accounts/searchIcon.svg';
-import { Input } from '@polkadot/react-components';
+import { Input, UnqButton } from '@polkadot/react-components';
 
 interface Props {
   searchString: string;
@@ -26,12 +26,13 @@ function CreateCollectionOrSearch ({ searchString, setSearchString }: Props): Re
 
   return (
     <div className='create-and-search'>
-      <button
+      <UnqButton
         className='create-btn'
+        content='Create new'
+        isFilled
         onClick={onCreateCollection}
-      >
-        Create new
-      </button>
+        size='medium'
+      />
       <Input
         className='isSmall'
         icon={

@@ -3,36 +3,52 @@
 
 import type { FieldRuleType, FieldType } from '@polkadot/react-components/util/protobufUtils';
 
-import React, { memo, ReactElement, useCallback, useState } from 'react';
+import React, { memo, ReactElement, useCallback, useEffect, useState } from 'react';
 import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 
 import { Dropdown, HelpTooltip, Input } from '@polkadot/react-components';
 import EnumsInput from '@polkadot/react-components/EnumsInput';
 import { CountOptions, TypeOptions } from '@polkadot/react-components/ManageCollection/types';
+import { AttributeItemType } from '@polkadot/react-components/util/protobufUtils';
 
 import trashIcon from '../../images/trashIcon.svg';
 
 interface AttributesRowEditableProps {
   attributeName: string;
-  attributeNameError?: string;
   attributeType: FieldType;
   attributeCountType: FieldRuleType;
   attributeValues: string[];
   index: number;
   isOwner: boolean;
   removeItem: (index: number) => void;
+  setFormErrors: (arr: (prevErrors: number[]) => number[]) => void;
   setAttributeCountType: (attributeCountType: FieldRuleType, index: number) => void;
   setAttributeName: (attributeName: string, index: number) => void;
   setAttributeType: (attributeType: FieldType, index: number) => void;
   setAttributeValues: (attributeValues: string[], index: number) => void;
+  attributes: AttributeItemType[]
+  formErrors: number[]
 }
 
 function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement {
-  const { attributeCountType, attributeName, attributeNameError, attributeType, attributeValues, index, isOwner, removeItem, setAttributeCountType, setAttributeName, setAttributeType, setAttributeValues } = props;
+  const { attributeCountType, attributeName, attributeType, attributeValues, attributes, formErrors, index, isOwner, removeItem, setAttributeCountType, setAttributeName, setAttributeType, setAttributeValues, setFormErrors } = props;
   const [isRemoveConfirmationOpen, setIsRemoveConfirmationOpen] = useState<boolean>(false);
   const [currentAttributeName, setCurrentAttributeName] = useState<string>(attributeName);
+  const [isAttributeNameError, setIsAttributeNameError] = useState<boolean>(false);
 
-  console.log('attributeType', attributeType);
+  const removeError = useCallback(() => {
+    if (isAttributeNameError && formErrors.includes(index)) {
+      setFormErrors((prev) => {
+        prev.splice(prev.indexOf(index), 1);
+
+        return prev;
+      });
+    }
+  }, [formErrors, index, isAttributeNameError, setFormErrors]);
+
+  useEffect(() => {
+    removeError();
+  }, [removeError]);
 
   const closeRemoveConfirmation = useCallback(() => {
     setIsRemoveConfirmationOpen(false);
@@ -50,8 +66,28 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
   }, [index, removeItem]);
 
   const onSetAttributeName = useCallback(() => {
+    const newAttributes = [...attributes];
+
+    for (let i = 0; i < newAttributes.length; i++) {
+      // check if name of the attribute does not exist
+      const isNameUniq: boolean = newAttributes[i].id !== index && newAttributes[i].name === currentAttributeName;
+      // check if name of the attribute is not empty
+      const isNameEmpty = !currentAttributeName.trim().length;
+
+      if (isNameUniq || isNameEmpty) {
+        setIsAttributeNameError(true);
+
+        // check if we already have current error
+        if (!formErrors.includes(index)) {
+          setFormErrors((prevErrors) => [...prevErrors, index]);
+        }
+
+        return;
+      }
+    }
+
     setAttributeName(currentAttributeName, index);
-  }, [currentAttributeName, index, setAttributeName]);
+  }, [attributes, currentAttributeName, formErrors, index, setAttributeName, setFormErrors]);
 
   const onSetAttributeType = useCallback((type: FieldType) => {
     console.log('onSetAttributeType', type);
@@ -80,12 +116,13 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
         </div>
         <Input
           className='isSmall'
-          isError={!!attributeNameError}
+          isError={isAttributeNameError}
           onBlur={onSetAttributeName}
           onChange={setCurrentAttributeName}
           placeholder='Attribute name'
           value={currentAttributeName}
         />
+        { isAttributeNameError && <p className='input-error'>Type the unique name !</p> }
       </div>
       <div className='row-section type'>
         <div className='attribute-label'>

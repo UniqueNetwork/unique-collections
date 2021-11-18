@@ -15,7 +15,8 @@ import Stepper from '@polkadot/app-builder/components/Stepper';
 import TokenAttributes from '@polkadot/app-builder/components/TokenAttributes';
 import TokenPreview from '@polkadot/app-builder/components/TokenPreview';
 import NftPage from '@polkadot/app-builder/containers/NftPage';
-import {NftCollectionInterface, useCollection} from "@polkadot/react-hooks/useCollection";
+import { UnqButton } from '@polkadot/react-components';
+import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/useCollection';
 
 interface CollectionPageProps {
   account: string;
@@ -87,7 +88,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
           Create Nft
         </Header>
       )}
-      <div className='page-main '>
+      <div className='page-main'>
         <div className={`main-section ${isPreviewOpen ? 'hidden' : ''}`}>
           { location.pathname !== `/builder/collections/${collectionId}/new-nft` && (
             <Stepper />
@@ -97,7 +98,6 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
               exact
               path={`${basePath}/new-collection/main-information`}
             >
-
               <MainInformation
                 account={account}
                 description={collectionDescription}
@@ -146,7 +146,11 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
           />
         </div>
         <div className='preview-btn'>
-          <button onClick={handleOnBtnClick}>{isPreviewOpen ? 'Back' : 'Preview'}</button>
+          <UnqButton
+            content={isPreviewOpen ? 'Back' : 'Preview'}
+            onClick={handleOnBtnClick}
+            size='large'
+          />
         </div>
       </div>
     </div>

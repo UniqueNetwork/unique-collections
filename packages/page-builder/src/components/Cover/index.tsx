@@ -6,11 +6,12 @@ import './styles.scss';
 import React, { memo, SyntheticEvent, useCallback, useState } from 'react';
 
 import clearIcon from '@polkadot/app-builder/images/closeIcon.svg';
+import { UnqButton } from '@polkadot/react-components';
+// import { fillAttributes } from '@polkadot/react-components/util/protobufUtils';
 import { useCollection, useImageService } from '@polkadot/react-hooks';
-import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
+// import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 import uploadIcon from '../../images/uploadIcon.svg';
-import Button from '../Button';
 import WarningText from '../WarningText';
 
 interface CoverProps {
@@ -19,8 +20,8 @@ interface CoverProps {
 }
 
 function Cover ({ collectionId }: CoverProps): React.ReactElement {
-  const { getCollectionOnChainSchema, getDetailedCollectionInfo, saveConstOnChainSchema } = useCollection();
-  const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
+  // const { getCollectionOnChainSchema, getDetailedCollectionInfo, saveConstOnChainSchema } = useCollection();
+  // const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
   const [avatarImg, setAvatarImg] = useState<File | null>(null);
   const [imgAddress, setImgAddress] = useState<string>();
   const { uploadCollectionImg } = useImageService();
@@ -99,10 +100,12 @@ function Cover ({ collectionId }: CoverProps): React.ReactElement {
         </div>
       </div>
       <WarningText />
-      <Button
-        disable={false}
+      <UnqButton
+        content='Confirm'
+        isDisabled
+        isFilled
         onClick={handleConfirm}
-        text='Confirm'
+        size='medium'
       />
     </div>
   );

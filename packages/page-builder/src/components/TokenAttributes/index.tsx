@@ -7,13 +7,12 @@ import type { AttributeItemType, FieldRuleType, FieldType, ProtobufAttributeType
 
 import React, { memo, ReactElement, useCallback, useEffect, useState } from 'react';
 
-import { HelpTooltip } from '@polkadot/react-components';
+import { HelpTooltip, UnqButton } from '@polkadot/react-components';
 import { fillAttributes, fillProtobufJson } from '@polkadot/react-components/util/protobufUtils';
 import { useCollection } from '@polkadot/react-hooks';
 import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
 import plusIcon from '../../images/plusIcon.svg';
-import Button from '../Button';
 import AttributesRowEditable from '../TokenAttributes/AttributesRowEditable';
 import WarningText from '../WarningText';
 import AttributesRow from './AttributesRow';
@@ -27,7 +26,7 @@ function TokenAttributes ({ account, collectionId }: TokenAttributes): ReactElem
   const { getCollectionOnChainSchema, getDetailedCollectionInfo, saveConstOnChainSchema } = useCollection();
   const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
   const [attributes, setAttributes] = useState<AttributeItemType[]>([]);
-  const [formErrors, setFormErrors] = useState<string[]>([]);
+  const [formErrors, setFormErrors] = useState<number[]>([]);
   const isOwner = collectionInfo?.Owner === account;
 
   console.log('attributes', attributes, 'collectionId', collectionId);
@@ -203,9 +202,10 @@ function TokenAttributes ({ account, collectionId }: TokenAttributes): ReactElem
         <AttributesRowEditable
           attributeCountType={attribute.rule}
           attributeName={attribute.name}
-          attributeNameError={undefined}
           attributeType={attribute.fieldType}
           attributeValues={attribute.values}
+          attributes={attributes}
+          formErrors={formErrors}
           index={index}
           isOwner={isOwner}
           key={`${attribute.name}-${index}`}
@@ -214,24 +214,28 @@ function TokenAttributes ({ account, collectionId }: TokenAttributes): ReactElem
           setAttributeName={setAttributeName}
           setAttributeType={setAttributeType}
           setAttributeValues={setAttributeValues}
+          setFormErrors={setFormErrors}
         />
       ))}
-      <div
-        className='add-field'
+      <UnqButton
+        className='add-field '
         onClick={onAddItem}
+        size='medium'
       >
-        Add field
+          Add field
         <img
           alt='plus'
           src={plusIcon as string}
         />
-      </div>
+      </UnqButton>
       <WarningText />
       <div className='attributes-button'>
-        <Button
-          disable={formErrors?.length > 0}
+        <UnqButton
+          content='Confirm'
+          isDisabled={formErrors?.length > 0}
+          isFilled
           onClick={onSaveAll}
-          text='Confirm'
+          size='medium'
         />
       </div>
     </div>
