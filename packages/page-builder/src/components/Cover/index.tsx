@@ -7,10 +7,10 @@ import React, { memo, SyntheticEvent, useCallback, useState } from 'react';
 
 import clearIcon from '@polkadot/app-builder/images/closeIcon.svg';
 import { UnqButton } from '@polkadot/react-components';
-import { fillAttributes } from '@polkadot/react-components/util/protobufUtils';
+// import { fillAttributes } from '@polkadot/react-components/util/protobufUtils';
 import { useCollection, useImageService } from '@polkadot/react-hooks';
-import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
+// import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 import uploadIcon from '../../images/uploadIcon.svg';
 import WarningText from '../WarningText';
 
@@ -20,8 +20,8 @@ interface CoverProps {
 }
 
 function Cover ({ collectionId }: CoverProps): React.ReactElement {
-  const { getCollectionOnChainSchema, getDetailedCollectionInfo, saveConstOnChainSchema } = useCollection();
-  const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
+  // const { getCollectionOnChainSchema, getDetailedCollectionInfo, saveConstOnChainSchema } = useCollection();
+  // const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
   const [avatarImg, setAvatarImg] = useState<File | null>(null);
   const [imgAddress, setImgAddress] = useState<string>();
   const { uploadCollectionImg } = useImageService();
@@ -45,7 +45,7 @@ function Cover ({ collectionId }: CoverProps): React.ReactElement {
     setImgAddress(address);
   }, [avatarImg, uploadCollectionImg]);
 
-  const fillCollectionCover = useCallback(() => {
+  /* const fillCollectionCover = useCallback(() => {
     if (collectionInfo?.ConstOnChainSchema) {
       const onChainSchema = getCollectionOnChainSchema(collectionInfo);
 
@@ -59,16 +59,9 @@ function Cover ({ collectionId }: CoverProps): React.ReactElement {
         }
       }
     } else {
+      setAttributes([]);
     }
-  }, [collectionInfo, getCollectionOnChainSchema]);
-
-  const fetchCollectionInfo = useCallback(async () => {
-    const info: NftCollectionInterface | null = await getDetailedCollectionInfo(collectionId);
-
-    if (info) {
-      setCollectionInfo(info);
-    }
-  }, [collectionId, getDetailedCollectionInfo]);
+  }, [collectionInfo, getCollectionOnChainSchema]); */
 
   return (
     <div className='cover'>

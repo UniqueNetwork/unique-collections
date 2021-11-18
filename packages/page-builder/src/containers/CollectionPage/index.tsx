@@ -88,7 +88,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
           Create Nft
         </Header>
       )}
-      <div className='page-main '>
+      <div className='page-main'>
         <div className={`main-section ${isPreviewOpen ? 'hidden' : ''}`}>
           { location.pathname !== `/builder/collections/${collectionId}/new-nft` && (
             <Stepper />
