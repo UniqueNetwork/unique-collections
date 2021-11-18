@@ -11,11 +11,10 @@ import { useHistory, useLocation } from 'react-router-dom';
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid';
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button';
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header';
-import Image from 'semantic-ui-react/dist/commonjs/elements/Image';
 
 import { Dropdown, Input, TextArea } from '@polkadot/react-components';
 import trash from '@polkadot/react-components/ManageCollection/trash.svg';
-import arrowLeft from '@polkadot/react-components/NftDetails/arrowLeft.svg';
+// import arrowLeft from '@polkadot/react-components/NftDetails/arrowLeft.svg';
 import { ProtobufAttributeType } from '@polkadot/react-components/util/protobufUtils';
 import { useDecoder, useMetadata } from '@polkadot/react-hooks';
 import { useCollection } from '@polkadot/react-hooks/useCollection';
@@ -338,9 +337,9 @@ function ManageCollection (props: Props): React.ReactElement<Props> {
         href='/'
         onClick={goBack}
       >
-        <Image
-          src={arrowLeft}
-        />
+        {/* <Image */}
+        {/*  src={arrowLeft} */}
+        {/* /> */}
         back
       </a>
       <div className='unique-card'>
@@ -400,7 +399,7 @@ function ManageCollection (props: Props): React.ReactElement<Props> {
                 className='flex'
                 width={8}
               >
-                { isAdmin && (
+                { !isAdmin && (
                   <div className='form-field'>
                     <Button
                       content={

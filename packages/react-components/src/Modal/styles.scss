@@ -1,6 +1,152 @@
 .ui.modal {
+  max-width: 640px;
+
+  .content {
+    padding: 24px 24px 0 24px;
+  }
 
   .header {
     text-transform: none !important;
+    font-size: 28px !important;
+    font-weight: bold !important;
+    color: var(--title-color) !important;
+    font-family: var(--font-inter) !important;
+    padding: 24px 24px 0 24px !important;
+    line-height: 42px !important;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .actions {
+    .close-btn{
+      position: absolute;
+      top: 37.5px;
+      right: 28.5px;
+      cursor: pointer;
+    }
+  }
+
+  .footer {
+    padding: 32px 24px 24px 24px;
+
+    .btn-container{
+      display: flex;
+    }
+  }
+
+  .info-text {
+    margin-top: 8px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-family: var(--font-roboto);
+    color: var(--tabs-color);
+    line-height: 22px;
+
+    &.label {
+      margin-top: 0;
+      margin-bottom: 16px;
+    }
+
+  }
+  .ui--Password {
+    .ui--Labelled-content{
+      .ui--Input{
+        position: relative;
+
+        .see-password-button {
+          position: absolute;
+          cursor: pointer;
+          right: 16.25px;
+          top: 7px;
+
+          img{
+            position: static;
+          }
+        }
+      }
+    }
+  }
+
+  &.unique-modal {
+
+    .header {
+      padding: 1.71rem !important;
+
+      h2{
+        margin: 0 !important;
+      }
+
+      img {
+        position: absolute;
+        cursor: pointer;
+        right: 28.5px;
+        top: 27.5px;
+      }
+    }
+
+    .content {
+      padding: 0 1.71rem !important;
+
+      .warning-block {
+        font-size: 18px;
+      }
+    }
+
+    .field {
+      margin-top: 2.28rem;
+
+      label {
+        font-family: var(--font-roboto);
+        font-weight: 400;
+        font-size: 18px;
+        margin-bottom: 16px;
+      }
+    }
+
+    .actions {
+      padding: calc((var(--gap) / 2) * 3) !important;
+      border-top: none;
+      display: flex;
+      justify-content: flex-end;
+      background: var(--card-background);
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .ui.modal {
+
+    &.unique-modal {
+
+      .actions {
+        width: 100%;
+
+        button{
+          width: 100%;
+          margin: 0;
+        }
+      }
+    }
+
+    .footer {
+      flex-direction: column;
+      align-items: flex-start !important;
+
+      .actions {
+        width: 100%;
+
+        .ui--Button-Group{
+          width: 100%;
+        }
+      }
+      .btn-container{
+        margin-top: 24px;
+        width: 100%;
+
+        button{
+          width: 100%;
+        }
+      }
+    }
   }
 }

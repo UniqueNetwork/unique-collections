@@ -2,59 +2,70 @@
 // SPDX-License-Identifier: Apache-2.0
 
 export type EnvConfigType = {
-  canAddCollections: boolean;
-  canCreateCollection: boolean;
-  canCreateToken: boolean;
-  canEditCollection: boolean;
-  canEditToken: boolean;
   commission: number;
-  contractAddress: string; // 5FgbNg55FCFT3j1KokxsHaEgp4wfnDMGazCLw3mqC359bY72
   decimals: number;
   environment: string;
-  escrowAddress: string; // 5FdzbgdBGRM5FDALrnSPRybWhqKv4eiy6QUpWUdBt3v3omAU
   faviconPath: string;
+  graphQlAdminSecret: string;
+  graphQlApi: string;
+  imageServerUrl: string;
+  ipfsGateway: string;
+  kusamaApiUrl: string;
+  kusamaBackupApiUrl: string;
   kusamaDecimals: number; // 12
   maxGas: number; // 1000000000000
-  midTedCollection: number;
   minPrice: number;
   quoteId: number; // 2
-  showMarketActions: boolean; // buy, sell, cancel and withdraw buttons on the token details page
-  uniqueCollectionIds: string[]; // ['23']
-  uniqueApi: string;
   uniqueSubstrateApi: string;
   value: number; // 0
-  vaultAddress: string; // 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
   version: string;
-  walletMode: boolean; // if only wallet needed
   whiteLabelUrl: string;
 };
 
+declare global {
+  interface Window {
+    ENV: {
+      COMMISSION: number;
+      DECIMALS: number;
+      ENVIRONMENT: string;
+      FAVICON_PATH: string;
+      GRAPH_QL_ADMIN_SECRET: string;
+      GRAPH_QL_API: string;
+      IMAGE_SERVER_URL: string;
+      IPFS_GATEWAY: string;
+      KUSAMA_API: string;
+      KUSAMA_BACKUP_API: string;
+      KUSAMA_DECIMALS: number; // 12
+      MAX_GAS: number; // 1000000000000
+      MIN_PRICE: number;
+      QUOTE_ID: number; // 2
+      UNIQUE_SUBSTRATE_API: string;
+      VALUE: number; // 0
+      VERSION: string;
+      WHITE_LABEL_URL: string;
+    }
+  }
+}
+
 const envConfig: EnvConfigType = {
-  canAddCollections: JSON.parse(process.env.CAN_ADD_COLLECTIONS as string) as boolean,
-  canCreateCollection: JSON.parse(process.env.CAN_CREATE_COLLECTION as string) as boolean,
-  canCreateToken: JSON.parse(process.env.CAN_CREATE_TOKEN as string) as boolean,
-  canEditCollection: JSON.parse(process.env.CAN_EDIT_COLLECTION as string) as boolean,
-  canEditToken: JSON.parse(process.env.CAN_EDIT_TOKEN as string) as boolean,
-  commission: +(process.env.COMMISSION as string),
-  contractAddress: process.env.CONTRACT_ADDRESS as string,
-  decimals: +(process.env.DECIMALS as string),
-  environment: (process.env.ENVIRONMENT as string),
-  escrowAddress: (process.env.ESCROW_ADDRESS as string),
-  faviconPath: (process.env.FAVICON_PATH as string),
-  kusamaDecimals: +(process.env.KUSAMA_DECIMALS as string),
-  maxGas: +(process.env.MAX_GAS as string),
-  midTedCollection: +(process.env.MIN_TED_COLLECTION as string),
-  minPrice: +(process.env.MIN_PRICE as string),
-  quoteId: +(process.env.QUOTE_ID as string),
-  showMarketActions: JSON.parse(process.env.SHOW_MARKET_ACTIONS as string) as boolean,
-  uniqueApi: (process.env.UNIQUE_API as string),
-  uniqueCollectionIds: (process.env.UNIQUE_COLLECTION_IDS as string).split(','),
-  uniqueSubstrateApi: (process.env.UNIQUE_SUBSTRATE_API as string),
-  value: +(process.env.VALUE as string),
-  vaultAddress: (process.env.VAULT_ADDRESS as string),
-  version: (process.env.VERSION as string),
-  walletMode: JSON.parse(process.env.WALLET_MODE as string) as boolean,
-  whiteLabelUrl: (process.env.WHITE_LABEL_URL as string)
+  commission: +window.ENV.COMMISSION,
+  decimals: +window.ENV.DECIMALS,
+  environment: window.ENV.ENVIRONMENT,
+  faviconPath: window.ENV.FAVICON_PATH,
+  graphQlAdminSecret: window.ENV.GRAPH_QL_ADMIN_SECRET,
+  graphQlApi: window.ENV.GRAPH_QL_API,
+  imageServerUrl: window.ENV.IMAGE_SERVER_URL,
+  ipfsGateway: window.ENV.IPFS_GATEWAY,
+  kusamaApiUrl: window.ENV.KUSAMA_API,
+  kusamaBackupApiUrl: window.ENV.KUSAMA_BACKUP_API,
+  kusamaDecimals: +window.ENV.KUSAMA_DECIMALS,
+  maxGas: +window.ENV.MAX_GAS,
+  minPrice: +window.ENV.MIN_PRICE,
+  quoteId: +window.ENV.QUOTE_ID,
+  uniqueSubstrateApi: window.ENV.UNIQUE_SUBSTRATE_API,
+  value: +window.ENV.VALUE,
+  version: window.ENV.VERSION,
+  whiteLabelUrl: window.ENV.WHITE_LABEL_URL
 };
 
 export default envConfig;
