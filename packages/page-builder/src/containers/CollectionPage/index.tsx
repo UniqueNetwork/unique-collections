@@ -81,7 +81,6 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
               exact
               path={`${basePath}/new-collection/main-information`}
             >
-
               <MainInformation
                 account={account}
                 description={collectionDescription}

@@ -36,7 +36,7 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
   const [currentAttributeName, setCurrentAttributeName] = useState<string>(attributeName);
   const [isAttributeNameError, setIsAttributeNameError] = useState<boolean>(false);
 
-  useEffect(() => {
+  const removeError = useCallback(() => {
     if (isAttributeNameError && formErrors.includes(index)) {
       setFormErrors((prev) => {
         prev.splice(prev.indexOf(index), 1);
@@ -45,6 +45,10 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
       });
     }
   }, [formErrors, index, isAttributeNameError, setFormErrors]);
+
+  useEffect(() => {
+    removeError();
+  }, [removeError]);
 
   const closeRemoveConfirmation = useCallback(() => {
     setIsRemoveConfirmationOpen(false);
@@ -65,7 +69,10 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
     const newAttributes = [...attributes];
 
     for (let i = 0; i < newAttributes.length; i++) {
-      if ((newAttributes[i].id !== index && newAttributes[i].name === currentAttributeName) || !currentAttributeName.trim().length) {
+      const isNameUniq: boolean = newAttributes[i].id !== index && newAttributes[i].name === currentAttributeName;
+      const isNameEmpty = !currentAttributeName.trim().length;
+
+      if (isNameUniq || isNameEmpty) {
         setIsAttributeNameError(true);
         !formErrors.includes(index) && setFormErrors((prevErrors) => [...prevErrors, index]);
 
@@ -103,7 +110,7 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
         </div>
         <Input
           className='isSmall'
-          isError={!!isAttributeNameError}
+          isError={isAttributeNameError}
           onBlur={onSetAttributeName}
           onChange={setCurrentAttributeName}
           placeholder='Attribute name'
