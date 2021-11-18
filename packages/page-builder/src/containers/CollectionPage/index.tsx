@@ -16,6 +16,7 @@ import TokenAttributes from '@polkadot/app-builder/components/TokenAttributes';
 import TokenPreview from '@polkadot/app-builder/components/TokenPreview';
 import NftPage from '@polkadot/app-builder/containers/NftPage';
 import { UnqButton } from '@polkadot/react-components';
+import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/useCollection';
 
 interface CollectionPageProps {
   account: string;
@@ -35,10 +36,22 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
   const history = useHistory();
   const location = useLocation();
   const { collectionId }: { collectionId: string } = useParams();
+  const { getDetailedCollectionInfo } = useCollection();
+  const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
 
   const handleOnBtnClick = useCallback(() => {
     setIsPreviewOpen((prev) => !prev);
   }, []);
+
+  const fetchCollectionInfo = useCallback(async () => {
+    if (collectionId) {
+      const info: NftCollectionInterface | null = await getDetailedCollectionInfo(collectionId);
+
+      if (info) {
+        setCollectionInfo(info);
+      }
+    }
+  }, [collectionId, getDetailedCollectionInfo]);
 
   useEffect(() => {
     if (location.pathname === '/builder/new-collection' || location.pathname === '/builder/new-collection/') {
@@ -50,6 +63,10 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
       history.push(`/builder/collections/${collectionId}/cover`);
     }
   }, [collectionId, history, location]);
+
+  useEffect(() => {
+    void fetchCollectionInfo();
+  }, [fetchCollectionInfo]);
 
   console.log('CollectionPage', location.pathname, 'basePath', basePath);
 
