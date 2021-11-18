@@ -198,7 +198,7 @@ function TokenAttributes ({ account, collectionId }: TokenAttributes): ReactElem
           key={`${attribute.name}-${index}`}
         />
       ))}
-      { attributes.map((attribute: AttributeItemType, index) => (
+      { isOwner && attributes.map((attribute: AttributeItemType, index) => (
         <AttributesRowEditable
           attributeCountType={attribute.rule}
           attributeName={attribute.name}

@@ -69,12 +69,18 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
     const newAttributes = [...attributes];
 
     for (let i = 0; i < newAttributes.length; i++) {
+      // check if name of the attribute does not exist
       const isNameUniq: boolean = newAttributes[i].id !== index && newAttributes[i].name === currentAttributeName;
+      // check if name of the attribute is not empty
       const isNameEmpty = !currentAttributeName.trim().length;
 
       if (isNameUniq || isNameEmpty) {
         setIsAttributeNameError(true);
-        !formErrors.includes(index) && setFormErrors((prevErrors) => [...prevErrors, index]);
+
+        // check if we already have current error
+        if (!formErrors.includes(index)) {
+          setFormErrors((prevErrors) => [...prevErrors, index]);
+        }
 
         return;
       }
