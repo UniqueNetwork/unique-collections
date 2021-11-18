@@ -93,7 +93,12 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
               </Loader>
             )}
             { (!userCollections?.collections?.length && !Object.values(collectionsLoaded)?.length && !userCollectionsLoading) && (
-              <NoCollections />
+              // <NoCollections />
+              <CollectionCard
+                account={account}
+                collectionId={'2'}
+                key={2}
+              />
             )}
             <InfiniteScroll
               hasMore={hasMore}
@@ -112,6 +117,7 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
               <div className='market-pallet__item'>
                 {Object.values(collectionsLoaded).map((collection: UserCollection) => (
                   <CollectionCard
+                    account={account}
                     collectionId={collection.collection_id}
                     key={collection.collection_id}
                   />

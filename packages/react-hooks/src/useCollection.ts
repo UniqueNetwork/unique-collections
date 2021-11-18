@@ -240,6 +240,20 @@ export function useCollection () {
     });
   }, [api, queueExtrinsic]);
 
+  const destroyCollection = useCallback(({ account, collectionId, errorCallback, successCallback }: { account: string, collectionId: string, successCallback?: () => void, errorCallback?: () => void }) => {
+    const transaction = api.tx.nft.destroyCollection(collectionId);
+
+    queueExtrinsic({
+      accountId: account && account.toString(),
+      extrinsic: transaction,
+      isUnsigned: false,
+      txFailedCb: () => { console.log('set collection varOnChain fail'); errorCallback && errorCallback(); },
+      txStartCb: () => { console.log('set collection varOnChain start'); },
+      txSuccessCb: () => { console.log('set collection varOnChain success'); successCallback && successCallback(); },
+      txUpdateCb: () => { console.log('set collection varOnChain update'); }
+    });
+  }, [api, queueExtrinsic]);
+
   const getDetailedCollectionInfo = useCallback(async (collectionId: string): Promise<NftCollectionInterface | null> => {
     if (!api) {
       return null;
@@ -306,6 +320,7 @@ export function useCollection () {
     addCollectionAdmin,
     confirmSponsorship,
     createCollection,
+    destroyCollection,
     getCollectionAdminList,
     getCollectionOnChainSchema,
     getCollectionTokensCount,
