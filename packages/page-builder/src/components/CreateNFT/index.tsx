@@ -4,6 +4,7 @@
 import './styles.scss';
 
 import React, { memo, useCallback, useEffect, useState } from 'react';
+import { useHistory } from 'react-router';
 
 import { Checkbox } from '@polkadot/react-components';
 import { TokenAttribute } from '@polkadot/react-components/ManageCollection/ManageTokenAttributes';
@@ -19,17 +20,19 @@ import TokenAttributesRowEditable from './TokenAttributesRowEditable';
 
 interface CreateNFTProps {
   account: string;
+  isOwner: boolean;
   collectionId: string;
   collectionInfo: NftCollectionInterface
 }
 
-function CreateNFT ({ account, collectionId, collectionInfo }: CreateNFTProps): React.ReactElement {
+function CreateNFT ({ account, collectionId, collectionInfo, isOwner }: CreateNFTProps): React.ReactElement {
   const { getCollectionOnChainSchema } = useCollection();
   const { createNft } = useToken();
+  const history = useHistory();
   const [tokenConstAttributes, setTokenConstAttributes] = useState<{ [key: string]: TokenAttribute }>({});
   const [constAttributes, setConstAttributes] = useState<AttributeItemType[]>([]);
   const [constOnChainSchema, setConstOnChainSchema] = useState<ProtobufAttributeType>();
-  const [avatarImg, setAvatarImg] = useState(null);
+  const [avatarImg, setAvatarImg] = useState<string>();
   const [formErrors, setFormErrors] = useState<string[]>([]);
   const [createAnother, setCreateAnother] = useState<boolean>(false);
 
@@ -38,20 +41,6 @@ function CreateNFT ({ account, collectionId, collectionInfo }: CreateNFTProps): 
   const uploadAvatar = (e: any) => {
     setAvatarImg(e.target.files[0]);
   };
-
-  const clearTokenImg = useCallback(() => {
-    setAvatarImg(null);
-  }, []);
-
-  const setAttributeValue = useCallback((attribute: AttributeItemType, value: string | number[]) => {
-    setTokenConstAttributes((prevAttributes: { [key: string]: TokenAttribute }) =>
-      ({ ...prevAttributes,
-        [attribute.name]: {
-          name: prevAttributes[attribute.name].name,
-          value: attribute.rule === 'repeated' ? prevAttributes[attribute.name].value : value as string,
-          values: attribute.rule === 'repeated' ? value as number[] : prevAttributes[attribute.name].values
-        } }));
-  }, []);
 
   const presetAttributesFromArray = useCallback((attributes: AttributeItemType[]) => {
     try {
@@ -71,7 +60,28 @@ function CreateNFT ({ account, collectionId, collectionInfo }: CreateNFTProps): 
     }
   }, []);
 
-  const presetTokenAttributes = useCallback(() => {
+  const resetData = useCallback(() => {
+    presetAttributesFromArray(constAttributes);
+    setAvatarImg(undefined);
+    setFormErrors([]);
+    setCreateAnother(false);
+  }, [constAttributes, presetAttributesFromArray]);
+
+  const clearTokenImg = useCallback(() => {
+    setAvatarImg(undefined);
+  }, []);
+
+  const setAttributeValue = useCallback((attribute: AttributeItemType, value: string | number[]) => {
+    setTokenConstAttributes((prevAttributes: { [key: string]: TokenAttribute }) =>
+      ({ ...prevAttributes,
+        [attribute.name]: {
+          name: prevAttributes[attribute.name].name,
+          value: attribute.rule === 'repeated' ? prevAttributes[attribute.name].value : value as string,
+          values: attribute.rule === 'repeated' ? value as number[] : prevAttributes[attribute.name].values
+        } }));
+  }, []);
+
+  const presetCollectionForm = useCallback(() => {
     if (collectionInfo?.ConstOnChainSchema) {
       const onChainSchema = getCollectionOnChainSchema(collectionInfo);
 
@@ -89,8 +99,12 @@ function CreateNFT ({ account, collectionId, collectionInfo }: CreateNFTProps): 
   }, [collectionInfo, getCollectionOnChainSchema]);
 
   const onCreateSuccess = useCallback(() => {
-
-  }, []);
+    if (createAnother) {
+      resetData();
+    } else {
+      history.push('/builder');
+    }
+  }, [createAnother, history, resetData]);
 
   const onCreateNft = useCallback(() => {
     if (account) {
@@ -117,8 +131,16 @@ function CreateNFT ({ account, collectionId, collectionInfo }: CreateNFTProps): 
   }, [constAttributes, presetAttributesFromArray]);
 
   useEffect(() => {
-    presetTokenAttributes();
-  }, [presetTokenAttributes]);
+    presetCollectionForm();
+  }, [presetCollectionForm]);
+
+  if (collectionInfo && !isOwner) {
+    return (
+      <div className='create-nft'>
+        <h1 className='header-text'>You are not the collection owner, you cannot create nft in this collection.</h1>
+      </div>
+    );
+  }
 
   return (
     <div className='create-nft'>
