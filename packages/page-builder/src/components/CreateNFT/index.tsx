@@ -37,9 +37,9 @@ function CreateNFT ({ account, collectionId, collectionInfo, isOwner }: CreateNF
 
   console.log('constAttributes', constAttributes);
 
-  const uploadAvatar = (e: any) => {
+  const uploadAvatar = useCallback((e: any) => {
     setAvatarImg(e.target.files[0]);
-  };
+  }, []);
 
   const presetAttributesFromArray = useCallback((attributes: AttributeItemType[]) => {
     try {
@@ -81,7 +81,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, isOwner }: CreateNF
   }, []);
 
   const presetCollectionForm = useCallback(() => {
-    if (collectionInfo?.ConstOnChainSchema) {
+    if (collectionInfo?.constOnChainSchema) {
       const onChainSchema = getCollectionOnChainSchema(collectionInfo);
 
       if (onChainSchema) {
@@ -136,7 +136,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, isOwner }: CreateNF
   if (collectionInfo && !isOwner) {
     return (
       <div className='create-nft'>
-        <h1 className='header-text'>You are not the collection owner, you cannot create nft in this collection.</h1>
+        <h2 className='header-text'>You are not the owner of this collection, you cannot create nft.</h2>
       </div>
     );
   }

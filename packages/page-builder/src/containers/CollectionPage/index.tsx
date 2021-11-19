@@ -58,7 +58,11 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
       history.push('/builder/new-collection/main-information');
     }
 
-    // if we have collectionId, we cannot
+    if (location.pathname === `/builder/collections/${collectionId}/` || location.pathname === `/builder/collections/${collectionId}`) {
+      history.push(`/builder/collections/${collectionId}/cover`);
+    }
+
+    // if we have collectionId, we cannot edit main information
     if (location.pathname === `/builder/collections/${collectionId}/main-information`) {
       history.push(`/builder/collections/${collectionId}/cover`);
     }
@@ -122,6 +126,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
                   <TokenAttributes
                     account={account}
                     collectionId={collectionId}
+                    collectionInfo={collectionInfo}
                   />
                 </Route>
                 <Route path={`${basePath}/collections/${collectionId}/new-nft`}>
@@ -137,10 +142,12 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
         </div>
         <div className={`preview-cards ${!isPreviewOpen ? 'hidden' : ''}`}>
           <CollectionPreview
+            collectionInfo={collectionInfo}
             collectionDescription={collectionDescription}
             collectionName={collectionName}
           />
           <TokenPreview
+            collectionInfo={collectionInfo}
             collectionName={collectionName}
             tokenPrefix={tokenPrefix}
           />

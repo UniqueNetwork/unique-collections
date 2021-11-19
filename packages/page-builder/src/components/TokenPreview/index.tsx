@@ -8,8 +8,10 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useImageService } from '@polkadot/react-hooks';
 
 import defaultIcon from '../../images/defaultIcon.svg';
+import {NftCollectionInterface} from "@polkadot/react-hooks/useCollection";
 
 interface TokenPreviewProps {
+  collectionInfo?: NftCollectionInterface;
   collectionName: string;
   tokenPrefix: string;
 }
@@ -19,7 +21,7 @@ function TokenPreview ({ collectionName, tokenPrefix }: TokenPreviewProps): Reac
   const [imgUrl, setImgUrl] = useState<string>('');
   const { getTokenImg } = useImageService();
 
-  const getPreviewTokenImg = useCallback(async () => {
+  /* const getPreviewTokenImg = useCallback(async () => {
     const image = await getTokenImg('QmTqZhR6f7jzdhLgPArDPnsbZpvvgxzCZycXK7ywkLxSyU');
 
     setImgUrl(image);
@@ -27,7 +29,7 @@ function TokenPreview ({ collectionName, tokenPrefix }: TokenPreviewProps): Reac
 
   useEffect(() => {
     void getPreviewTokenImg();
-  }, [getPreviewTokenImg]);
+  }, [getPreviewTokenImg]); */
 
   return (
     <div className='token-preview'>
