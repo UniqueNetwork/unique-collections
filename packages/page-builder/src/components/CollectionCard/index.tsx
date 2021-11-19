@@ -25,18 +25,19 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
   const [collectionInfoLoading, setCollectionInfoLoading] = useState<boolean>(false);
   const { getCollectionTokensCount, getDetailedCollectionInfo } = useCollection();
   const history = useHistory();
-  // const [collectionImageUrl, setCollectionImageUrl] = useState<string>();
   const { collectionName16Decoder, hex2a } = useDecoder();
-  // const { allMyTokens, allTokensCount, ownTokensCount, tokensOnPage } = useMyTokens(account, collection, currentPerPage);
 
-  const getCollectionInfo = useCallback(async () => {
-    setCollectionInfoLoading(true);
-    const collection = await getDetailedCollectionInfo(collectionId);
-    const collectionTokensCount = await getCollectionTokensCount(collectionId);
+  const fetchCollectionInfo = useCallback(async () => {
+    if (collectionId) {
+      const info: NftCollectionInterface | null = await getDetailedCollectionInfo(collectionId);
+      const collectionTokensCount: number = await getCollectionTokensCount(collectionId);
 
-    setCollectionInfo(collection);
-    setCollectionTokensCount(collectionTokensCount);
-    setCollectionInfoLoading(false);
+      if (info) {
+        setCollectionInfo(info);
+        setCollectionTokensCount(collectionTokensCount);
+        setCollectionInfoLoading(false);
+      }
+    }
   }, [collectionId, getDetailedCollectionInfo, getCollectionTokensCount]);
 
   const onCreateNft = useCallback(() => {
@@ -48,10 +49,8 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
   }, []);
 
   useEffect(() => {
-    if (!collectionInfo) {
-      void getCollectionInfo();
-    }
-  }, [collectionInfo, getCollectionInfo]);
+    void fetchCollectionInfo();
+  }, [fetchCollectionInfo]);
 
   console.log('collectionInfo', collectionInfo, 'collectionTokensCount', collectionTokensCount);
 
@@ -76,10 +75,10 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
             <div className='collection-card-content-main'>
               <div className='content-description'>
                 <p className='content-description-title'>
-                  {collectionName16Decoder(collectionInfo.Name)}
+                  {collectionName16Decoder(collectionInfo.name)}
                 </p>
                 <div className='content-description-text'>
-                  {collectionName16Decoder(collectionInfo.Description)}
+                  {collectionName16Decoder(collectionInfo.description)}
                 </div>
               </div>
               <div className='content-buttons'>
@@ -93,13 +92,16 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
                   content='Burn'
                   onClick={onBurnNft}
                 >
-                  <img src={burnIcon as string} />
+                  <img
+                    alt='burnToken'
+                    src={burnIcon as string}
+                  />
                 </UnqButton>
               </div>
             </div>
             <div className='collection-info'>
               <p><span>ID:</span> {collectionId}</p>
-              <p><span>Prefix:</span> {hex2a(collectionInfo.TokenPrefix)}</p>
+              <p><span>Prefix:</span> {hex2a(collectionInfo.tokenPrefix)}</p>
               { !!collectionTokensCount && (
                 <p><span>Items</span> {collectionTokensCount}</p>
               )}
