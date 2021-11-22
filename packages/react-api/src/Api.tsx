@@ -7,12 +7,13 @@ import type { ChainProperties, ChainType } from '@polkadot/types/interfaces';
 import type { KeyringStore } from '@polkadot/ui-keyring/types';
 import type { ApiProps, ApiState } from './types';
 
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import store from 'store';
 
 import { ApiPromise } from '@polkadot/api/promise';
 import { deriveMapCache, setDeriveCache } from '@polkadot/api-derive/util';
 import { ethereumChains, typesBundle, typesChain } from '@polkadot/apps-config';
+import envConfig from '@polkadot/apps-config/envConfig';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { TokenUnit } from '@polkadot/react-components/InputNumber';
 import { StatusContext } from '@polkadot/react-components/Status';
@@ -26,6 +27,8 @@ import { defaults as addressDefaults } from '@polkadot/util-crypto/address/defau
 import ApiContext from './ApiContext';
 import registry from './typeRegistry';
 import { decodeUrlTypes } from './urlTypes';
+
+const { kusamaApiUrl } = envConfig;
 
 interface Props {
   children: React.ReactNode;
@@ -56,8 +59,9 @@ export const DEFAULT_SS58 = registry.createType('u32', addressDefaults.prefix);
 export const DEFAULT_AUX = ['Aux1', 'Aux2', 'Aux3', 'Aux4', 'Aux5', 'Aux6', 'Aux7', 'Aux8', 'Aux9'];
 
 let api: ApiPromise;
+let kusamaApi: ApiPromise;
 
-export { api };
+export { api, kusamaApi };
 
 function isKeyringLoaded () {
   try {
@@ -169,6 +173,7 @@ async function loadOnReady (api: ApiPromise, injectedPromise: Promise<InjectedEx
     isApiReady: true,
     isDevelopment: isEthereum ? false : isDevelopment,
     isEthereum,
+    isKusamaApiReady: false,
     systemChain,
     systemName,
     systemVersion
@@ -177,16 +182,67 @@ async function loadOnReady (api: ApiPromise, injectedPromise: Promise<InjectedEx
 
 function Api ({ children, store, url }: Props): React.ReactElement<Props> | null {
   const { queuePayload, queueSetTxStatus } = useContext(StatusContext);
-  const [state, setState] = useState<ApiState>({ hasInjectedAccounts: false, isApiReady: false } as unknown as ApiState);
+  const [state, setState] = useState<ApiState>({ hasInjectedAccounts: false, isApiReady: false, isKusamaApiReady: false } as unknown as ApiState);
+
   const [isApiConnected, setIsApiConnected] = useState(false);
   const [isApiInitialized, setIsApiInitialized] = useState(false);
   const [apiError, setApiError] = useState<null | string>(null);
+
+  const [isKusamaApiConnected, setIsKusamaApiConnected] = useState(false);
+  const [isKusamaApiInitialized, setIsKusamaApiInitialized] = useState(false);
+  const [kusamaApiError, setIsKusamaApiError] = useState<null | string>(null);
+
   const [extensions, setExtensions] = useState<InjectedExtension[] | undefined>();
 
   const value = useMemo<ApiProps>(
-    () => ({ ...state, api, apiError, extensions, isApiConnected, isApiInitialized, isWaitingInjected: !extensions }),
-    [apiError, extensions, isApiConnected, isApiInitialized, state]
+    () => ({ ...state, api, apiError, extensions, isApiConnected, isApiInitialized, isKusamaApiConnected, isKusamaApiInitialized, isWaitingInjected: !extensions, kusamaApi, kusamaApiError }),
+    [apiError, extensions, isApiConnected, isApiInitialized, isKusamaApiConnected, isKusamaApiInitialized, kusamaApiError, state]
   );
+
+  const initKusamaApi = useCallback((kusamaUrl: string) => {
+    /* const registry = new TypeRegistry();
+    const provider = new WsProvider(kusamaUrl);
+    const signer = new ApiSigner(registry, queuePayload, queueSetTxStatus);
+    const types = {} as Record<string, Record<string, string>>;
+
+    const api = new ApiPromise({ provider, registry, signer, types, typesBundle, typesChain });
+
+    api.on('ready', (): void => {
+      // console.log('kusama api ready');
+      setKusamaApi(api);
+    });
+
+    api.on('disconnected', (): void => {
+      window.location.reload();
+    });
+
+    api.on('error', (): void => {
+      console.log('kusama api error');
+
+      void api.disconnect().then(() => {
+        initKusamaApi(kusamaBackupApiUrl);
+      });
+    }); */
+
+    const provider = new WsProvider(kusamaUrl);
+    const signer = new ApiSigner(registry, queuePayload, queueSetTxStatus);
+    const types = getDevTypes();
+
+    kusamaApi = new ApiPromise({ provider, registry, signer, types, typesBundle, typesChain });
+
+    kusamaApi.on('connected', () => setIsKusamaApiConnected(true));
+    kusamaApi.on('disconnected', () => setIsKusamaApiConnected(false));
+    kusamaApi.on('error', (error: Error) => setIsKusamaApiError(error.message));
+    kusamaApi.on('ready', (): void => {
+      /* setState((prevState) => ({
+        isKusamaApiReady: true,
+        ...prevState
+      })); */
+    });
+
+    setIsKusamaApiInitialized(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // initial initialization
   useEffect((): void => {
@@ -207,7 +263,11 @@ function Api ({ children, store, url }: Props): React.ReactElement<Props> | null
         .catch(console.error);
 
       loadOnReady(api, injectedPromise, store, types)
-        .then(setState)
+        .then((st) => {
+          setState(st);
+
+          initKusamaApi(kusamaApiUrl);
+        })
         .catch((error): void => {
           console.error(error);
 

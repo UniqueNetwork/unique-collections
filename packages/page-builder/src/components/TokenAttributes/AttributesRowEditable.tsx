@@ -90,8 +90,6 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
   }, [attributes, currentAttributeName, formErrors, index, setAttributeName, setFormErrors]);
 
   const onSetAttributeType = useCallback((type: FieldType) => {
-    console.log('onSetAttributeType', type);
-
     setAttributeType(type, index);
   }, [index, setAttributeType]);
 

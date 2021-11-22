@@ -22,7 +22,7 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
   const { saveVariableOnChainSchema } = useCollection();
   const [avatarImg, setAvatarImg] = useState<File | null>(null);
   const [imgAddress, setImgAddress] = useState<string>();
-  const { uploadCollectionImg } = useImageService();
+  const { uploadImg } = useImageService();
   const history = useHistory();
 
   // saveConstOnChainSchema({ account, collectionId, schema: JSON.stringify(protobufJson), successCallback: onSuccess });
@@ -40,11 +40,11 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
 
   const uploadImage = useCallback(async () => {
     if (avatarImg) {
-      const address = await uploadCollectionImg(avatarImg);
+      const address = await uploadImg(avatarImg);
 
       setImgAddress(address);
     }
-  }, [avatarImg, uploadCollectionImg]);
+  }, [avatarImg, uploadImg]);
 
   const onSuccess = useCallback(() => {
     history.push(`/builder/collections/${collectionId}/token-attributes`);
