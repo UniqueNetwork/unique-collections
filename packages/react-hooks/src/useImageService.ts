@@ -11,7 +11,7 @@ const { imageServerUrl, ipfsGateway } = envConfig;
 interface UseImageServiceInterface {
   getCollectionImg: (address: string) => Promise<string>;
   getTokenImg: (address: string) => Promise<string>;
-  uploadCollectionImg: (file: Blob | null) => Promise<string>;
+  uploadImg: (file: Blob | null) => Promise<string>;
 }
 
 type ErrorType='ERR_INTERNAL_ERROR' | 'ERR_INVALID_FILE_TYPE' | 'ERR_INVALID_PAYLOAD'
@@ -66,7 +66,7 @@ export const useImageService = (): UseImageServiceInterface => {
     }
   }, []);
 
-  const uploadCollectionImg = useCallback(async (file: Blob) => {
+  const uploadImg = useCallback(async (file: Blob) => {
     const formData = new FormData();
     let address = '';
 
@@ -88,6 +88,6 @@ export const useImageService = (): UseImageServiceInterface => {
   return <UseImageServiceInterface>{
     getCollectionImg,
     getTokenImg,
-    uploadCollectionImg
+    uploadImg
   };
 };

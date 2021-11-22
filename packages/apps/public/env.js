@@ -38,7 +38,7 @@
     GRAPH_QL_API: defaults('${GRAPH_QL_API}', 'https://dev-api-explorer.unique.network/v1/graphql'),
     IMAGE_SERVER_URL: defaults('${IMAGE_SERVER_URL}', 'https://dev-offchain-api.unique.network'),
     IPFS_GATEWAY: defaults('${IPFS_GATEWAY}', 'https://dev-ipfs.unique.network/ipfs'),
-    KUSAMA_API: defaults('${KUSAMA_API}', 'wss://kusama-rpc.polkadot.io'),
+    KUSAMA_API: defaults('${KUSAMA_API}', 'wss://pub.elara.patract.io/kusama'),
     KUSAMA_BACKUP_API: defaults('${KUSAMA_BACKUP_API}', 'wss://polkadot.api.onfinality.io/public-ws'),
     KUSAMA_DECIMALS: defaults('${KUSAMA_DECIMALS}', 12),
     MAX_GAS: defaults('${MAX_GAS}', 1000000000000),

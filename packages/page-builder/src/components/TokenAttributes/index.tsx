@@ -6,6 +6,7 @@ import './styles.scss';
 import type { AttributeItemType, FieldRuleType, FieldType, ProtobufAttributeType } from '@polkadot/react-components/util/protobufUtils';
 
 import React, { memo, ReactElement, useCallback, useEffect, useState } from 'react';
+import { useHistory } from 'react-router';
 
 import { HelpTooltip, UnqButton } from '@polkadot/react-components';
 import { fillAttributes, fillProtobufJson } from '@polkadot/react-components/util/protobufUtils';
@@ -23,28 +24,32 @@ interface TokenAttributes {
   collectionInfo?: NftCollectionInterface;
 }
 
+const defaultAttributesWithTokenIpfs: AttributeItemType[] = [
+  {
+    fieldType: 'string',
+    id: 0,
+    name: 'ipfsJson',
+    rule: 'required',
+    values: []
+  }
+];
+
 function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttributes): ReactElement {
-  const { getCollectionOnChainSchema, saveConstOnChainSchema } = useCollection();
-  const [attributes, setAttributes] = useState<AttributeItemType[]>([]);
+  const { getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
+  const [attributes, setAttributes] = useState<AttributeItemType[]>(defaultAttributesWithTokenIpfs);
   const [formErrors, setFormErrors] = useState<number[]>([]);
+  const history = useHistory();
   const isOwner = collectionInfo?.owner === account;
 
   console.log('attributes', attributes, 'collectionId', collectionId);
 
   const onAddItem = useCallback(() => {
-    /*
-      queueAction({
-        action: 'action',
-        message: 'You already have attribute with same name!',
-        status: 'error'
-      });
-     */
     const newAttributes = [...attributes];
 
     newAttributes.push({
       fieldType: 'string',
       id: attributes.length,
-      name: `attribute${attributes.length + 1}`,
+      name: `attribute${attributes.length}`,
       rule: 'required',
       values: []
     });
@@ -53,8 +58,8 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   }, [attributes]);
 
   const onSuccess = useCallback(() => {
-    console.log('onSuccess');
-  }, []);
+    history.push('/builder');
+  }, [history]);
 
   const deleteAttribute = useCallback((index) => {
     setAttributes([
@@ -62,17 +67,22 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     ]);
   }, [attributes]);
 
+  // @todo - api.tx.utility.batch
+  const onSaveConstSchemaSuccess = useCallback(() => {
+    setSchemaVersion({ account, collectionId, schemaVersion: 'Unique', successCallback: onSuccess });
+  }, [account, collectionId, onSuccess, setSchemaVersion]);
+
   const onSaveAll = useCallback(() => {
     try {
       const protobufJson: ProtobufAttributeType = fillProtobufJson(attributes);
 
       if (account && collectionId) {
-        saveConstOnChainSchema({ account, collectionId, schema: JSON.stringify(protobufJson), successCallback: onSuccess });
+        saveConstOnChainSchema({ account, collectionId, schema: JSON.stringify(protobufJson), successCallback: onSaveConstSchemaSuccess });
       }
     } catch (e) {
       console.log('save onChain schema error', e);
     }
-  }, [account, attributes, collectionId, onSuccess, saveConstOnChainSchema]);
+  }, [account, attributes, collectionId, onSaveConstSchemaSuccess, saveConstOnChainSchema]);
 
   const setAttributeCountType = useCallback((countType: FieldRuleType, index: number) => {
     setAttributes((prevAttributes: AttributeItemType[]) => {
@@ -122,11 +132,15 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
         const { constSchema } = onChainSchema;
 
         if (constSchema) {
-          setAttributes(fillAttributes(constSchema));
+          const previosAttributes = fillAttributes(constSchema);
+
+          if (previosAttributes.find((attr) => attr.name === 'ipfsJson')) {
+            setAttributes([...fillAttributes(constSchema)]);
+          } else {
+            setAttributes([...fillAttributes(constSchema), ...defaultAttributesWithTokenIpfs]);
+          }
         }
       }
-    } else {
-      setAttributes([]);
     }
   }, [collectionInfo, getCollectionOnChainSchema]);
 
@@ -176,35 +190,47 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
           />
         </div>
       </div>
-      { !isOwner && attributes.map((attribute: AttributeItemType, index) => (
-        <AttributesRow
-          attributeCountType={attribute.rule}
-          attributeName={attribute.name}
-          attributeType={attribute.fieldType}
-          attributeValues={attribute.values}
-          isOwner={isOwner}
-          key={`${attribute.name}-${index}`}
-        />
-      ))}
-      { isOwner && attributes.map((attribute: AttributeItemType, index) => (
-        <AttributesRowEditable
-          attributeCountType={attribute.rule}
-          attributeName={attribute.name}
-          attributeType={attribute.fieldType}
-          attributeValues={attribute.values}
-          attributes={attributes}
-          formErrors={formErrors}
-          index={index}
-          isOwner={isOwner}
-          key={`${attribute.name}-${index}`}
-          removeItem={deleteAttribute}
-          setAttributeCountType={setAttributeCountType}
-          setAttributeName={setAttributeName}
-          setAttributeType={setAttributeType}
-          setAttributeValues={setAttributeValues}
-          setFormErrors={setFormErrors}
-        />
-      ))}
+      { !isOwner && attributes.map((attribute: AttributeItemType, index: number) => {
+        if (attribute.name !== 'ipfsJson') {
+          return (
+            <AttributesRow
+              attributeCountType={attribute.rule}
+              attributeName={attribute.name}
+              attributeType={attribute.fieldType}
+              attributeValues={attribute.values}
+              isOwner={isOwner}
+              key={`${attribute.name}-${index}`}
+            />
+          );
+        } else {
+          return null;
+        }
+      })}
+      { isOwner && attributes.map((attribute: AttributeItemType, index: number) => {
+        if (attribute.name !== 'ipfsJson') {
+          return (
+            <AttributesRowEditable
+              attributeCountType={attribute.rule}
+              attributeName={attribute.name}
+              attributeType={attribute.fieldType}
+              attributeValues={attribute.values}
+              attributes={attributes}
+              formErrors={formErrors}
+              index={index}
+              isOwner={isOwner}
+              key={`${attribute.name}-${index}`}
+              removeItem={deleteAttribute}
+              setAttributeCountType={setAttributeCountType}
+              setAttributeName={setAttributeName}
+              setAttributeType={setAttributeType}
+              setAttributeValues={setAttributeValues}
+              setFormErrors={setFormErrors}
+            />
+          );
+        } else {
+          return null;
+        }
+      })}
       <UnqButton
         className='add-field '
         onClick={onAddItem}

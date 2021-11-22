@@ -214,7 +214,7 @@ class InputAddress extends React.PureComponent<Props, State> {
     }
 
     return getAddressName(value);
-  }
+  };
 
   private getLastOptionValue (): KeyringSectionOption | undefined {
     const available = this.getFiltered();
@@ -247,7 +247,7 @@ class InputAddress extends React.PureComponent<Props, State> {
         ? transformToAccountId(address)
         : undefined
     );
-  }
+  };
 
   private onChangeMulti = (addresses: string[]): void => {
     const { onChangeMulti } = this.props;
@@ -259,7 +259,7 @@ class InputAddress extends React.PureComponent<Props, State> {
           .filter((address) => address as string) as string[]
       );
     }
-  }
+  };
 
   private onSearch = (filteredOptions: KeyringSectionOptions, _query: string): KeyringSectionOptions => {
     const { isInput = true } = this.props;
@@ -291,7 +291,7 @@ class InputAddress extends React.PureComponent<Props, State> {
 
       return !(isNull(item.value) || isUndefined(item.value)) || (!isLast && !!hasNext);
     });
-  }
+  };
 }
 
 const ExportedComponent = withMulti(
