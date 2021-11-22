@@ -19,16 +19,18 @@ import { TokenUnit } from '@polkadot/react-components/InputNumber';
 import { StatusContext } from '@polkadot/react-components/Status';
 import ApiSigner from '@polkadot/react-signer/signers/ApiSigner';
 import { WsProvider } from '@polkadot/rpc-provider';
+import { TypeRegistry } from '@polkadot/types/create';
 import { keyring } from '@polkadot/ui-keyring';
 import { settings } from '@polkadot/ui-settings';
 import { formatBalance, isTestChain } from '@polkadot/util';
 import { defaults as addressDefaults } from '@polkadot/util-crypto/address/defaults';
 
 import ApiContext from './ApiContext';
-import registry from './typeRegistry';
 import { decodeUrlTypes } from './urlTypes';
 
 const { kusamaApiUrl } = envConfig;
+const registry = new TypeRegistry();
+const kusamaRegistry = new TypeRegistry();
 
 interface Props {
   children: React.ReactNode;
@@ -228,7 +230,7 @@ function Api ({ children, store, url }: Props): React.ReactElement<Props> | null
     const signer = new ApiSigner(registry, queuePayload, queueSetTxStatus);
     const types = getDevTypes();
 
-    kusamaApi = new ApiPromise({ provider, registry, signer, types, typesBundle, typesChain });
+    kusamaApi = new ApiPromise({ provider, registry: kusamaRegistry, signer, types, typesBundle, typesChain });
 
     kusamaApi.on('connected', () => setIsKusamaApiConnected(true));
     kusamaApi.on('disconnected', () => setIsKusamaApiConnected(false));

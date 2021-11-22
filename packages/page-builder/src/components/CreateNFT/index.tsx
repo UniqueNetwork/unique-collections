@@ -9,7 +9,7 @@ import { useHistory } from 'react-router';
 import { Checkbox, UnqButton } from '@polkadot/react-components';
 import { TokenAttribute } from '@polkadot/react-components/ManageCollection/ManageTokenAttributes';
 import { AttributeItemType, fillAttributes, ProtobufAttributeType, serializeNft } from '@polkadot/react-components/util/protobufUtils';
-import {useImageService, useToken} from '@polkadot/react-hooks';
+import { useImageService, useToken } from '@polkadot/react-hooks';
 import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/useCollection';
 
 import clearIcon from '../../images/closeIcon.svg';
