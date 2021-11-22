@@ -16,6 +16,7 @@ import TokenAttributes from '@polkadot/app-builder/components/TokenAttributes';
 import TokenPreview from '@polkadot/app-builder/components/TokenPreview';
 import NftPage from '@polkadot/app-builder/containers/NftPage';
 import { UnqButton } from '@polkadot/react-components';
+import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/useCollection';
 
 interface CollectionPageProps {
   account: string;
@@ -35,21 +36,41 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
   const history = useHistory();
   const location = useLocation();
   const { collectionId }: { collectionId: string } = useParams();
+  const { getDetailedCollectionInfo } = useCollection();
+  const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
 
   const handleOnBtnClick = useCallback(() => {
     setIsPreviewOpen((prev) => !prev);
   }, []);
+
+  const fetchCollectionInfo = useCallback(async () => {
+    if (collectionId) {
+      const info: NftCollectionInterface | null = await getDetailedCollectionInfo(collectionId);
+
+      if (info) {
+        setCollectionInfo(info);
+      }
+    }
+  }, [collectionId, getDetailedCollectionInfo]);
 
   useEffect(() => {
     if (location.pathname === '/builder/new-collection' || location.pathname === '/builder/new-collection/') {
       history.push('/builder/new-collection/main-information');
     }
 
-    // if we have collectionId, we cannot
+    if (location.pathname === `/builder/collections/${collectionId}/` || location.pathname === `/builder/collections/${collectionId}`) {
+      history.push(`/builder/collections/${collectionId}/cover`);
+    }
+
+    // if we have collectionId, we cannot edit main information
     if (location.pathname === `/builder/collections/${collectionId}/main-information`) {
       history.push(`/builder/collections/${collectionId}/cover`);
     }
   }, [collectionId, history, location]);
+
+  useEffect(() => {
+    void fetchCollectionInfo();
+  }, [fetchCollectionInfo]);
 
   console.log('CollectionPage', location.pathname, 'basePath', basePath);
 
@@ -71,7 +92,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
           Create Nft
         </Header>
       )}
-      <div className='page-main '>
+      <div className='page-main'>
         <div className={`main-section ${isPreviewOpen ? 'hidden' : ''}`}>
           { location.pathname !== `/builder/collections/${collectionId}/new-nft` && (
             <Stepper />
@@ -105,6 +126,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
                   <TokenAttributes
                     account={account}
                     collectionId={collectionId}
+                    collectionInfo={collectionInfo}
                   />
                 </Route>
                 <Route path={`${basePath}/collections/${collectionId}/new-nft`}>
@@ -120,10 +142,12 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
         </div>
         <div className={`preview-cards ${!isPreviewOpen ? 'hidden' : ''}`}>
           <CollectionPreview
+            collectionInfo={collectionInfo}
             collectionDescription={collectionDescription}
             collectionName={collectionName}
           />
           <TokenPreview
+            collectionInfo={collectionInfo}
             collectionName={collectionName}
             tokenPrefix={tokenPrefix}
           />

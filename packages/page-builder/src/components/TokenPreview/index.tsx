@@ -3,13 +3,14 @@
 
 import './styles.scss';
 
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useState } from 'react';
 
-import { useImageService } from '@polkadot/react-hooks';
+import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
 import defaultIcon from '../../images/defaultIcon.svg';
 
 interface TokenPreviewProps {
+  collectionInfo?: NftCollectionInterface;
   collectionName: string;
   tokenPrefix: string;
 }
@@ -17,9 +18,8 @@ interface TokenPreviewProps {
 function TokenPreview ({ collectionName, tokenPrefix }: TokenPreviewProps): React.ReactElement {
   const attributes = ['Name:', 'Gender:', 'Traits:'];
   const [imgUrl, setImgUrl] = useState<string>('');
-  const { getTokenImg } = useImageService();
 
-  const getPreviewTokenImg = useCallback(async () => {
+  /* const getPreviewTokenImg = useCallback(async () => {
     const image = await getTokenImg('QmTqZhR6f7jzdhLgPArDPnsbZpvvgxzCZycXK7ywkLxSyU');
 
     setImgUrl(image);
@@ -27,7 +27,7 @@ function TokenPreview ({ collectionName, tokenPrefix }: TokenPreviewProps): Reac
 
   useEffect(() => {
     void getPreviewTokenImg();
-  }, [getPreviewTokenImg]);
+  }, [getPreviewTokenImg]); */
 
   return (
     <div className='token-preview'>
@@ -41,10 +41,14 @@ function TokenPreview ({ collectionName, tokenPrefix }: TokenPreviewProps): Reac
           <p className='content-text'>{collectionName || 'Collection name'}</p>
           <div className='token-attributes'>
             <h4>Token attributes  </h4>
-            {attributes.map((item) => <p
-              className='content-text'
-              key={item}
-            >{item}</p>)}
+            {attributes.map((item) => (
+              <p
+                className='content-text'
+                key={item}
+              >
+                {item}
+              </p>
+            ))}
           </div>
         </div>
       </div>

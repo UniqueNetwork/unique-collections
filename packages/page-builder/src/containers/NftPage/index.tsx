@@ -18,7 +18,7 @@ interface NftPageProps {
 function NftPage ({ account, collectionId }: NftPageProps): ReactElement {
   const { getDetailedCollectionInfo } = useCollection();
   const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
-  const isOwner = collectionInfo?.Owner === account;
+  const isOwner = collectionInfo?.owner === account;
 
   console.log('isOwner', isOwner);
 
@@ -38,7 +38,10 @@ function NftPage ({ account, collectionId }: NftPageProps): ReactElement {
     <div className='nft-page'>
       { collectionInfo && (
         <CreateNFT
+          account={account}
+          collectionId={collectionId}
           collectionInfo={collectionInfo}
+          isOwner={isOwner}
         />
       )}
     </div>

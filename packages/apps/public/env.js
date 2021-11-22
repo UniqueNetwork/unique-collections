@@ -28,27 +28,6 @@
     return variable || defaults;
   }
 
-  /*
-      COMMISSION: number;
-      CONTRACT_ADDRESS: string;
-      DECIMALS: number;
-      ENVIRONMENT: string;
-      ESCROW_ADDRESS: string;
-      FAVICON_PATH: string;
-      KUSAMA_API: string;
-      KUSAMA_BACKUP_API: string;
-      KUSAMA_DECIMALS: number; // 12
-      MAX_GAS: number; // 1000000000000
-      MIN_PRICE: number;
-      QUOTE_ID: number; // 2
-      UNIQUE_API: string;
-      UNIQUE_COLLECTION_IDS: string; // ['23']
-      UNIQUE_SUBSTRATE_API: string;
-      VALUE: number; // 0
-      VERSION: string;
-      WHITE_LABEL_URL: string;
-   */
-
   window.ENV = window.ENV || {
     COMMISSION: defaults('${COMMISSION}', 10),
     CONTRACT_ADDRESS: defaults('${CONTRACT_ADDRESS}', '5GPbxrVzvjRHUSQUS9BNUFe2Q4KVfsYZtG1CTRaqe51rNSAX'),
@@ -58,19 +37,17 @@
     GRAPH_QL_ADMIN_SECRET: defaults('${GRAPH_QL_ADMIN_SECRET}', 'hepM3wfsATBoI-ix2uhsAodr1j99MThPF5LBZJI2YtHAax7W9BIP9F8IWuzcNUC4'),
     GRAPH_QL_API: defaults('${GRAPH_QL_API}', 'https://dev-api-explorer.unique.network/v1/graphql'),
     IMAGE_SERVER_URL: defaults('${IMAGE_SERVER_URL}', 'https://dev-offchain-api.unique.network'),
-    IPFS_GATEWAY: defaults('${IPFS_GATEWAY}', 'https://dev-ipfs.unique.network'),
+    IPFS_GATEWAY: defaults('${IPFS_GATEWAY}', 'https://dev-ipfs.unique.network/ipfs'),
+    KUSAMA_API: defaults('${KUSAMA_API}', 'wss://kusama-rpc.polkadot.io'),
+    KUSAMA_BACKUP_API: defaults('${KUSAMA_BACKUP_API}', 'wss://polkadot.api.onfinality.io/public-ws'),
     KUSAMA_DECIMALS: defaults('${KUSAMA_DECIMALS}', 12),
     MAX_GAS: defaults('${MAX_GAS}', 1000000000000),
     MIN_PRICE: defaults('${MIN_PRICE}', 0.000001),
     MIN_TED_COLLECTION: defaults('${MIN_TED_COLLECTION}', 1),
     QUOTE_ID: defaults('${QUOTE_ID}', 2),
+    UNIQUE_SUBSTRATE_API: defaults('${UNIQUE_SUBSTRATE_API}', 'wss://ws-opal.unique.network'),
     VALUE: defaults('${VALUE}', 0),
-    WHITE_LABEL_URL: defaults('${WHITE_LABEL_URL}', 'https://whitelabel.unique.network'),
-    UNIQUE_API: defaults('${UNIQUE_API}', 'https://dev-api.unique.network'),
-    UNIQUE_COLLECTION_IDS: defaults('${UNIQUE_COLLECTION_IDS}', [23, 25, 155].join(',')),
-    UNIQUE_SUBSTRATE_API: defaults('${UNIQUE_SUBSTRATE_API}', 'wss://testnet2.uniquenetwork.io'),
-    KUSAMA_API: defaults('${KUSAMA_API}', 'wss://kusama-rpc.polkadot.io'),
-    KUSAMA_BACKUP_API: defaults('${KUSAMA_BACKUP_API}', 'wss://polkadot.api.onfinality.io/public-ws')
+    WHITE_LABEL_URL: defaults('${WHITE_LABEL_URL}', 'https://whitelabel.unique.network')
   };
 
   // eslint-disable-next-line no-template-curly-in-string

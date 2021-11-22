@@ -7,17 +7,21 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import defaultIcon from '@polkadot/app-builder/images/defaultIcon.svg';
-import { useCollection, useImageService } from '@polkadot/react-hooks';
+import envConfig from '@polkadot/apps-config/envConfig';
+import { useCollection } from '@polkadot/react-hooks';
+import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
+
+const { ipfsGateway } = envConfig;
 
 interface CollectionPreviewProps {
+  collectionInfo?: NftCollectionInterface;
   collectionDescription: string
   collectionName: string;
 }
 
-function CollectionPreview ({ collectionDescription, collectionName }: CollectionPreviewProps): React.ReactElement {
-  const [imgUrl, setImgUrl] = useState<string>('');
-  const { getCollectionImg } = useImageService();
-  const { getCreatedCollectionCount } = useCollection();
+function CollectionPreview ({ collectionDescription, collectionInfo, collectionName }: CollectionPreviewProps): React.ReactElement {
+  const [imgUrl, setImgUrl] = useState<string>();
+  const { getCollectionOnChainSchema, getCreatedCollectionCount } = useCollection();
   const [predictableCollectionId, setPredictableCollectionId] = useState<number>(1);
   const { collectionId }: { collectionId: string } = useParams();
 
@@ -27,15 +31,27 @@ function CollectionPreview ({ collectionDescription, collectionName }: Collectio
     setPredictableCollectionId(collectionCount);
   }, [getCreatedCollectionCount]);
 
-  const getPreviewCollectionImg = useCallback(async () => {
-    const image = await getCollectionImg('QmTqZhR6f7jzdhLgPArDPnsbZpvvgxzCZycXK7ywkLxSyU');
+  const fillCollectionCover = useCallback(() => {
+    if (collectionInfo?.variableOnChainSchema) {
+      const onChainSchema = getCollectionOnChainSchema(collectionInfo);
 
-    setImgUrl(image);
-  }, [getCollectionImg]);
+      if (onChainSchema) {
+        const { variableSchema } = onChainSchema;
+
+        if (variableSchema?.collectionCover) {
+          setImgUrl(`${ipfsGateway}/${variableSchema.collectionCover}`);
+        } else {
+          console.log('variableSchema is empty');
+        }
+      }
+    } else {
+      console.log('onChainSchema is empty');
+    }
+  }, [collectionInfo, getCollectionOnChainSchema]);
 
   useEffect(() => {
-    void getPreviewCollectionImg();
-  }, [getPreviewCollectionImg]);
+    fillCollectionCover();
+  }, [fillCollectionCover]);
 
   useEffect(() => {
     void getCollectionCount();
@@ -46,7 +62,10 @@ function CollectionPreview ({ collectionDescription, collectionName }: Collectio
       <div className='collection-preview-header'>Collection preview</div>
       <div className='collection-preview-content'>
         <div className='collection-img'>
-          <img src={imgUrl || defaultIcon as string} />
+          <img
+            alt='collectionImage'
+            src={imgUrl || defaultIcon as string}
+          />
         </div>
         <div className='content-description'>
           <h3 className='content-header'>{collectionName || 'Name'}</h3>

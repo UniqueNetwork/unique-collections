@@ -28,8 +28,13 @@
       margin-right: var(--gap);
       justify-content: center;
       align-items: center;
-      background-color: var(--border-color);
+      // background-color: var(--border-color);
       border-radius: 50%;
+
+      img {
+        max-height: 100%;
+        max-width: 100%;
+      }
     }
 
     .content-header{

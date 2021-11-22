@@ -3,46 +3,42 @@
 
 import './styles.scss';
 
-import React, {memo, useCallback, useEffect, useState} from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
+import { useHistory } from 'react-router';
 
 import { Checkbox, UnqButton } from '@polkadot/react-components';
+import { TokenAttribute } from '@polkadot/react-components/ManageCollection/ManageTokenAttributes';
+import { AttributeItemType, fillAttributes, ProtobufAttributeType, serializeNft } from '@polkadot/react-components/util/protobufUtils';
+import { useToken } from '@polkadot/react-hooks';
+import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/useCollection';
 
 import clearIcon from '../../images/closeIcon.svg';
 import uploadIcon from '../../images/uploadIcon.svg';
 import WarningText from '../WarningText';
-import {AttributeItemType, fillAttributes} from "@polkadot/react-components/util/protobufUtils";
-import {TokenAttribute} from "@polkadot/react-components/ManageCollection/ManageTokenAttributes";
-import {NftCollectionInterface, useCollection} from "@polkadot/react-hooks/useCollection";
 import TokenAttributesRowEditable from './TokenAttributesRowEditable';
 
 interface CreateNFTProps {
+  account: string;
+  isOwner: boolean;
+  collectionId: string;
   collectionInfo: NftCollectionInterface
 }
 
-function CreateNFT ({ collectionInfo }: CreateNFTProps): React.ReactElement {
+function CreateNFT ({ account, collectionId, collectionInfo, isOwner }: CreateNFTProps): React.ReactElement {
   const { getCollectionOnChainSchema } = useCollection();
+  const { createNft } = useToken();
+  const history = useHistory();
   const [tokenConstAttributes, setTokenConstAttributes] = useState<{ [key: string]: TokenAttribute }>({});
   const [constAttributes, setConstAttributes] = useState<AttributeItemType[]>([]);
-  const [avatarImg, setAvatarImg] = useState(null);
+  const [constOnChainSchema, setConstOnChainSchema] = useState<ProtobufAttributeType>();
+  const [avatarImg, setAvatarImg] = useState<string>();
+  const [formErrors, setFormErrors] = useState<string[]>([]);
+  const [createAnother, setCreateAnother] = useState<boolean>(false);
 
   console.log('constAttributes', constAttributes);
 
-  const uploadAvatar = (e: any) => {
+  const uploadAvatar = useCallback((e: any) => {
     setAvatarImg(e.target.files[0]);
-  };
-
-  const clearTokenImg = () => {
-    setAvatarImg(null);
-  };
-
-  const setAttributeValue = useCallback((attribute: AttributeItemType, value: string | number[]) => {
-    setTokenConstAttributes((prevAttributes: { [key: string]: TokenAttribute }) =>
-      ({ ...prevAttributes,
-        [attribute.name]: {
-          name: prevAttributes[attribute.name].name,
-          value: attribute.rule === 'repeated' ? prevAttributes[attribute.name].value : value as string,
-          values: attribute.rule === 'repeated' ? value as number[] : prevAttributes[attribute.name].values
-        } }));
   }, []);
 
   const presetAttributesFromArray = useCallback((attributes: AttributeItemType[]) => {
@@ -63,14 +59,36 @@ function CreateNFT ({ collectionInfo }: CreateNFTProps): React.ReactElement {
     }
   }, []);
 
-  const presetTokenAttributes = useCallback(() => {
-    if (collectionInfo?.ConstOnChainSchema) {
+  const resetData = useCallback(() => {
+    presetAttributesFromArray(constAttributes);
+    setAvatarImg(undefined);
+    setFormErrors([]);
+    setCreateAnother(false);
+  }, [constAttributes, presetAttributesFromArray]);
+
+  const clearTokenImg = useCallback(() => {
+    setAvatarImg(undefined);
+  }, []);
+
+  const setAttributeValue = useCallback((attribute: AttributeItemType, value: string | number[]) => {
+    setTokenConstAttributes((prevAttributes: { [key: string]: TokenAttribute }) =>
+      ({ ...prevAttributes,
+        [attribute.name]: {
+          name: prevAttributes[attribute.name].name,
+          value: attribute.rule === 'repeated' ? prevAttributes[attribute.name].value : value as string,
+          values: attribute.rule === 'repeated' ? value as number[] : prevAttributes[attribute.name].values
+        } }));
+  }, []);
+
+  const presetCollectionForm = useCallback(() => {
+    if (collectionInfo?.constOnChainSchema) {
       const onChainSchema = getCollectionOnChainSchema(collectionInfo);
 
       if (onChainSchema) {
         const { constSchema } = onChainSchema;
 
         if (constSchema) {
+          setConstOnChainSchema(constSchema);
           setConstAttributes(fillAttributes(constSchema));
         }
       }
@@ -79,6 +97,32 @@ function CreateNFT ({ collectionInfo }: CreateNFTProps): React.ReactElement {
     }
   }, [collectionInfo, getCollectionOnChainSchema]);
 
+  const onCreateSuccess = useCallback(() => {
+    if (createAnother) {
+      resetData();
+    } else {
+      history.push('/builder');
+    }
+  }, [createAnother, history, resetData]);
+
+  const onCreateNft = useCallback(() => {
+    if (account) {
+      const constAttributes: { [key: string]: string | number | number[] } = {};
+      let constData = '';
+
+      if (constOnChainSchema) {
+        Object.keys(tokenConstAttributes).forEach((key: string) => {
+          constAttributes[tokenConstAttributes[key].name] = tokenConstAttributes[key].values?.length ? (tokenConstAttributes[key].values as number[]) : (tokenConstAttributes[key].value as string);
+        });
+        const cData = serializeNft(constOnChainSchema, constAttributes);
+
+        constData = '0x' + Buffer.from(cData).toString('hex');
+      }
+
+      createNft({ account, collectionId, constData, owner: account, successCallback: onCreateSuccess, variableData: '' });
+    }
+  }, [account, createNft, collectionId, constOnChainSchema, onCreateSuccess, tokenConstAttributes]);
+
   useEffect(() => {
     if (constAttributes && constAttributes.length) {
       presetAttributesFromArray(constAttributes);
@@ -86,8 +130,16 @@ function CreateNFT ({ collectionInfo }: CreateNFTProps): React.ReactElement {
   }, [constAttributes, presetAttributesFromArray]);
 
   useEffect(() => {
-    presetTokenAttributes();
-  }, [presetTokenAttributes]);
+    presetCollectionForm();
+  }, [presetCollectionForm]);
+
+  if (collectionInfo && !isOwner) {
+    return (
+      <div className='create-nft'>
+        <h2 className='header-text'>You are not the owner of this collection, you cannot create nft.</h2>
+      </div>
+    );
+  }
 
   return (
     <div className='create-nft'>
@@ -155,8 +207,9 @@ function CreateNFT ({ collectionInfo }: CreateNFTProps): React.ReactElement {
           size={'medium'}
         />
         <Checkbox
-          label={<>{'Create another'}</>}
-          value={false}
+          label='Create another'
+          onChange={setCreateAnother}
+          value={createAnother}
         />
       </div>
     </div>
