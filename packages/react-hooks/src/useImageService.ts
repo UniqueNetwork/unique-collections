@@ -44,7 +44,7 @@ export const useImageService = (): UseImageServiceInterface => {
 
   const getCollectionImg = useCallback(async (address: string): Promise<string> => {
     try {
-      const urlResponse = await fetch(`${ipfsGateway}/ipfs/${address}`);
+      const urlResponse = await fetch(`${ipfsGateway}/${address}`);
 
       return urlResponse.url;
     } catch (e) {

@@ -20,14 +20,14 @@ import AttributesRow from './AttributesRow';
 interface TokenAttributes {
   account: string;
   collectionId: string;
+  collectionInfo?: NftCollectionInterface;
 }
 
-function TokenAttributes ({ account, collectionId }: TokenAttributes): ReactElement {
-  const { getCollectionOnChainSchema, getDetailedCollectionInfo, saveConstOnChainSchema } = useCollection();
-  const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
+function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttributes): ReactElement {
+  const { getCollectionOnChainSchema, saveConstOnChainSchema } = useCollection();
   const [attributes, setAttributes] = useState<AttributeItemType[]>([]);
   const [formErrors, setFormErrors] = useState<number[]>([]);
-  const isOwner = collectionInfo?.Owner === account;
+  const isOwner = collectionInfo?.owner === account;
 
   console.log('attributes', attributes, 'collectionId', collectionId);
 
@@ -61,14 +61,6 @@ function TokenAttributes ({ account, collectionId }: TokenAttributes): ReactElem
       ...attributes.filter((attribute: AttributeItemType) => attribute.id !== index)
     ]);
   }, [attributes]);
-
-  const fetchCollectionInfo = useCallback(async () => {
-    const info: NftCollectionInterface | null = await getDetailedCollectionInfo(collectionId);
-
-    if (info) {
-      setCollectionInfo(info);
-    }
-  }, [collectionId, getDetailedCollectionInfo]);
 
   const onSaveAll = useCallback(() => {
     try {
@@ -123,7 +115,7 @@ function TokenAttributes ({ account, collectionId }: TokenAttributes): ReactElem
   }, []);
 
   const fillCollectionAttributes = useCallback(() => {
-    if (collectionInfo?.ConstOnChainSchema) {
+    if (collectionInfo?.constOnChainSchema) {
       const onChainSchema = getCollectionOnChainSchema(collectionInfo);
 
       if (onChainSchema) {
@@ -137,10 +129,6 @@ function TokenAttributes ({ account, collectionId }: TokenAttributes): ReactElem
       setAttributes([]);
     }
   }, [collectionInfo, getCollectionOnChainSchema]);
-
-  useEffect(() => {
-    void fetchCollectionInfo();
-  }, [fetchCollectionInfo]);
 
   useEffect(() => {
     fillCollectionAttributes();

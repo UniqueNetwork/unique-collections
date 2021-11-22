@@ -3,14 +3,13 @@
 
 import './styles.scss';
 
-import React, { memo, SyntheticEvent, useCallback, useState } from 'react';
+import React, { memo, SyntheticEvent, useCallback, useEffect, useState } from 'react';
+import { useHistory } from 'react-router';
 
 import clearIcon from '@polkadot/app-builder/images/closeIcon.svg';
 import { UnqButton } from '@polkadot/react-components';
-// import { fillAttributes } from '@polkadot/react-components/util/protobufUtils';
 import { useCollection, useImageService } from '@polkadot/react-hooks';
 
-// import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 import uploadIcon from '../../images/uploadIcon.svg';
 import WarningText from '../WarningText';
 
@@ -19,12 +18,14 @@ interface CoverProps {
   collectionId: string;
 }
 
-function Cover ({ collectionId }: CoverProps): React.ReactElement {
-  // const { getCollectionOnChainSchema, getDetailedCollectionInfo, saveConstOnChainSchema } = useCollection();
-  // const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
+function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
+  const { saveVariableOnChainSchema } = useCollection();
   const [avatarImg, setAvatarImg] = useState<File | null>(null);
   const [imgAddress, setImgAddress] = useState<string>();
   const { uploadCollectionImg } = useImageService();
+  const history = useHistory();
+
+  // saveConstOnChainSchema({ account, collectionId, schema: JSON.stringify(protobufJson), successCallback: onSuccess });
 
   const uploadAvatar = useCallback((event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
@@ -37,31 +38,31 @@ function Cover ({ collectionId }: CoverProps): React.ReactElement {
     setAvatarImg(null);
   }, []);
 
-  console.log('imgAddress', imgAddress);
+  const uploadImage = useCallback(async () => {
+    if (avatarImg) {
+      const address = await uploadCollectionImg(avatarImg);
 
-  const handleConfirm = useCallback(async () => {
-    const address = await uploadCollectionImg(avatarImg);
-
-    setImgAddress(address);
+      setImgAddress(address);
+    }
   }, [avatarImg, uploadCollectionImg]);
 
-  /* const fillCollectionCover = useCallback(() => {
-    if (collectionInfo?.ConstOnChainSchema) {
-      const onChainSchema = getCollectionOnChainSchema(collectionInfo);
+  const onSuccess = useCallback(() => {
+    history.push(`/builder/collections/${collectionId}/token-attributes`);
+  }, [collectionId, history]);
 
-      if (onChainSchema) {
-        const { variableSchema } = onChainSchema;
+  const saveVariableSchema = useCallback(() => {
+    if (account && collectionId && imgAddress) {
+      const varDataWithImage = {
+        collectionCover: imgAddress
+      };
 
-        console.log('variableSchema', variableSchema);
-
-        if (variableSchema) {
-
-        }
-      }
-    } else {
-      setAttributes([]);
+      saveVariableOnChainSchema({ account, collectionId, schema: JSON.stringify(varDataWithImage), successCallback: onSuccess });
     }
-  }, [collectionInfo, getCollectionOnChainSchema]); */
+  }, [account, collectionId, imgAddress, onSuccess, saveVariableOnChainSchema]);
+
+  useEffect(() => {
+    void uploadImage();
+  }, [uploadImage]);
 
   return (
     <div className='cover'>
@@ -82,29 +83,39 @@ function Cover ({ collectionId }: CoverProps): React.ReactElement {
             htmlFor='avatar-file-input'
           >
             {avatarImg
-              ? <img
-                className='token-img'
-                src={URL.createObjectURL(avatarImg)}
-              />
-              : <img src={uploadIcon as string} />}
+              ? (
+                <img
+                  alt='token-img'
+                  className='token-img'
+                  src={URL.createObjectURL(avatarImg)}
+                />
+              )
+              : (
+                <img
+                  alt='upload-icon'
+                  src={uploadIcon as string}
+                />
+              )}
           </label>
           <div
             className='clear-btn'
             onClick={clearTokenImg}
           >
-            { avatarImg && <img
-              alt='clear'
-              src={clearIcon as string}
-            />}
+            { avatarImg && (
+              <img
+                alt='clear'
+                src={clearIcon as string}
+              />
+            )}
           </div>
         </div>
       </div>
       <WarningText />
       <UnqButton
         content='Confirm'
-        isDisabled
+        isDisabled={!imgAddress}
         isFilled
-        onClick={handleConfirm}
+        onClick={saveVariableSchema}
         size='medium'
       />
     </div>
