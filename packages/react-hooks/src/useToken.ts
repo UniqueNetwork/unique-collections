@@ -32,7 +32,7 @@ export function useToken (): UseTokenInterface {
   const createNft = useCallback((
     { account, collectionId, constData, errorCallback, owner, successCallback, variableData }:
     { account: string, collectionId: string, constData: string, variableData: string, successCallback?: () => void, errorCallback?: () => void, owner: string }) => {
-    const transaction = api.tx.nft.createItem(collectionId, `{ Substrate: ${owner} }`, { nft: { const_data: constData, variable_data: variableData } });
+    const transaction = api.tx.nft.createItem(collectionId, { Substrate: owner }, { nft: { const_data: constData, variable_data: variableData } });
 
     queueExtrinsic({
       accountId: account && account.toString(),
