@@ -28,7 +28,7 @@ function CollectionPreview ({ collectionDescription, collectionInfo, collectionN
   const getCollectionCount = useCallback(async () => {
     const collectionCount = await getCreatedCollectionCount();
 
-    setPredictableCollectionId(collectionCount);
+    setPredictableCollectionId(collectionCount + 1);
   }, [getCreatedCollectionCount]);
 
   const fillCollectionCover = useCallback(() => {
