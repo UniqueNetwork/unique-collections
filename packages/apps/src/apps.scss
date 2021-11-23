@@ -275,7 +275,7 @@
       padding: 3px;
       right: 10px;
       top: 7px;
-      letter-spacing: 0px;
+      letter-spacing: 0;
     }
   }
   .balance-number {
@@ -286,14 +286,17 @@
       margin: 0;
     }
   }
+
   .ksm-text {
     margin-left: 10px;
     width: 15%;
   }
 }
+
 .modal-position {
   top: 30%;
 }
+
 .help-text {
   padding: 4px;
   border-radius: 5px;
@@ -313,48 +316,33 @@
     background-size: contain;
   }
 }
+
 .no-account {
   display: flex;
-  background: #fef6da;
+  background: var(--modal-warning-background-color);
   color: #dea513;
-  font-family: Roboto;
+  font-family: var(--font-roboto);
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
   line-height: 22px;
 
   span {
-    color: #1db0ff;
+    color: var(--button-color);
   }
+
   .error-message-info {
     margin-left: 10px;
   }
+
   .error-info-svg {
     display: flex;
     margin-left: 10px;
   }
+
   p {
     margin: 3px !important;
   }
-}
-
-.crateAccountBtn {
-  background: #ffffff;
-  text-transform: lowercase;
-  align-items: center;
-  padding: 8px 24px;
-  border: 1px solid #1db0ff;
-  box-sizing: border-box;
-  border-radius: 4px;
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  line-height: 24px;
-  color: #1db0ff;
-}
-.crateAccountBtn:first-letter {
-  text-transform: uppercase;
 }
 
 .menu-mobile-header {
@@ -365,18 +353,33 @@
 
 .create-account.menu {
   margin: 0;
-  border: none;
-  box-shadow: none;
+  box-shadow: none !important;
+  border: none !important;
 
-  a.crateAccountBtn {
-    border-radius: 4px;
+  a.create-account-btn {
+    padding: 8px 24px;
+    border:1px solid var(--button-color);
+    border-radius: 4px !important;
     color: var(--link-color);
     font-family: var(--font-roboto);
     font-weight: 500;
     font-size: 16px;
+    line-height: 24px;
 
     &:hover {
-      color: var(--link-color);
+      background-color: var(--button-background-hover);
+      color: var(--link-color)!important;
+    }
+
+    &.active{
+      pointer-events: none;
+      border-color: var(--button-background-disabled-border);
+      color:var(--button-background-disabled);
+      background: transparent;
+    }
+
+    &:before{
+      display: none;
     }
   }
 }
@@ -468,6 +471,10 @@
           grid-column-gap: 8px;
           align-items: center;
           height: 100%;
+        }
+
+        .mobile-account-selector.create-button-wrapper {
+          grid-template-columns: auto;
         }
       }
     }
@@ -569,8 +576,7 @@
 
     .app-logo {
       img {
-        width: auto;
-        height: 40px;
+        display: none;
       }
     }
   }
