@@ -93,10 +93,10 @@ function CollectionCard ({ account, collectionId }: CollectionCardProps): React.
             <div className='collection-card-content-main'>
               <div className='content-description'>
                 <p className='content-description-title'>
-                  {collectionName16Decoder(collectionInfo.name)}
+                  {collectionInfo.name && collectionName16Decoder(collectionInfo.name)}
                 </p>
                 <div className='content-description-text'>
-                  {collectionName16Decoder(collectionInfo.description)}
+                  {collectionInfo.description && collectionName16Decoder(collectionInfo.description)}
                 </div>
               </div>
               <div className='content-buttons'>
@@ -126,7 +126,7 @@ function CollectionCard ({ account, collectionId }: CollectionCardProps): React.
             </div>
             <div className='collection-info'>
               <p><span>ID:</span> {collectionId}</p>
-              <p><span>Prefix:</span> {hex2a(collectionInfo.tokenPrefix)}</p>
+              <p><span>Prefix:</span> {collectionInfo.tokenPrefix && hex2a(collectionInfo.tokenPrefix)}</p>
               { !!collectionTokensCount && (
                 <p><span>Items</span> {collectionTokensCount}</p>
               )}
