@@ -57,7 +57,7 @@ function BalancesHeader (props: Props): React.ReactElement<{ account?: string }>
           <div className='item-icon'>
             <WalletIconSvg />
           </div>
-          { freeBalance && (
+          { (account && freeBalance) && (
             <FormatBalance
               className='result'
               value={freeBalance}

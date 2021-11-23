@@ -4,6 +4,8 @@
 import type { OpenPanelType } from '@polkadot/apps-routing/types';
 
 import React, { memo, useCallback } from 'react';
+import { NavLink } from 'react-router-dom';
+import { Menu } from 'semantic-ui-react';
 
 import IdentityIcon from '@polkadot/react-components/IdentityIcon';
 
@@ -28,20 +30,31 @@ const MobileAccountSelector = (props: MobileAccountSelectorProps): React.ReactEl
 
   return (
     <div
-      className='mobile-account-selector'
-      onClick={onClick}
+      className={`mobile-account-selector ${!address ? 'create-button-wrapper' : ''}`}
     >
-      { address && (
-        <IdentityIcon
-          canNotCopy
-          className='icon'
-          value={address}
-        />
-      )}
-      <img
-        alt='menu-arrow'
-        src={menuArrow as string}
-      />
+      { (address && (
+        <>
+          <IdentityIcon
+            canNotCopy
+            className='icon'
+            onClick={onClick}
+            value={address}
+          />
+
+          <img
+            alt='menu-arrow'
+            onClick={onClick}
+            src={menuArrow as string}
+          /> </>)) ||
+          <Menu className='create-account'>
+            <Menu.Item
+              active={location.pathname === '/accounts'}
+              as={NavLink}
+              className='create-account-btn'
+              name='Create or connect account'
+              to='/accounts'
+            />
+          </Menu>}
     </div>
   );
 };

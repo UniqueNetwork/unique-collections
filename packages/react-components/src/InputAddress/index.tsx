@@ -148,7 +148,7 @@ class InputAddress extends React.PureComponent<Props, State> {
           <Menu.Item
             active={location.pathname === '/accounts'}
             as={NavLink}
-            className='crateAccountBtn'
+            className='create-account-btn'
             name='Create or connect account'
             to='/accounts'
           />
