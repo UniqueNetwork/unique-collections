@@ -20,7 +20,7 @@ interface CollectionCardProps {
 }
 
 function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElement {
-  const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface | null>(null);
+  const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
   const [collectionTokensCount, setCollectionTokensCount] = useState<number>(0);
   const [collectionInfoLoading, setCollectionInfoLoading] = useState<boolean>(false);
   const { getCollectionTokensCount, getDetailedCollectionInfo } = useCollection();
