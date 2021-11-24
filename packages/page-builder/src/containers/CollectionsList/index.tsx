@@ -110,8 +110,9 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
               useWindow={true}
             >
               <div className='market-pallet__item'>
-                {Object.values(collectionsLoaded).map((collection: UserCollection) => (
+                {Object.values(collectionsLoaded).length && Object.values(collectionsLoaded).map((collection: UserCollection) => (
                   <CollectionCard
+                    account={account}
                     collectionId={collection.collection_id}
                     key={collection.collection_id}
                   />
