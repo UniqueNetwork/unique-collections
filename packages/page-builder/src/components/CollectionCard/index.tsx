@@ -7,6 +7,7 @@ import type { NftCollectionInterface } from '@polkadot/react-hooks/useCollection
 
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
+import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader';
 
 import { UnqButton } from '@polkadot/react-components';
@@ -16,14 +17,16 @@ import burnIcon from '../../images/burnIcon.svg';
 import CollectionCover from './CollectionCover';
 
 interface CollectionCardProps {
+  account: string;
   collectionId: string;
 }
 
-function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElement {
-  const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
+function CollectionCard ({ account, collectionId }: CollectionCardProps): React.ReactElement {
+  const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface | null>(null);
   const [collectionTokensCount, setCollectionTokensCount] = useState<number>(0);
   const [collectionInfoLoading, setCollectionInfoLoading] = useState<boolean>(false);
-  const { getCollectionTokensCount, getDetailedCollectionInfo } = useCollection();
+  const [isBurnCollectionOpen, setIsBurnCollectionOpen] = useState<boolean>(false);
+  const { destroyCollection, getCollectionTokensCount, getDetailedCollectionInfo } = useCollection();
   const history = useHistory();
   const { collectionName16Decoder, hex2a } = useDecoder();
 
@@ -40,13 +43,28 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
     }
   }, [collectionId, getDetailedCollectionInfo, getCollectionTokensCount]);
 
+  const fetchCollectionList = useCallback(() => {
+    // @todo add fetch collection logic here
+    console.log('success');
+  }, []);
+
   const onCreateNft = useCallback(() => {
     history.push(`/builder/collections/${collectionId}/new-nft`);
   }, [collectionId, history]);
 
   const onBurnNft = useCallback(() => {
     console.log('onBurnNft');
+    setIsBurnCollectionOpen(true);
   }, []);
+
+  const closeBurnModal = useCallback(() => {
+    setIsBurnCollectionOpen(false);
+  }, []);
+
+  const onBurnCollection = useCallback(() => {
+    setIsBurnCollectionOpen(false);
+    destroyCollection({ account, collectionId, successCallback: fetchCollectionList });
+  }, [account, collectionId, destroyCollection, fetchCollectionList]);
 
   useEffect(() => {
     void fetchCollectionInfo();
@@ -75,10 +93,10 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
             <div className='collection-card-content-main'>
               <div className='content-description'>
                 <p className='content-description-title'>
-                  {collectionName16Decoder(collectionInfo.name)}
+                  {collectionInfo.name && collectionName16Decoder(collectionInfo.name)}
                 </p>
                 <div className='content-description-text'>
-                  {collectionName16Decoder(collectionInfo.description)}
+                  {collectionInfo.description && collectionName16Decoder(collectionInfo.description)}
                 </div>
               </div>
               <div className='content-buttons'>
@@ -86,6 +104,13 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
                   content='Create NFT'
                   isFilled
                   onClick={onCreateNft}
+                />
+                <Confirm
+                  className='unique-modal'
+                  header={'Deleting the collection'}
+                  onCancel={closeBurnModal}
+                  onConfirm={onBurnCollection}
+                  open={isBurnCollectionOpen}
                 />
                 <UnqButton
                   className='burn'
@@ -101,7 +126,7 @@ function CollectionCard ({ collectionId }: CollectionCardProps): React.ReactElem
             </div>
             <div className='collection-info'>
               <p><span>ID:</span> {collectionId}</p>
-              <p><span>Prefix:</span> {hex2a(collectionInfo.tokenPrefix)}</p>
+              <p><span>Prefix:</span> {collectionInfo.tokenPrefix && hex2a(collectionInfo.tokenPrefix)}</p>
               { !!collectionTokensCount && (
                 <p><span>Items</span> {collectionTokensCount}</p>
               )}
