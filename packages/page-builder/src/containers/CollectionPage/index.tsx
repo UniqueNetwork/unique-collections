@@ -38,6 +38,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
   const { collectionId }: { collectionId: string } = useParams();
   const { getDetailedCollectionInfo } = useCollection();
   const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
+  const [avatarImg, setAvatarImg] = useState<File | null>(null);
 
   const handleOnBtnClick = useCallback(() => {
     setIsPreviewOpen((prev) => !prev);
@@ -119,7 +120,9 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
                 <Route path={`${basePath}/collections/${collectionId}/cover`}>
                   <Cover
                     account={account}
+                    avatarImg={avatarImg}
                     collectionId={collectionId}
+                    setAvatarImg={setAvatarImg}
                   />
                 </Route>
                 <Route path={`${basePath}/collections/${collectionId}/token-attributes`}>
@@ -142,8 +145,9 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
         </div>
         <div className={`preview-cards ${!isPreviewOpen ? 'hidden' : ''}`}>
           <CollectionPreview
-            collectionInfo={collectionInfo}
+            avatarImg={avatarImg}
             collectionDescription={collectionDescription}
+            collectionInfo={collectionInfo}
             collectionName={collectionName}
           />
           <TokenPreview

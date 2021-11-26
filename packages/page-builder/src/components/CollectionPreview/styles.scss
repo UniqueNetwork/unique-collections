@@ -23,17 +23,21 @@
 
     .collection-img{
       display: flex;
-      height: calc(var(--gap)*4);
-      min-width: calc(var(--gap)*4);
+      height: calc(var(--gap) * 4);
+      min-width: calc(var(--gap) * 4);
       margin-right: var(--gap);
       justify-content: center;
       align-items: center;
-      // background-color: var(--border-color);
+      background-color: var(--border-color);
       border-radius: 50%;
 
       img {
         max-height: 100%;
         max-width: 100%;
+      }
+
+      .avatar-img{
+        border-radius: 50%;
       }
     }
 

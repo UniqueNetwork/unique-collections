@@ -7,20 +7,21 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import defaultIcon from '@polkadot/app-builder/images/defaultIcon.svg';
-import { useCollection, useCollectionCover } from '@polkadot/react-hooks';
+import { useCollection, useDecoder } from '@polkadot/react-hooks';
 import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
 interface CollectionPreviewProps {
+  avatarImg: File| null
   collectionInfo?: NftCollectionInterface;
   collectionDescription: string
   collectionName: string;
 }
 
-function CollectionPreview ({ collectionDescription, collectionInfo, collectionName }: CollectionPreviewProps): React.ReactElement {
+function CollectionPreview ({ avatarImg, collectionDescription, collectionInfo, collectionName }: CollectionPreviewProps): React.ReactElement {
   const { getCreatedCollectionCount } = useCollection();
-  const imgUrl = useCollectionCover(collectionInfo);
   const [predictableCollectionId, setPredictableCollectionId] = useState<number>(1);
   const { collectionId }: { collectionId: string } = useParams();
+  const { collectionName16Decoder } = useDecoder();
 
   const getCollectionCount = useCallback(async () => {
     const collectionCount = await getCreatedCollectionCount();
@@ -33,19 +34,20 @@ function CollectionPreview ({ collectionDescription, collectionInfo, collectionN
   }, [getCollectionCount]);
 
   return (
-    <div className='collection-preview '>
+    <div className='collection-preview'>
       <div className='collection-preview-header'>Collection preview</div>
       <div className='collection-preview-content'>
         <div className='collection-img'>
           <img
             alt='collectionImage'
-            src={imgUrl || defaultIcon as string}
+            className={avatarImg ? 'avatar-img' : ''}
+            src={avatarImg ? URL.createObjectURL(avatarImg) : defaultIcon as string}
           />
         </div>
         <div className='content-description'>
-          <h3 className='content-header'>{collectionName || 'Name'}</h3>
-          <p className='content-text'>{collectionDescription || 'Description'}</p>
-          <p className='content-info'><span>ID:</span> {collectionId || predictableCollectionId}</p>
+          <h3 className='content-header'>{(collectionInfo && collectionInfo.name) ? collectionName16Decoder(collectionInfo.name) : 'Name'}</h3>
+          <p className='content-text'>{(collectionInfo && collectionInfo.description) ? collectionName16Decoder(collectionInfo.description) : 'Description'}</p>
+          {collectionId && <p className='content-info'><span>ID:</span> {collectionId}</p>}
         </div>
       </div>
     </div>

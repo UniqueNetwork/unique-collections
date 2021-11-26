@@ -30,7 +30,6 @@
 
   .upload-block{
     display: flex;
-    gap: calc(var(--gap) / 2);
     margin: 24px 0 48px;
 
     .upload-img{
@@ -49,8 +48,8 @@
 
 
       .token-img{
-        max-width: 96px;
-        max-height: 96px;
+        width: 96px;
+        height: 96px;
         border-radius: 50%;
       }
     }

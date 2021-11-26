@@ -16,11 +16,12 @@ import WarningText from '../WarningText';
 interface CoverProps {
   account: string;
   collectionId: string;
+  avatarImg: File | null;
+  setAvatarImg: (file: File | null) => void
 }
 
-function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
+function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps): React.ReactElement {
   const { saveVariableOnChainSchema } = useCollection();
-  const [avatarImg, setAvatarImg] = useState<File | null>(null);
   const [imgAddress, setImgAddress] = useState<string>();
   const { uploadImg } = useImageService();
   const history = useHistory();
@@ -32,11 +33,11 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
     const file: File = (target.files as FileList)[0];
 
     setAvatarImg(file);
-  }, []);
+  }, [setAvatarImg]);
 
   const clearTokenImg = useCallback(() => {
     setAvatarImg(null);
-  }, []);
+  }, [setAvatarImg]);
 
   const uploadImage = useCallback(async () => {
     if (avatarImg) {
