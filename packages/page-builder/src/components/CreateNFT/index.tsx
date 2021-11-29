@@ -5,7 +5,7 @@ import './styles.scss';
 
 import type { TokenAttribute } from '../../types';
 
-import React, { memo, SyntheticEvent, useCallback, useEffect, useState } from 'react';
+import React, { memo, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 
 import { Checkbox, UnqButton } from '@polkadot/react-components';
@@ -34,6 +34,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, isOwner }: CreateNF
   const [formErrors, setFormErrors] = useState<string[]>([]);
   const [createAnother, setCreateAnother] = useState<boolean>(false);
   const { constAttributes, constOnChainSchema, resetAttributes, setTokenConstAttributes, tokenConstAttributes } = useTokenAttributes(collectionInfo);
+  const inputFileRef = useRef<HTMLInputElement>(null);
 
   const onLoadTokenImage = useCallback((event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
@@ -59,6 +60,10 @@ function CreateNFT ({ account, collectionId, collectionInfo, isOwner }: CreateNF
 
   const clearTokenImg = useCallback(() => {
     setTokenImg(null);
+
+    if (inputFileRef.current) {
+      inputFileRef.current.value = '';
+    }
   }, []);
 
   const setAttributeValue = useCallback((attribute: AttributeItemType, value: string | number[]) => {
@@ -133,6 +138,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, isOwner }: CreateNF
           accept='image/*'
           id='avatar-file-input'
           onChange={onLoadTokenImage}
+          ref={inputFileRef}
           style={{ display: 'none' }}
           type='file'
         />
