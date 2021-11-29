@@ -1,10 +1,11 @@
 // Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import type { TokenAttribute } from '../../types';
+
 import React, { memo, ReactElement, useCallback } from 'react';
 
 import { Dropdown, Input } from '@polkadot/react-components';
-import { TokenAttribute } from '@polkadot/react-components/ManageCollection/ManageTokenAttributes';
 import { AttributeItemType } from '@polkadot/react-components/util/protobufUtils';
 
 interface TokenAttributesRowEditableProps {

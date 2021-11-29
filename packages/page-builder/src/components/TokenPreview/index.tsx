@@ -40,14 +40,20 @@ function TokenPreview ({ collectionInfo, collectionName, tokenPrefix }: TokenPre
           { constAttributes?.length > 0 && (
             <div className='const-attributes'>
               <h4>Token attributes  </h4>
-              { constAttributes?.map((collectionAttribute: AttributeItemType) => (
-                <p
-                  className='content-text'
-                  key={collectionAttribute.name}
-                >
-                  {collectionAttribute.name}
-                </p>
-              ))}
+              { constAttributes?.map((collectionAttribute: AttributeItemType) => {
+                if (collectionAttribute.name !== 'ipfsJson') {
+                  return (
+                    <p
+                      className='content-text'
+                      key={collectionAttribute.name}
+                    >
+                      {collectionAttribute.name}
+                    </p>
+                  );
+                }
+
+                return null;
+              })}
             </div>
           )}
         </div>
