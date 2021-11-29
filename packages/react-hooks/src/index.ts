@@ -48,6 +48,7 @@ export { useSchema } from './useSchema';
 export { useStepper } from './useStepper';
 export { useSudo } from './useSudo';
 export { useToken } from './useToken';
+export { useTokenAttributes } from './useTokenAttributes';
 export { useToggle } from './useToggle';
 export { useTreasury } from './useTreasury';
 export { useVotingStatus } from './useVotingStatus';

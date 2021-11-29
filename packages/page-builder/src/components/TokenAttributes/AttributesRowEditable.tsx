@@ -8,10 +8,45 @@ import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 
 import { Dropdown, HelpTooltip, Input } from '@polkadot/react-components';
 import EnumsInput from '@polkadot/react-components/EnumsInput';
-import { CountOptions, TypeOptions } from '@polkadot/react-components/ManageCollection/types';
 import { AttributeItemType } from '@polkadot/react-components/util/protobufUtils';
 
 import trashIcon from '../../images/trashIcon.svg';
+
+export type TypeOption = {
+  text: string;
+  value: FieldType;
+}
+
+export type CountOption = {
+  text: string;
+  value: FieldRuleType;
+}
+
+export const TypeOptions: TypeOption[] = [
+  {
+    text: 'string',
+    value: 'string'
+  },
+  {
+    text: 'enumerable',
+    value: 'enum'
+  }
+];
+
+export const CountOptions: CountOption[] = [
+  {
+    text: 'optional',
+    value: 'optional'
+  },
+  {
+    text: 'required',
+    value: 'required'
+  },
+  {
+    text: 'repeated',
+    value: 'repeated'
+  }
+];
 
 interface AttributesRowEditableProps {
   attributeName: string;

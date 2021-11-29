@@ -26,6 +26,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
   const { createCollection, getCreatedCollectionCount } = useCollection();
   const history = useHistory();
 
+  // @todo - get latest index if account is owner
   const goToNextStep = useCallback(async () => {
     const collectionCount = await getCreatedCollectionCount();
 

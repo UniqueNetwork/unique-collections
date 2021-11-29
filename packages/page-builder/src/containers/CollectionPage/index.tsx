@@ -31,6 +31,7 @@ interface CollectionPageProps {
 function CollectionPage ({ account, basePath }: CollectionPageProps): ReactElement {
   const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
   const [collectionName, setCollectionName] = useState<string>('');
+  const [avatarImg, setAvatarImg] = useState<File | null>(null);
   const [collectionDescription, setCollectionDescription] = useState<string>('');
   const [tokenPrefix, setTokenPrefix] = useState<string>('');
   const history = useHistory();
@@ -119,7 +120,9 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
                 <Route path={`${basePath}/collections/${collectionId}/cover`}>
                   <Cover
                     account={account}
+                    avatarImg={avatarImg}
                     collectionId={collectionId}
+                    setAvatarImg={setAvatarImg}
                   />
                 </Route>
                 <Route path={`${basePath}/collections/${collectionId}/token-attributes`}>
@@ -142,8 +145,9 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
         </div>
         <div className={`preview-cards ${!isPreviewOpen ? 'hidden' : ''}`}>
           <CollectionPreview
-            collectionInfo={collectionInfo}
+            avatarImg={avatarImg}
             collectionDescription={collectionDescription}
+            collectionInfo={collectionInfo}
             collectionName={collectionName}
           />
           <TokenPreview

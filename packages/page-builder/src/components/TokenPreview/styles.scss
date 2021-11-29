@@ -46,11 +46,11 @@
     }
   }
 
-  .token-attributes{
+  .const-attributes{
     margin-top: calc((var(--gap) / 2) * 3);
     font-family: var(--font-roboto);
 
-    h4{
+    h4 {
       font-size: 14px;
       line-height: 22px;
       margin-bottom:calc(var(--gap) / 2); ;

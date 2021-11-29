@@ -20,8 +20,6 @@ function NftPage ({ account, collectionId }: NftPageProps): ReactElement {
   const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
   const isOwner = collectionInfo?.owner === account;
 
-  console.log('isOwner', isOwner);
-
   const fetchCollectionInfo = useCallback(async () => {
     const info: NftCollectionInterface | null = await getDetailedCollectionInfo(collectionId);
 

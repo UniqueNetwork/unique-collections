@@ -5,29 +5,25 @@ import './styles.scss';
 
 import React, { memo, useState } from 'react';
 
+import { AttributeItemType } from '@polkadot/react-components/util/protobufUtils';
+import { useDecoder } from '@polkadot/react-hooks';
 import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
+import { useTokenAttributes } from '@polkadot/react-hooks/useTokenAttributes';
 
 import defaultIcon from '../../images/defaultIcon.svg';
 
 interface TokenPreviewProps {
   collectionInfo?: NftCollectionInterface;
   collectionName: string;
-  tokenPrefix: string;
+  tokenPrefix?: string;
 }
 
-function TokenPreview ({ collectionName, tokenPrefix }: TokenPreviewProps): React.ReactElement {
-  const attributes = ['Name:', 'Gender:', 'Traits:'];
+function TokenPreview ({ collectionInfo, collectionName, tokenPrefix }: TokenPreviewProps): React.ReactElement {
   const [imgUrl, setImgUrl] = useState<string>('');
+  const { constAttributes, tokenConstAttributes } = useTokenAttributes(collectionInfo);
+  const { collectionName16Decoder, hex2a } = useDecoder();
 
-  /* const getPreviewTokenImg = useCallback(async () => {
-    const image = await getTokenImg('QmTqZhR6f7jzdhLgPArDPnsbZpvvgxzCZycXK7ywkLxSyU');
-
-    setImgUrl(image);
-  }, [getTokenImg]);
-
-  useEffect(() => {
-    void getPreviewTokenImg();
-  }, [getPreviewTokenImg]); */
+  console.log('tokenConstAttributes', tokenConstAttributes);
 
   return (
     <div className='token-preview'>
@@ -37,19 +33,23 @@ function TokenPreview ({ collectionName, tokenPrefix }: TokenPreviewProps): Reac
           <img src={imgUrl || defaultIcon as string} />
         </div>
         <div className='content-description'>
-          <h3 className='content-header'>{tokenPrefix || 'Prefix'}</h3>
-          <p className='content-text'>{collectionName || 'Collection name'}</p>
-          <div className='token-attributes'>
-            <h4>Token attributes  </h4>
-            {attributes.map((item) => (
-              <p
-                className='content-text'
-                key={item}
-              >
-                {item}
-              </p>
-            ))}
-          </div>
+          <h3 className='content-header'>
+            {collectionInfo ? hex2a(collectionInfo.tokenPrefix) : (tokenPrefix || 'Prefix')} #1
+          </h3>
+          <p className='content-text'>{ collectionInfo ? collectionName16Decoder(collectionInfo.name) : (collectionName || 'Collection name')}</p>
+          { constAttributes?.length > 0 && (
+            <div className='const-attributes'>
+              <h4>Token attributes  </h4>
+              { constAttributes?.map((collectionAttribute: AttributeItemType) => (
+                <p
+                  className='content-text'
+                  key={collectionAttribute.name}
+                >
+                  {collectionAttribute.name}
+                </p>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
