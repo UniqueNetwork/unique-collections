@@ -3,7 +3,7 @@
 
 import './styles.scss';
 
-import React, { memo, SyntheticEvent, useCallback, useEffect, useState } from 'react';
+import React, { memo, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 
 import clearIcon from '@polkadot/app-builder/images/closeIcon.svg';
@@ -25,6 +25,7 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
   const [imgAddress, setImgAddress] = useState<string>();
   const { uploadImg } = useImageService();
   const history = useHistory();
+  const inputFileRef = useRef<HTMLInputElement>(null);
 
   // saveConstOnChainSchema({ account, collectionId, schema: JSON.stringify(protobufJson), successCallback: onSuccess });
 
@@ -37,6 +38,10 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
 
   const clearTokenImg = useCallback(() => {
     setAvatarImg(null);
+
+    if (inputFileRef.current) {
+      inputFileRef.current.value = '';
+    }
   }, [setAvatarImg]);
 
   const uploadImage = useCallback(async () => {
@@ -76,6 +81,7 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
             accept='image/*'
             id='avatar-file-input'
             onChange={uploadAvatar}
+            ref={inputFileRef}
             style={{ display: 'none' }}
             type='file'
           />
