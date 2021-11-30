@@ -11,7 +11,7 @@ export interface useTokenAttributesInterface {
   constAttributes: AttributeItemType[];
   constOnChainSchema: ProtobufAttributeType | undefined;
   resetAttributes: () => void;
-  setTokenConstAttributes: (attr: { [key: string]: TokenAttribute }) => void | ((prevAttributes: { [key: string]: TokenAttribute }) => { [x: string]: TokenAttribute });
+  setTokenConstAttributes: (attr: (prevAttributes: { [p: string]: TokenAttribute }) => { [p: string]: TokenAttribute }) => void | ((prevAttributes: { [p: string]: TokenAttribute }) => { [p: string]: TokenAttribute });
   tokenConstAttributes: { [key: string]: TokenAttribute };
 }
 

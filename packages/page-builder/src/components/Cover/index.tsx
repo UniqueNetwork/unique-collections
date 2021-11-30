@@ -57,7 +57,9 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
   }, [collectionId, history]);
 
   const saveVariableSchema = useCallback(() => {
-    if (account && collectionId && imgAddress) {
+    if (!imgAddress) {
+      onSuccess();
+    } else if (account && collectionId && imgAddress) {
       const varDataWithImage = {
         collectionCover: imgAddress
       };
@@ -120,7 +122,6 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
       <WarningText />
       <UnqButton
         content='Confirm'
-        isDisabled={!imgAddress}
         isFilled
         onClick={saveVariableSchema}
         size='medium'

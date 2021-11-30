@@ -3,34 +3,38 @@
 
 import './styles.scss';
 
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 
+import { TokenAttribute } from '@polkadot/app-builder/types';
 import { AttributeItemType } from '@polkadot/react-components/util/protobufUtils';
 import { useDecoder } from '@polkadot/react-hooks';
 import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
-import { useTokenAttributes } from '@polkadot/react-hooks/useTokenAttributes';
 
 import defaultIcon from '../../images/defaultIcon.svg';
 
 interface TokenPreviewProps {
   collectionInfo?: NftCollectionInterface;
   collectionName: string;
+  constAttributes: AttributeItemType[];
+  tokenConstAttributes: { [key: string]: TokenAttribute };
+  tokenImg: File | null;
   tokenPrefix?: string;
 }
 
-function TokenPreview ({ collectionInfo, collectionName, tokenPrefix }: TokenPreviewProps): React.ReactElement {
-  const [imgUrl, setImgUrl] = useState<string>('');
-  const { constAttributes, tokenConstAttributes } = useTokenAttributes(collectionInfo);
+function TokenPreview ({ collectionInfo, collectionName, constAttributes, tokenConstAttributes, tokenImg, tokenPrefix }: TokenPreviewProps): React.ReactElement {
   const { collectionName16Decoder, hex2a } = useDecoder();
 
-  console.log('tokenConstAttributes', tokenConstAttributes);
+  console.log('tokenConstAttributes', tokenConstAttributes, 'constAttributes', constAttributes);
 
   return (
     <div className='token-preview'>
       <div className='token-preview-header'>Token preview</div>
       <div className='token-preview-content'>
         <div className='token-img'>
-          <img src={imgUrl || defaultIcon as string} />
+          <img
+            alt='token-img'
+            src={tokenImg ? URL.createObjectURL(tokenImg) : defaultIcon as string}
+          />
         </div>
         <div className='content-description'>
           <h3 className='content-header'>

@@ -264,8 +264,6 @@ export function useCollection () {
     try {
       const collectionInfo = (await api.rpc.unique.collectionById(collectionId)).toJSON() as unknown as NftCollectionInterface | null;
 
-      console.log('collectionInfo', collectionInfo, 'collectionId', collectionId);
-
       if (collectionInfo) {
         return {
           ...collectionInfo,

@@ -9,8 +9,8 @@ import React, { memo, SyntheticEvent, useCallback, useEffect, useRef, useState }
 import { useHistory } from 'react-router';
 
 import { Checkbox, UnqButton } from '@polkadot/react-components';
-import { AttributeItemType, serializeNft } from '@polkadot/react-components/util/protobufUtils';
-import { useImageService, useToken, useTokenAttributes } from '@polkadot/react-hooks';
+import { AttributeItemType, ProtobufAttributeType, serializeNft } from '@polkadot/react-components/util/protobufUtils';
+import { useImageService, useToken } from '@polkadot/react-hooks';
 import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
 import clearIcon from '../../images/closeIcon.svg';
@@ -22,18 +22,25 @@ interface CreateNFTProps {
   account: string;
   isOwner: boolean;
   collectionId: string;
-  collectionInfo: NftCollectionInterface
+  collectionInfo: NftCollectionInterface;
+  constAttributes: AttributeItemType[];
+  constOnChainSchema: ProtobufAttributeType | undefined;
+  resetAttributes: () => void;
+  setTokenConstAttributes: (attr: (prevAttributes: { [p: string]: TokenAttribute }) => { [p: string]: TokenAttribute }) => void | ((prevAttributes: { [p: string]: TokenAttribute }) => { [p: string]: TokenAttribute });
+  setTokenImg: (image: File | null) => void;
+  tokenConstAttributes: { [key: string]: TokenAttribute };
+  tokenImg: File | null;
 }
 
-function CreateNFT ({ account, collectionId, collectionInfo, isOwner }: CreateNFTProps): React.ReactElement {
+function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, constOnChainSchema, isOwner, resetAttributes, setTokenConstAttributes, setTokenImg, tokenConstAttributes, tokenImg }: CreateNFTProps): React.ReactElement {
   const { createNft } = useToken();
   const history = useHistory();
   const { uploadImg } = useImageService();
-  const [tokenImg, setTokenImg] = useState<File | null>(null);
+
   const [tokenImageAddress, setTokenImageAddress] = useState<string>();
   const [formErrors, setFormErrors] = useState<string[]>([]);
   const [createAnother, setCreateAnother] = useState<boolean>(false);
-  const { constAttributes, constOnChainSchema, resetAttributes, setTokenConstAttributes, tokenConstAttributes } = useTokenAttributes(collectionInfo);
+
   const inputFileRef = useRef<HTMLInputElement>(null);
 
   const onLoadTokenImage = useCallback((event: SyntheticEvent) => {
@@ -41,7 +48,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, isOwner }: CreateNF
     const file: File = (target.files as FileList)[0];
 
     setTokenImg(file);
-  }, []);
+  }, [setTokenImg]);
 
   const uploadTokenImage = useCallback(async () => {
     if (tokenImg) {
@@ -56,7 +63,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, isOwner }: CreateNF
     setTokenImg(null);
     setFormErrors([]);
     setCreateAnother(false);
-  }, [resetAttributes]);
+  }, [resetAttributes, setTokenImg]);
 
   const clearTokenImg = useCallback(() => {
     setTokenImg(null);
@@ -64,16 +71,15 @@ function CreateNFT ({ account, collectionId, collectionInfo, isOwner }: CreateNF
     if (inputFileRef.current) {
       inputFileRef.current.value = '';
     }
-  }, []);
+  }, [setTokenImg]);
 
   const setAttributeValue = useCallback((attribute: AttributeItemType, value: string | number[]) => {
-    setTokenConstAttributes((prevAttributes: { [key: string]: TokenAttribute }) =>
-      ({ ...prevAttributes,
-        [attribute.name]: {
-          name: prevAttributes[attribute.name].name,
-          value: attribute.rule === 'repeated' ? prevAttributes[attribute.name].value : value as string,
-          values: attribute.rule === 'repeated' ? value as number[] : prevAttributes[attribute.name].values
-        } }));
+    setTokenConstAttributes((prevAttributes: { [key: string]: TokenAttribute }) => ({ ...prevAttributes,
+      [attribute.name]: {
+        name: prevAttributes[attribute.name].name,
+        value: attribute.rule === 'repeated' ? prevAttributes[attribute.name].value : value as string,
+        values: attribute.rule === 'repeated' ? value as number[] : prevAttributes[attribute.name].values
+      } } as { [key: string]: TokenAttribute }));
   }, [setTokenConstAttributes]);
 
   const onCreateSuccess = useCallback(() => {
@@ -117,8 +123,6 @@ function CreateNFT ({ account, collectionId, collectionInfo, isOwner }: CreateNF
   useEffect(() => {
     void uploadTokenImage();
   }, [uploadTokenImage]);
-
-  console.log('constAttributes', constAttributes, 'tokenConstAttributes', tokenConstAttributes);
 
   if (collectionInfo && !isOwner) {
     return (

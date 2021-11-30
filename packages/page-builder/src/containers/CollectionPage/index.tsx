@@ -16,6 +16,7 @@ import TokenAttributes from '@polkadot/app-builder/components/TokenAttributes';
 import TokenPreview from '@polkadot/app-builder/components/TokenPreview';
 import NftPage from '@polkadot/app-builder/containers/NftPage';
 import { UnqButton } from '@polkadot/react-components';
+import { useTokenAttributes } from '@polkadot/react-hooks';
 import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/useCollection';
 
 interface CollectionPageProps {
@@ -32,6 +33,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
   const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
   const [collectionName, setCollectionName] = useState<string>('');
   const [avatarImg, setAvatarImg] = useState<File | null>(null);
+  const [tokenImg, setTokenImg] = useState<File | null>(null);
   const [collectionDescription, setCollectionDescription] = useState<string>('');
   const [tokenPrefix, setTokenPrefix] = useState<string>('');
   const history = useHistory();
@@ -39,6 +41,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
   const { collectionId }: { collectionId: string } = useParams();
   const { getDetailedCollectionInfo } = useCollection();
   const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
+  const { constAttributes, constOnChainSchema, resetAttributes, setTokenConstAttributes, tokenConstAttributes } = useTokenAttributes(collectionInfo);
 
   const handleOnBtnClick = useCallback(() => {
     setIsPreviewOpen((prev) => !prev);
@@ -137,6 +140,13 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
                     account={account}
                     basePath={basePath}
                     collectionId={collectionId}
+                    constAttributes={constAttributes}
+                    constOnChainSchema={constOnChainSchema}
+                    resetAttributes={resetAttributes}
+                    setTokenConstAttributes={setTokenConstAttributes}
+                    setTokenImg={setTokenImg}
+                    tokenConstAttributes={tokenConstAttributes}
+                    tokenImg={tokenImg}
                   />
                 </Route>
               </Switch>
@@ -153,6 +163,9 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
           <TokenPreview
             collectionInfo={collectionInfo}
             collectionName={collectionName}
+            constAttributes={constAttributes}
+            tokenConstAttributes={tokenConstAttributes}
+            tokenImg={tokenImg}
             tokenPrefix={tokenPrefix}
           />
         </div>
