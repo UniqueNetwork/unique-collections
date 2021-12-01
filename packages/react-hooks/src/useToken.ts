@@ -1,6 +1,7 @@
 // Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import BN from 'bn.js';
 import { useCallback, useContext } from 'react';
 
 import { StatusContext } from '@polkadot/react-components';
@@ -14,6 +15,7 @@ export interface TokenDetailsInterface {
 }
 
 interface UseTokenInterface {
+  calculateCreateItemFee: (obj: { account: string, collectionId: string, constData: string, variableData: string, owner: string }) => Promise<BN | null>;
   createNft: (obj: { account: string, collectionId: string, constData: string, variableData: string, successCallback?: () => void, errorCallback?: () => void, owner: string }) => void;
   getDetailedReFungibleTokenInfo: (collectionId: string, tokenId: string) => Promise<TokenDetailsInterface>;
   getDetailedTokenInfo: (collectionId: string, tokenId: string) => Promise<TokenDetailsInterface>
@@ -24,6 +26,23 @@ interface UseTokenInterface {
 export function useToken (): UseTokenInterface {
   const { api } = useApi();
   const { queueExtrinsic } = useContext(StatusContext);
+
+  const calculateCreateItemFee = useCallback(async ({ account, collectionId, constData, owner, variableData }: { account: string, collectionId: string, constData: string, owner: string, variableData: string }): Promise<BN | null> => {
+    try {
+      const fee = await api.tx.unique.createItem(collectionId, { Substrate: owner }, {
+        nft: {
+          const_data: constData,
+          variable_data: variableData
+        }
+      }).paymentInfo(account) as { partialFee: BN };
+
+      return fee.partialFee;
+    } catch (error) {
+      console.error((error as Error).message);
+
+      return null;
+    }
+  }, [api]);
 
   const createNft = useCallback((
     { account, collectionId, constData, errorCallback, owner, successCallback, variableData }:
@@ -103,6 +122,7 @@ export function useToken (): UseTokenInterface {
   }, [getDetailedTokenInfo, getDetailedReFungibleTokenInfo]);
 
   return {
+    calculateCreateItemFee,
     createNft,
     getDetailedReFungibleTokenInfo,
     getDetailedTokenInfo,

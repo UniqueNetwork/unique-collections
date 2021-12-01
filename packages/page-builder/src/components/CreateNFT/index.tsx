@@ -5,6 +5,7 @@ import './styles.scss';
 
 import type { TokenAttribute } from '../../types';
 
+import BN from 'bn.js';
 import React, { memo, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 
@@ -33,9 +34,12 @@ interface CreateNFTProps {
 }
 
 function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, constOnChainSchema, isOwner, resetAttributes, setTokenConstAttributes, setTokenImg, tokenConstAttributes, tokenImg }: CreateNFTProps): React.ReactElement {
-  const { createNft } = useToken();
+  const { calculateCreateItemFee, createNft } = useToken();
+  const [createFees, setCreateFees] = useState<BN | null>(null);
   const history = useHistory();
   const { uploadImg } = useImageService();
+
+  console.log('createFees', createFees?.toString());
 
   const [tokenImageAddress, setTokenImageAddress] = useState<string>();
   const [formErrors, setFormErrors] = useState<string[]>([]);
@@ -90,9 +94,10 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
     }
   }, [createAnother, history, resetData]);
 
-  const onCreateNft = useCallback(() => {
+  const buildAttributes = useCallback(() => {
     if (account) {
       const constAttributes: { [key: string]: string | number | number[] } = {};
+
       let constData = '';
 
       if (constOnChainSchema) {
@@ -102,11 +107,31 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
         const cData = serializeNft(constOnChainSchema, constAttributes);
 
         constData = '0x' + Buffer.from(cData).toString('hex');
+
+        return constData;
       }
+    }
+
+    return '';
+  }, [account, constOnChainSchema, tokenConstAttributes]);
+
+  const calculateFee = useCallback(async () => {
+    if (account) {
+      const constData = buildAttributes();
+
+      const fees = await calculateCreateItemFee({ account, collectionId, constData, owner: account, variableData: '' });
+
+      setCreateFees(fees);
+    }
+  }, [account, buildAttributes, calculateCreateItemFee, collectionId]);
+
+  const onCreateNft = useCallback(() => {
+    if (account) {
+      const constData = buildAttributes();
 
       createNft({ account, collectionId, constData, owner: account, successCallback: onCreateSuccess, variableData: '' });
     }
-  }, [account, createNft, collectionId, constOnChainSchema, onCreateSuccess, tokenConstAttributes]);
+  }, [account, buildAttributes, createNft, collectionId, onCreateSuccess]);
 
   useEffect(() => {
     if (tokenImageAddress) {
@@ -123,6 +148,10 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
   useEffect(() => {
     void uploadTokenImage();
   }, [uploadTokenImage]);
+
+  useEffect(() => {
+    void calculateFee();
+  }, [calculateFee]);
 
   if (collectionInfo && !isOwner) {
     return (
@@ -195,7 +224,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
         })}
       </form>
 
-      <WarningText />
+      <WarningText fee={createFees} />
       <div className='footer-buttons'>
         <UnqButton
           content='Confirm'

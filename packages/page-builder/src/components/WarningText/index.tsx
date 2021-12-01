@@ -3,23 +3,29 @@
 
 import './styles.scss';
 
+import BN from 'bn.js';
 import React, { memo, ReactElement } from 'react';
 
-import { useApi } from '@polkadot/react-hooks';
+import { formatBalance } from '@polkadot/util';
 
 import infoIcon from '../../images/infoIcon.svg';
 
-function WarningText (): ReactElement {
-  const { api } = useApi();
+interface WarningFeeProps {
+  fee: BN | null;
+}
 
-  const tokens = api.registry.chainTokens;
-
+function WarningFeeProps ({ fee }: WarningFeeProps): ReactElement {
   return (
     <div className='warning-text'>
-      <img src={infoIcon as string} />
-      <p>A fee of ~ 0.000000000000052 {tokens[0]} can be applied to the transaction</p>
+      <img
+        alt='info-icon'
+        src={infoIcon as string}
+      />
+      { fee && (
+        <p>A fee of ~ {formatBalance(fee)} can be applied to the transaction</p>
+      )}
     </div>
   );
 }
 
-export default memo(WarningText);
+export default memo(WarningFeeProps);

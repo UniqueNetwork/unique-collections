@@ -27,6 +27,25 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
   const history = useHistory();
 
   // @todo - get latest index if account is owner
+  /*
+    export function getCreateCollectionResult(events: EventRecord[]): CreateCollectionResult {
+     let success = false;
+     let collectionId = 0;
+     events.forEach(({event: {data, method, section}}) => {
+      // console.log(`  ${phase}: ${section}.${method}:: ${data}`);
+      if (method == 'ExtrinsicSuccess') {
+       success = true;
+      } else if ((section == 'common') && (method == 'CollectionCreated')) {
+       collectionId = parseInt(data[0].toString(), 10);
+      }
+     });
+     const result: CreateCollectionResult = {
+      success,
+      collectionId,
+     };
+     return result;
+    }
+   */
   const goToNextStep = useCallback(async () => {
     const collectionCount = await getCreatedCollectionCount();
 
