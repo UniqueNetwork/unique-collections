@@ -178,7 +178,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
         </div>
       </div>
       <h1 className='header-text'>Attributes</h1>
-      <div className='attributes'>
+      <form className='attributes'>
         { Object.keys(tokenConstAttributes).length > 0 && constAttributes?.map((collectionAttribute: AttributeItemType, index) => {
           if (collectionAttribute.name !== 'ipfsJson') {
             return (
@@ -193,7 +193,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
             return null;
           }
         })}
-      </div>
+      </form>
 
       <WarningText />
       <div className='footer-buttons'>

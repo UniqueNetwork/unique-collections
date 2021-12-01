@@ -1,7 +1,7 @@
 .enum-input {
   border: 1px solid var(--border-bottom);
   background: var(--input-background-color) !important;
-  border-radius: 8px;
+  border-radius: calc(var(--gap) / 4);
   width: 100%;
   padding: 4px 8px;
   font-family: var(--font-roboto) var(--font-mono);
