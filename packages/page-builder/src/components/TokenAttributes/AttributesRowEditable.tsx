@@ -24,26 +24,26 @@ export type CountOption = {
 
 export const TypeOptions: TypeOption[] = [
   {
-    text: 'string',
+    text: 'Text',
     value: 'string'
   },
   {
-    text: 'enumerable',
+    text: 'Select',
     value: 'enum'
   }
 ];
 
 export const CountOptions: CountOption[] = [
   {
-    text: 'optional',
+    text: 'Optional',
     value: 'optional'
   },
   {
-    text: 'required',
+    text: 'Required',
     value: 'required'
   },
   {
-    text: 'repeated',
+    text: 'Repeated',
     value: 'repeated'
   }
 ];

@@ -17,7 +17,7 @@ interface CollectionCardProps {
 }
 
 function CollectionCover ({ collectionInfo }: CollectionCardProps): React.ReactElement {
-  const imgUrl = useCollectionCover(collectionInfo);
+  const { imgUrl } = useCollectionCover(collectionInfo);
 
   return (
     <div className='collection-card-img'>
