@@ -7,6 +7,7 @@ import type { AttributeItemType, FieldRuleType, FieldType, ProtobufAttributeType
 
 import React, { memo, ReactElement, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
+import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 
 import { HelpTooltip, UnqButton } from '@polkadot/react-components';
 import { fillAttributes, fillProtobufJson } from '@polkadot/react-components/util/protobufUtils';
@@ -35,8 +36,9 @@ const defaultAttributesWithTokenIpfs: AttributeItemType[] = [
 ];
 
 function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttributes): ReactElement {
-  const { getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
+  const { getCollectionOnChainSchema, saveConstOnChainSchema } = useCollection();
   const [attributes, setAttributes] = useState<AttributeItemType[]>(defaultAttributesWithTokenIpfs);
+  const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<number[]>([]);
   const history = useHistory();
   const isOwner = collectionInfo?.owner === account;
@@ -57,9 +59,25 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     setAttributes(newAttributes);
   }, [attributes]);
 
+  const closeSaveConfirmation = useCallback(() => {
+    setIsSaveConfirmationOpen(false);
+  }, []);
+
   const onSuccess = useCallback(() => {
     history.push('/builder');
   }, [history]);
+
+  const onSaveForm = useCallback(() => {
+    try {
+      const protobufJson: ProtobufAttributeType = fillProtobufJson(attributes);
+
+      if (account && collectionId) {
+        saveConstOnChainSchema({ account, collectionId, schema: JSON.stringify(protobufJson), successCallback: onSuccess });
+      }
+    } catch (e) {
+      console.log('save onChain schema error', e);
+    }
+  }, [account, attributes, collectionId, onSuccess, saveConstOnChainSchema]);
 
   const deleteAttribute = useCallback((index) => {
     setAttributes([
@@ -67,22 +85,14 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     ]);
   }, [attributes]);
 
-  // @todo - api.tx.utility.batch
-  const onSaveConstSchemaSuccess = useCallback(() => {
-    setSchemaVersion({ account, collectionId, schemaVersion: 'Unique', successCallback: onSuccess });
-  }, [account, collectionId, onSuccess, setSchemaVersion]);
-
   const onSaveAll = useCallback(() => {
-    try {
-      const protobufJson: ProtobufAttributeType = fillProtobufJson(attributes);
-
-      if (account && collectionId) {
-        saveConstOnChainSchema({ account, collectionId, schema: JSON.stringify(protobufJson), successCallback: onSaveConstSchemaSuccess });
-      }
-    } catch (e) {
-      console.log('save onChain schema error', e);
+    // user didn't fill attributes, we have only default ipfsJson attribute
+    if (attributes.length === 1) {
+      setIsSaveConfirmationOpen(true);
+    } else {
+      onSaveForm();
     }
-  }, [account, attributes, collectionId, onSaveConstSchemaSuccess, saveConstOnChainSchema]);
+  }, [attributes, onSaveForm]);
 
   const setAttributeCountType = useCallback((countType: FieldRuleType, index: number) => {
     setAttributes((prevAttributes: AttributeItemType[]) => {
@@ -244,6 +254,15 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
       </UnqButton>
       <WarningText />
       <div className='attributes-button'>
+        <Confirm
+          cancelButton='No, return'
+          className='unique-modal'
+          confirmButton='Yes, I am sure'
+          header='Are you sure that you want to save collection without attributes?'
+          onCancel={closeSaveConfirmation}
+          onConfirm={onSaveForm}
+          open={isSaveConfirmationOpen}
+        />
         <UnqButton
           content='Confirm'
           isDisabled={formErrors?.length > 0}

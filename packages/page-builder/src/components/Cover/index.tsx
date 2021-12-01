@@ -21,7 +21,7 @@ interface CoverProps {
 }
 
 function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps): React.ReactElement {
-  const { saveVariableOnChainSchema } = useCollection();
+  const { setSchemaVersion, saveVariableOnChainSchema } = useCollection();
   const [imgAddress, setImgAddress] = useState<string>();
   const { uploadImg } = useImageService();
   const history = useHistory();
@@ -56,6 +56,11 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
     history.push(`/builder/collections/${collectionId}/token-attributes`);
   }, [collectionId, history]);
 
+  // @todo - api.tx.utility.batch
+  const onSaveVariableSchemaSuccess = useCallback(() => {
+    setSchemaVersion({ account, collectionId, schemaVersion: 'Unique', successCallback: onSuccess });
+  }, [account, collectionId, onSuccess, setSchemaVersion]);
+
   const saveVariableSchema = useCallback(() => {
     if (!imgAddress) {
       onSuccess();
@@ -64,9 +69,9 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
         collectionCover: imgAddress
       };
 
-      saveVariableOnChainSchema({ account, collectionId, schema: JSON.stringify(varDataWithImage), successCallback: onSuccess });
+      saveVariableOnChainSchema({ account, collectionId, schema: JSON.stringify(varDataWithImage), successCallback: onSaveVariableSchemaSuccess });
     }
-  }, [account, collectionId, imgAddress, onSuccess, saveVariableOnChainSchema]);
+  }, [account, collectionId, imgAddress, onSuccess, saveVariableOnChainSchema, onSaveVariableSchemaSuccess]);
 
   useEffect(() => {
     void uploadImage();

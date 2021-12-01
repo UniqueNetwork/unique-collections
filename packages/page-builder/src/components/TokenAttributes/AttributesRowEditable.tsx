@@ -4,7 +4,6 @@
 import type { FieldRuleType, FieldType } from '@polkadot/react-components/util/protobufUtils';
 
 import React, { memo, ReactElement, useCallback, useEffect, useState } from 'react';
-import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 
 import { Dropdown, HelpTooltip, Input } from '@polkadot/react-components';
 import EnumsInput from '@polkadot/react-components/EnumsInput';
@@ -67,7 +66,6 @@ interface AttributesRowEditableProps {
 
 function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement {
   const { attributeCountType, attributeName, attributeType, attributeValues, attributes, formErrors, index, isOwner, removeItem, setAttributeCountType, setAttributeName, setAttributeType, setAttributeValues, setFormErrors } = props;
-  const [isRemoveConfirmationOpen, setIsRemoveConfirmationOpen] = useState<boolean>(false);
   const [currentAttributeName, setCurrentAttributeName] = useState<string>(attributeName);
   const [isAttributeNameError, setIsAttributeNameError] = useState<boolean>(false);
 
@@ -85,18 +83,7 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
     removeError();
   }, [removeError]);
 
-  const closeRemoveConfirmation = useCallback(() => {
-    setIsRemoveConfirmationOpen(false);
-  }, []);
-
-  const openRemoveConfirmation = useCallback(() => {
-    if (isOwner) {
-      setIsRemoveConfirmationOpen(true);
-    }
-  }, [isOwner]);
-
   const onRemoveItem = useCallback(() => {
-    setIsRemoveConfirmationOpen(false);
     removeItem(index);
   }, [index, removeItem]);
 
@@ -212,16 +199,9 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
         </div>
       </div>
       <div className='row-section actions'>
-        <Confirm
-          className='unique-modal'
-          header={`Deleting the attribute ${attributeName}`}
-          onCancel={closeRemoveConfirmation}
-          onConfirm={onRemoveItem}
-          open={isRemoveConfirmationOpen}
-        />
         <img
           alt='deleteIcon'
-          onClick={openRemoveConfirmation}
+          onClick={onRemoveItem}
           src={trashIcon as string}
           style={{ cursor: isOwner ? 'pointer' : 'not-allowed' }}
         />
