@@ -54,6 +54,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <p>Required field (max 64 symbols)</p>
         <Input
           className='isSmall'
+          maxLength={64}
           onChange={setName}
           value={name}
         />
@@ -62,6 +63,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <h2>Description</h2>
         <p>Max 256 symbols</p>
         <TextArea
+          maxLength={256}
           onChange={setDescription}
           seed={description}
         />
@@ -71,7 +73,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <p>Token name as displayed in Wallet (max 16 symbols)</p>
         <Input
           className='isSmall'
-          isError={tokenPrefix?.length > 16}
+          maxLength={16}
           onChange={setTokenPrefix}
           value={tokenPrefix}
         />
