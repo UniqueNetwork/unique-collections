@@ -3,6 +3,7 @@
 
 import './styles.scss';
 
+import BN from 'bn.js';
 import React, { memo, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 
@@ -21,11 +22,29 @@ interface CoverProps {
 }
 
 function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps): React.ReactElement {
-  const { setSchemaVersion, saveVariableOnChainSchema } = useCollection();
+  const { calculateSetSchemaVersionFee, calculateSetVariableOnChainSchemaFee, saveVariableOnChainSchema, setSchemaVersion } = useCollection();
+  const [coverFees, setCoverFees] = useState<BN | null>(null);
   const [imgAddress, setImgAddress] = useState<string>();
   const { uploadImg } = useImageService();
   const history = useHistory();
   const inputFileRef = useRef<HTMLInputElement>(null);
+
+  const calculateFee = useCallback(async () => {
+    if (account) {
+      const setSchemaVersionFee = (await calculateSetSchemaVersionFee({ account, collectionId, schemaVersion: 'Unique' })) || new BN(0);
+      let setVariableOnChainSchemaFee: BN = new BN(0);
+
+      if (account && collectionId && imgAddress) {
+        const varDataWithImage = {
+          collectionCover: imgAddress
+        };
+
+        setVariableOnChainSchemaFee = (await calculateSetVariableOnChainSchemaFee({ account, collectionId, schema: JSON.stringify(varDataWithImage) })) || new BN(0);
+      }
+
+      setCoverFees(setSchemaVersionFee.add(setVariableOnChainSchemaFee));
+    }
+  }, [account, calculateSetSchemaVersionFee, calculateSetVariableOnChainSchemaFee, collectionId, imgAddress]);
 
   // saveConstOnChainSchema({ account, collectionId, schema: JSON.stringify(protobufJson), successCallback: onSuccess });
 
@@ -77,6 +96,10 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
     void uploadImage();
   }, [uploadImage]);
 
+  useEffect(() => {
+    void calculateFee();
+  }, [calculateFee]);
+
   return (
     <div className='cover'>
       <h1 className='header-text'>Cover</h1>
@@ -124,7 +147,9 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
           </div>
         </div>
       </div>
-      <WarningText />
+      { coverFees && (
+        <WarningText fee={coverFees} />
+      )}
       <UnqButton
         content='Confirm'
         isFilled

@@ -223,8 +223,9 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
           }
         })}
       </form>
-
-      <WarningText fee={createFees} />
+      { createFees && (
+        <WarningText fee={createFees} />
+      )}
       <div className='footer-buttons'>
         <UnqButton
           content='Confirm'

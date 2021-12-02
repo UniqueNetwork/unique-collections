@@ -86,6 +86,18 @@ export function useCollection () {
     return 0;
   }, [api]);
 
+  const calculateCreateCollectionFee = useCallback(async ({ account, description, modeprm, name, tokenPrefix }: { account: string, name: string, description: string, tokenPrefix: string, modeprm: { nft?: null, fungible?: null, refungible?: null, invalid?: null }}): Promise<BN | null> => {
+    try {
+      const fee = await api.tx.unique.createCollection(strToUTF16(name), strToUTF16(description), strToUTF16(tokenPrefix), modeprm).paymentInfo(account) as { partialFee: BN };
+
+      return fee.partialFee;
+    } catch (error) {
+      console.error((error as Error).message);
+
+      return null;
+    }
+  }, [api]);
+
   const createCollection = useCallback((account: string, { description, modeprm, name, tokenPrefix }: { name: string, description: string, tokenPrefix: string, modeprm: { nft?: null, fungible?: null, refungible?: null, invalid?: null }}, callBacks?: TransactionCallBacks) => {
     const transaction = api.tx.unique.createCollection(strToUTF16(name), strToUTF16(description), strToUTF16(tokenPrefix), modeprm);
 
@@ -156,6 +168,18 @@ export function useCollection () {
     return [];
   }, [api]);
 
+  const calculateSetSchemaVersionFee = useCallback(async ({ account, collectionId, schemaVersion }: { account: string, schemaVersion: SchemaVersionTypes, collectionId: string }): Promise<BN | null> => {
+    try {
+      const fee = await api.tx.unique.setSchemaVersion(collectionId, schemaVersion).paymentInfo(account) as { partialFee: BN };
+
+      return fee.partialFee;
+    } catch (error) {
+      console.error((error as Error).message);
+
+      return null;
+    }
+  }, [api]);
+
   const setSchemaVersion = useCallback(({ account, collectionId, errorCallback, schemaVersion, successCallback }: { account: string, schemaVersion: SchemaVersionTypes, collectionId: string, successCallback?: () => void, errorCallback?: () => void }) => {
     const transaction = api.tx.unique.setSchemaVersion(collectionId, schemaVersion);
 
@@ -214,6 +238,18 @@ export function useCollection () {
     });
   }, [api, queueExtrinsic]);
 
+  const calculateSetConstOnChainSchemaFees = useCallback(async ({ account, collectionId, schema }: { account: string, schema: string, collectionId: string }): Promise<BN | null> => {
+    try {
+      const fee = await api.tx.unique.setConstOnChainSchema(collectionId, schema).paymentInfo(account) as { partialFee: BN };
+
+      return fee.partialFee;
+    } catch (error) {
+      console.error((error as Error).message);
+
+      return null;
+    }
+  }, [api]);
+
   const saveConstOnChainSchema = useCallback(({ account, collectionId, errorCallback, schema, successCallback }: { account: string, collectionId: string, schema: string, successCallback?: () => void, errorCallback?: () => void }) => {
     const transaction = api.tx.unique.setConstOnChainSchema(collectionId, schema);
 
@@ -227,6 +263,18 @@ export function useCollection () {
       txUpdateCb: () => { console.log('set collection constOnChain update'); }
     });
   }, [api, queueExtrinsic]);
+
+  const calculateSetVariableOnChainSchemaFee = useCallback(async ({ account, collectionId, schema }: { account: string, schema: string, collectionId: string }): Promise<BN | null> => {
+    try {
+      const fee = await api.tx.unique.setVariableOnChainSchema(collectionId, schema).paymentInfo(account) as { partialFee: BN };
+
+      return fee.partialFee;
+    } catch (error) {
+      console.error((error as Error).message);
+
+      return null;
+    }
+  }, [api]);
 
   const saveVariableOnChainSchema = useCallback(({ account, collectionId, errorCallback, schema, successCallback }: { account: string, collectionId: string, schema: string, successCallback?: () => void, errorCallback?: () => void }) => {
     const transaction = api.tx.unique.setVariableOnChainSchema(collectionId, schema);
@@ -324,6 +372,10 @@ export function useCollection () {
 
   return {
     addCollectionAdmin,
+    calculateCreateCollectionFee,
+    calculateSetSchemaVersionFee,
+    calculateSetConstOnChainSchemaFees,
+    calculateSetVariableOnChainSchemaFee,
     confirmSponsorship,
     createCollection,
     destroyCollection,

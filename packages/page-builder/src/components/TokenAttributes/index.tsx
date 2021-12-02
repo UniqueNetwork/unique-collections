@@ -5,6 +5,7 @@ import './styles.scss';
 
 import type { AttributeItemType, FieldRuleType, FieldType, ProtobufAttributeType } from '@polkadot/react-components/util/protobufUtils';
 
+import BN from 'bn.js';
 import React, { memo, ReactElement, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
@@ -36,10 +37,11 @@ const defaultAttributesWithTokenIpfs: AttributeItemType[] = [
 ];
 
 function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttributes): ReactElement {
-  const { getCollectionOnChainSchema, saveConstOnChainSchema } = useCollection();
+  const { calculateSetConstOnChainSchemaFees, getCollectionOnChainSchema, saveConstOnChainSchema } = useCollection();
   const [attributes, setAttributes] = useState<AttributeItemType[]>(defaultAttributesWithTokenIpfs);
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<number[]>([]);
+  const [fees, setFees] = useState<BN | null>(null);
   const history = useHistory();
   const isOwner = collectionInfo?.owner === account;
 
@@ -66,6 +68,20 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   const onSuccess = useCallback(() => {
     history.push('/builder');
   }, [history]);
+
+  const calculateFees = useCallback(async () => {
+    try {
+      const protobufJson: ProtobufAttributeType = fillProtobufJson(attributes);
+
+      if (account && collectionId) {
+        const fees = await calculateSetConstOnChainSchemaFees({ account, collectionId, schema: JSON.stringify(protobufJson) });
+
+        setFees(fees);
+      }
+    } catch (e) {
+      console.log('save onChain schema error', e);
+    }
+  }, [account, attributes, calculateSetConstOnChainSchemaFees, collectionId]);
 
   const onSaveForm = useCallback(() => {
     try {
@@ -157,6 +173,10 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   useEffect(() => {
     fillCollectionAttributes();
   }, [fillCollectionAttributes]);
+
+  useEffect(() => {
+    void calculateFees();
+  }, [calculateFees]);
 
   console.log('token attributes', attributes, 'owner', isOwner);
 
@@ -252,7 +272,9 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
           src={plusIcon as string}
         />
       </UnqButton>
-      <WarningText />
+      { fees && (
+        <WarningText fee={fees} />
+      )}
       <div className='attributes-button'>
         <Confirm
           cancelButton='No, return'

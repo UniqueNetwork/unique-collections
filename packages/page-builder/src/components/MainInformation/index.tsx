@@ -3,7 +3,8 @@
 
 import './styles.scss';
 
-import React, { memo, useCallback } from 'react';
+import BN from 'bn.js';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 
 import { Input, TextArea, UnqButton } from '@polkadot/react-components';
@@ -23,8 +24,17 @@ interface MainInformationProps {
 
 function MainInformation (props: MainInformationProps): React.ReactElement {
   const { account, description, name, setDescription, setName, setTokenPrefix, tokenPrefix } = props;
-  const { createCollection, getCreatedCollectionCount } = useCollection();
+  const { calculateCreateCollectionFee, createCollection, getCreatedCollectionCount } = useCollection();
+  const [createFees, setCreateFees] = useState<BN | null>(null);
   const history = useHistory();
+
+  const calculateFee = useCallback(async () => {
+    if (account) {
+      const fees = await calculateCreateCollectionFee({ account, description, modeprm: { nft: null }, name, tokenPrefix });
+
+      setCreateFees(fees);
+    }
+  }, [account, calculateCreateCollectionFee, description, name, tokenPrefix]);
 
   // @todo - get latest index if account is owner
   /*
@@ -65,6 +75,10 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
     }
   }, [account, createCollection, description, goToNextStep, name, tokenPrefix]);
 
+  useEffect(() => {
+    void calculateFee();
+  }, [calculateFee]);
+
   return (
     <div className='main-information'>
       <h1 className='header-text'>Main information</h1>
@@ -97,7 +111,9 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
           value={tokenPrefix}
         />
       </div>
-      <WarningText />
+      { createFees && (
+        <WarningText fee={createFees} />
+      )}
       <UnqButton
         content='Confirm'
         isDisabled={!name || !tokenPrefix || tokenPrefix.length > 16}
