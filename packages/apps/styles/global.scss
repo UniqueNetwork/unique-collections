@@ -274,7 +274,7 @@ form {
   .ui--Dropdown {
     .ui.selection.dropdown {
       border: 1px solid var(--border-color);
-      border-radius: calc(var(--bradius) * 2);
+      border-radius: var(--bradius);
       background: var(--input-background-color);
       font: 400 16px/24px var(--font-roboto);
       margin: 0;

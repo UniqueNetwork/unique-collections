@@ -30,7 +30,7 @@ interface Props {
 const M_LENGTH = 6 + 1;
 const K_LENGTH = 3 + 1;
 
-function getFormat (registry: Registry, formatIndex = 0): [number, string] {
+export function getFormat (registry: Registry, formatIndex = 0): [number, string] {
   const decimals = registry.chainDecimals;
   const tokens = registry.chainTokens;
 
@@ -55,7 +55,7 @@ function splitFormat (value: string, label?: string, isShort?: boolean): React.R
   return formatDisplay(prefix, postfix, unit, label, isShort);
 }
 
-function format (value: Compact<any> | BN | string, [decimals, token]: [number, string], withCurrency = true, withSi?: boolean, _isShort?: boolean, labelPost?: string): React.ReactNode {
+export function format (value: Compact<any> | BN | string, [decimals, token]: [number, string], withCurrency = true, withSi?: boolean, _isShort?: boolean, labelPost?: string): React.ReactNode {
   const [prefix, postfix] = formatBalance(value, { decimals, forceUnit: '-', withSi: false }).split('.');
   const isShort = _isShort || (withSi && prefix.length >= K_LENGTH);
   const unitPost = withCurrency ? token : '';

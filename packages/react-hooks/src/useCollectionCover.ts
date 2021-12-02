@@ -8,7 +8,7 @@ import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/use
 
 const { ipfsGateway } = envConfig;
 
-export function useCollectionCover (collectionInfo: NftCollectionInterface | undefined): string | undefined {
+export function useCollectionCover (collectionInfo: NftCollectionInterface | undefined): { imgUrl: string | undefined } {
   const { getCollectionOnChainSchema } = useCollection();
   const [imgUrl, setImgUrl] = useState<string>();
 
@@ -34,5 +34,7 @@ export function useCollectionCover (collectionInfo: NftCollectionInterface | und
     fillCollectionCover();
   }, [fillCollectionCover]);
 
-  return imgUrl;
+  return {
+    imgUrl
+  };
 }

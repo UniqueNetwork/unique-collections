@@ -3,7 +3,8 @@
 
 import './styles.scss';
 
-import React, { memo, useCallback } from 'react';
+import BN from 'bn.js';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 
 import { Input, TextArea, UnqButton } from '@polkadot/react-components';
@@ -23,9 +24,38 @@ interface MainInformationProps {
 
 function MainInformation (props: MainInformationProps): React.ReactElement {
   const { account, description, name, setDescription, setName, setTokenPrefix, tokenPrefix } = props;
-  const { createCollection, getCreatedCollectionCount } = useCollection();
+  const { calculateCreateCollectionFee, createCollection, getCreatedCollectionCount } = useCollection();
+  const [createFees, setCreateFees] = useState<BN | null>(null);
   const history = useHistory();
 
+  const calculateFee = useCallback(async () => {
+    if (account) {
+      const fees = await calculateCreateCollectionFee({ account, description, modeprm: { nft: null }, name, tokenPrefix });
+
+      setCreateFees(fees);
+    }
+  }, [account, calculateCreateCollectionFee, description, name, tokenPrefix]);
+
+  // @todo - get latest index if account is owner
+  /*
+    export function getCreateCollectionResult(events: EventRecord[]): CreateCollectionResult {
+     let success = false;
+     let collectionId = 0;
+     events.forEach(({event: {data, method, section}}) => {
+      // console.log(`  ${phase}: ${section}.${method}:: ${data}`);
+      if (method == 'ExtrinsicSuccess') {
+       success = true;
+      } else if ((section == 'common') && (method == 'CollectionCreated')) {
+       collectionId = parseInt(data[0].toString(), 10);
+      }
+     });
+     const result: CreateCollectionResult = {
+      success,
+      collectionId,
+     };
+     return result;
+    }
+   */
   const goToNextStep = useCallback(async () => {
     const collectionCount = await getCreatedCollectionCount();
 
@@ -45,6 +75,10 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
     }
   }, [account, createCollection, description, goToNextStep, name, tokenPrefix]);
 
+  useEffect(() => {
+    void calculateFee();
+  }, [calculateFee]);
+
   return (
     <div className='main-information'>
       <h1 className='header-text'>Main information</h1>
@@ -53,6 +87,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <p>Required field (max 64 symbols)</p>
         <Input
           className='isSmall'
+          maxLength={64}
           onChange={setName}
           value={name}
         />
@@ -61,6 +96,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <h2>Description</h2>
         <p>Max 256 symbols</p>
         <TextArea
+          maxLength={256}
           onChange={setDescription}
           seed={description}
         />
@@ -70,12 +106,14 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <p>Token name as displayed in Wallet (max 16 symbols)</p>
         <Input
           className='isSmall'
-          isError={tokenPrefix?.length > 16}
+          maxLength={16}
           onChange={setTokenPrefix}
           value={tokenPrefix}
         />
       </div>
-      <WarningText />
+      { createFees && (
+        <WarningText fee={createFees} />
+      )}
       <UnqButton
         content='Confirm'
         isDisabled={!name || !tokenPrefix || tokenPrefix.length > 16}

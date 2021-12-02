@@ -1,7 +1,9 @@
 .collection-page{
   .page-main{
-    display: flex;
-    gap: calc(var(--gap) * 2);
+    display: grid;
+    grid-template-columns: 1fr 450px;
+    grid-column-gap: calc(var(--gap) * 2);
+    grid-row-gap: calc(var(--gap) * 2);
 
     .main-section{
       flex: 2;

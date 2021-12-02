@@ -106,8 +106,10 @@ function CollectionCard ({ account, collectionId }: CollectionCardProps): React.
                   onClick={onCreateNft}
                 />
                 <Confirm
+                  cancelButton='No, return'
                   className='unique-modal'
-                  header={'Deleting the collection'}
+                  confirmButton='Yes, I am sure'
+                  header='Are you sure that you want to burn the collection? You will not be able to undo this action.'
                   onCancel={closeBurnModal}
                   onConfirm={onBurnCollection}
                   open={isBurnCollectionOpen}
@@ -138,17 +140,6 @@ function CollectionCard ({ account, collectionId }: CollectionCardProps): React.
                 isDisabled
               />
             </div>
-            {/* <div className='content-tokens'>
-              <p>NFTs preview</p>
-              <div className='content-tokens-list'>
-                <img />
-                <img />
-                <img />
-                <img />
-                <img />
-                <img />
-              </div>
-            </div> */}
           </div>
         </>
       )}

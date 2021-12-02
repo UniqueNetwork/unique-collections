@@ -3,7 +3,8 @@
 
 import './styles.scss';
 
-import React, { memo, SyntheticEvent, useCallback, useEffect, useState } from 'react';
+import BN from 'bn.js';
+import React, { memo, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 
 import clearIcon from '@polkadot/app-builder/images/closeIcon.svg';
@@ -15,15 +16,35 @@ import WarningText from '../WarningText';
 
 interface CoverProps {
   account: string;
+  avatarImg: File | null;
   collectionId: string;
+  setAvatarImg: (avatarImg: File | null) => void;
 }
 
-function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
-  const { saveVariableOnChainSchema } = useCollection();
-  const [avatarImg, setAvatarImg] = useState<File | null>(null);
+function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps): React.ReactElement {
+  const { calculateSetSchemaVersionFee, calculateSetVariableOnChainSchemaFee, saveVariableOnChainSchema, setSchemaVersion } = useCollection();
+  const [coverFees, setCoverFees] = useState<BN | null>(null);
   const [imgAddress, setImgAddress] = useState<string>();
   const { uploadImg } = useImageService();
   const history = useHistory();
+  const inputFileRef = useRef<HTMLInputElement>(null);
+
+  const calculateFee = useCallback(async () => {
+    if (account) {
+      const setSchemaVersionFee = (await calculateSetSchemaVersionFee({ account, collectionId, schemaVersion: 'Unique' })) || new BN(0);
+      let setVariableOnChainSchemaFee: BN = new BN(0);
+
+      if (account && collectionId && imgAddress) {
+        const varDataWithImage = {
+          collectionCover: imgAddress
+        };
+
+        setVariableOnChainSchemaFee = (await calculateSetVariableOnChainSchemaFee({ account, collectionId, schema: JSON.stringify(varDataWithImage) })) || new BN(0);
+      }
+
+      setCoverFees(setSchemaVersionFee.add(setVariableOnChainSchemaFee));
+    }
+  }, [account, calculateSetSchemaVersionFee, calculateSetVariableOnChainSchemaFee, collectionId, imgAddress]);
 
   // saveConstOnChainSchema({ account, collectionId, schema: JSON.stringify(protobufJson), successCallback: onSuccess });
 
@@ -32,11 +53,15 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
     const file: File = (target.files as FileList)[0];
 
     setAvatarImg(file);
-  }, []);
+  }, [setAvatarImg]);
 
   const clearTokenImg = useCallback(() => {
     setAvatarImg(null);
-  }, []);
+
+    if (inputFileRef.current) {
+      inputFileRef.current.value = '';
+    }
+  }, [setAvatarImg]);
 
   const uploadImage = useCallback(async () => {
     if (avatarImg) {
@@ -50,19 +75,30 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
     history.push(`/builder/collections/${collectionId}/token-attributes`);
   }, [collectionId, history]);
 
+  // @todo - api.tx.utility.batch
+  const onSaveVariableSchemaSuccess = useCallback(() => {
+    setSchemaVersion({ account, collectionId, schemaVersion: 'Unique', successCallback: onSuccess });
+  }, [account, collectionId, onSuccess, setSchemaVersion]);
+
   const saveVariableSchema = useCallback(() => {
-    if (account && collectionId && imgAddress) {
+    if (!imgAddress) {
+      onSuccess();
+    } else if (account && collectionId && imgAddress) {
       const varDataWithImage = {
         collectionCover: imgAddress
       };
 
-      saveVariableOnChainSchema({ account, collectionId, schema: JSON.stringify(varDataWithImage), successCallback: onSuccess });
+      saveVariableOnChainSchema({ account, collectionId, schema: JSON.stringify(varDataWithImage), successCallback: onSaveVariableSchemaSuccess });
     }
-  }, [account, collectionId, imgAddress, onSuccess, saveVariableOnChainSchema]);
+  }, [account, collectionId, imgAddress, onSuccess, saveVariableOnChainSchema, onSaveVariableSchemaSuccess]);
 
   useEffect(() => {
     void uploadImage();
   }, [uploadImage]);
+
+  useEffect(() => {
+    void calculateFee();
+  }, [calculateFee]);
 
   return (
     <div className='cover'>
@@ -75,6 +111,7 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
             accept='image/*'
             id='avatar-file-input'
             onChange={uploadAvatar}
+            ref={inputFileRef}
             style={{ display: 'none' }}
             type='file'
           />
@@ -110,10 +147,11 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
           </div>
         </div>
       </div>
-      <WarningText />
+      { coverFees && (
+        <WarningText fee={coverFees} />
+      )}
       <UnqButton
         content='Confirm'
-        isDisabled={!imgAddress}
         isFilled
         onClick={saveVariableSchema}
         size='medium'

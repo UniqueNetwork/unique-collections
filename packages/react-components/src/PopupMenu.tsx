@@ -22,7 +22,7 @@ const PopupMenu = (props: Props) => {
       <div className='popup-link'>
         <Menu.Item
           className=''
-          name='Go to wallet'
+          name='View tokens'
           onClick={goToWallet}
         />
       </div>

@@ -30,27 +30,37 @@
       border-radius: calc(var(--gap) / 4);
       height: 160px;
       width: 160px;
+
+      img {
+        height: 100%;
+      }
     }
 
-    .content-header{
-      font-size: 18px;
-      line-height: 26px;
-      color: var(--title-color-color);
-      margin-bottom: calc(var(--gap) / 4);
-    }
+    .content-description {
+      overflow: hidden;
 
-    .content-text{
-      line-height: 22px;
-      color:var(--tabs-color) ;
-      margin: 0;
+      .content-header{
+        font-size: 18px;
+        line-height: 26px;
+        color: var(--title-color-color);
+        margin-bottom: calc(var(--gap) / 4);
+        word-break: break-word;
+      }
+
+      .content-text{
+        line-height: 22px;
+        color:var(--tabs-color);
+        margin: 0;
+        word-break: break-word;
+      }
     }
   }
 
-  .token-attributes{
+  .const-attributes{
     margin-top: calc((var(--gap) / 2) * 3);
     font-family: var(--font-roboto);
 
-    h4{
+    h4 {
       font-size: 14px;
       line-height: 22px;
       margin-bottom:calc(var(--gap) / 2); ;

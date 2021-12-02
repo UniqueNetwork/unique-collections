@@ -1,4 +1,4 @@
-.warning-text{
+.warning-text {
   display: flex;
   background-color: var(--modal-warning-background-color);
   color: var(--modal-warning-text-color);
@@ -7,14 +7,15 @@
   border-radius: calc(var(--gap) / 4);
   margin: 40px 0 24px;
 
-  img{
+  img {
     margin: 0 calc(var(--gap) / 2) ;
   }
 
-  p{
+  p {
     color: var(--modal-warning-text-color);
     font-family: var(--font-roboto);
     font-size: 14px;
     line-height: 22px;
+    margin-bottom: 0;
   }
 }

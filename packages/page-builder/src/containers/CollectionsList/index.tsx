@@ -99,18 +99,20 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
               hasMore={hasMore}
               initialLoad={false}
               loadMore={fetchScrolledData}
-              loader={<Loader
-                active
-                className='load-more'
-                inline='centered'
-                key={'nft-collections'}
-              />}
+              loader={(
+                <Loader
+                  active
+                  className='load-more'
+                  inline='centered'
+                  key={'nft-collections'}
+                />
+              )}
               pageStart={1}
               threshold={200}
               useWindow={true}
             >
               <div className='market-pallet__item'>
-                {Object.values(collectionsLoaded).length && Object.values(collectionsLoaded).map((collection: UserCollection) => (
+                {Object.values(collectionsLoaded).length > 0 && Object.values(collectionsLoaded).map((collection: UserCollection) => (
                   <CollectionCard
                     account={account}
                     collectionId={collection.collection_id}
