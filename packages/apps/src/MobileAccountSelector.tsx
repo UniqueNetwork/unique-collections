@@ -36,13 +36,14 @@ const MobileAccountSelector = (props: MobileAccountSelectorProps): React.ReactEl
         <>
           <IdentityIcon
             canNotCopy
-            className='icon'
+            className='identity-icon'
             onClick={onClick}
             value={address}
           />
 
           <img
             alt='menu-arrow'
+            className='menu-arrow'
             onClick={onClick}
             src={menuArrow as string}
           /> </>)) ||

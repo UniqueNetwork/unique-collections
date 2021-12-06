@@ -9,6 +9,7 @@ import { Dropdown, HelpTooltip, Input } from '@polkadot/react-components';
 import EnumsInput from '@polkadot/react-components/EnumsInput';
 import { AttributeItemType } from '@polkadot/react-components/util/protobufUtils';
 
+import editIcon from '../../images/editIcon.svg';
 import trashIcon from '../../images/trashIcon.svg';
 
 export type TypeOption = {
@@ -189,6 +190,16 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
             mobilePosition={'bottom center'}
           />
         </div>
+        <div>
+          <Input
+            className='isSmall'
+            isError={isAttributeNameError}
+            onBlur={onSetAttributeName}
+            onChange={setCurrentAttributeName}
+            placeholder='Attribute name'
+            value={currentAttributeName}
+          />
+        </div>
         <div className='last-section'>
           { attributeType !== 'string' && (
             <EnumsInput
@@ -200,11 +211,19 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
       </div>
       <div className='row-section actions'>
         <img
+          alt='editIcon'
+          className='editIcon'
+          src={editIcon as string}
+          style={{ cursor: isOwner ? 'pointer' : 'not-allowed' }}
+        />
+        <img
           alt='deleteIcon'
+          className='deleteIcon'
           onClick={onRemoveItem}
           src={trashIcon as string}
           style={{ cursor: isOwner ? 'pointer' : 'not-allowed' }}
         />
+
       </div>
     </div>
   );
