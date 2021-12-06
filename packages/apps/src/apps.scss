@@ -8,10 +8,6 @@
   min-height: 100vh;
 }
 
-  .user-icon{
-    display: none;
-  }
-
 .app-header {
   background: var(--header-background);
   margin-bottom: 0;
@@ -565,20 +561,6 @@
 
     &.no-accounts {
       margin-top: 67px;
-    }
-  }
-
-  .user-icon{
-    display: block;
-  }
-
-  .menu-arrow{
-    display: none;
-  }
-
-  .identity-icon{
-    svg {
-      display: none;
     }
   }
 
