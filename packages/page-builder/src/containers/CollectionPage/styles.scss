@@ -35,6 +35,12 @@
 
 @media (max-width: 768px) {
   .collection-page{
+    .page-main{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
 
     .hidden{
       display: none !important;
