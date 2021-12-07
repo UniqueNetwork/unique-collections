@@ -45,7 +45,7 @@ function CollectionPreview ({ avatarImg, collectionDescription, collectionInfo, 
         </div>
         <div className='content-description'>
           <h3 className='content-header'>{collectionInfo ? collectionName16Decoder(collectionInfo.name) : (collectionName || 'Name')}</h3>
-          <p className='content-text'>{collectionDescription || 'Description'}</p>
+          <p className='content-text'>{collectionInfo ? collectionName16Decoder(collectionInfo?.description) : collectionDescription || 'Description'}</p>
           { collectionId && (
             <p className='content-info'><span>ID:</span> {collectionId}</p>
           )}

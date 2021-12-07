@@ -76,7 +76,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
     void fetchCollectionInfo();
   }, [fetchCollectionInfo]);
 
-  console.log('CollectionPage', location.pathname, 'basePath', basePath);
+  console.log('CollectionPage', location.pathname, 'basePath', basePath, 'collectionInfo', collectionInfo);
 
   return (
     <div className='collection-page'>

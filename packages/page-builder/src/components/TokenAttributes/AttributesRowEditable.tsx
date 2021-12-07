@@ -190,16 +190,6 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
             mobilePosition={'bottom center'}
           />
         </div>
-        <div>
-          <Input
-            className='isSmall'
-            isError={isAttributeNameError}
-            onBlur={onSetAttributeName}
-            onChange={setCurrentAttributeName}
-            placeholder='Attribute name'
-            value={currentAttributeName}
-          />
-        </div>
         <div className='last-section'>
           { attributeType !== 'string' && (
             <EnumsInput
