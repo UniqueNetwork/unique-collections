@@ -38,13 +38,14 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const currentAccount = useRef<string>();
 
   const fetchScrolledData = useCallback(() => {
-        !userCollectionsLoading && setPage((prevPage: number) => prevPage + 1);
+    !userCollectionsLoading && setPage((prevPage: number) => prevPage + 1);
   }, [userCollectionsLoading]);
 
   const initializeCollections = useCallback(() => {
     if (account && !userCollectionsLoading && userCollections?.collections) {
       mountedRef.current && setCollectionsLoaded((prevState: CollectionsListType) => {
         const collectionsList: CollectionsListType = { ...prevState };
+
         for (let j = 0; j < userCollections.collections.length; j++) {
           collectionsList[`${userCollections.collections[j].collection_id}`] = userCollections.collections[j];
         }
@@ -52,14 +53,14 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
         return collectionsList;
       });
     }
-  }, [account, mountedRef, userCollections, userCollectionsLoading, searchString]);
+  }, [account, mountedRef, userCollections, userCollectionsLoading]);
 
   useEffect(() => {
-    if(searchString) {
+    if (searchString) {
       setPage(1);
       setCollectionsLoaded({});
     }
-  },[searchString])
+  }, [searchString]);
 
   const refillCollections = useCallback(() => {
     if (currentAccount.current !== account) {
