@@ -31,20 +31,19 @@ const limit = 10;
 function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const [searchString, setSearchString] = useState<string>('');
   const [page, setPage] = useState<number>(1);
-  const [offset, setOffset] = useState<number>(0);
-  const { userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, offset, searchString);
+  const { userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString);
   const [collectionsLoaded, setCollectionsLoaded] = useState<CollectionsListType>({});
   const hasMore = (userCollections?.collections && Object.keys(collectionsLoaded).length < userCollections.collections?.length);
   const mountedRef = useIsMountedRef();
   const currentAccount = useRef<string>();
 
   const fetchScrolledData = useCallback(() => {
-      !userCollectionsLoading && setPage((prevPage: number) => prevPage + 1);
-  }, [userCollectionsLoading]);
-
-  useEffect(() => {
-      setOffset((page - 1) * limit)
-  },[page])
+      if(!searchString){
+        !userCollectionsLoading && setPage((prevPage: number) => prevPage + 1);
+      }else {
+        setPage(1);
+      }
+  }, [userCollectionsLoading, searchString]);
 
   const initializeCollections = useCallback(() => {
     if (account && !userCollectionsLoading && userCollections?.collections && !searchString) {
@@ -69,11 +68,11 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
         setCollectionsLoaded({});
       }
     }
-  }, [account, mountedRef, userCollections, userCollectionsLoading, searchString, offset]);
+  }, [account, mountedRef, userCollections, userCollectionsLoading, searchString]);
 
   useEffect(() => {
     if(searchString) {
-      setOffset(0);
+      setPage(1);
     }
   },[searchString])
 
