@@ -38,12 +38,8 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const currentAccount = useRef<string>();
 
   const fetchScrolledData = useCallback(() => {
-      if(!searchString){
         !userCollectionsLoading && setPage((prevPage: number) => prevPage + 1);
-      } else {
-        setPage(1);
-      }
-  }, [userCollectionsLoading, searchString]);
+  }, [userCollectionsLoading]);
 
   const initializeCollections = useCallback(() => {
     if (account && !userCollectionsLoading && userCollections?.collections) {
