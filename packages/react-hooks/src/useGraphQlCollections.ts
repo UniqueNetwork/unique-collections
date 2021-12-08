@@ -35,12 +35,24 @@ const USER_COLLECTIONS = gql`
   }
 `;
 
-export const useGraphQlCollections = (account: string, limit: number, offset: number): UseGraphQlInterface => {
+const USER_COLLECTIONS_SEARCH = gql`
+  query Collections($name: String!) {
+    collections(where: { name: { _eq: $name } }) {
+       collection_id
+       description
+       mode
+       name
+    }
+  }
+`;
+
+export const useGraphQlCollections = (account: string, limit: number, offset: number, name?:string): UseGraphQlInterface => {
+  console.log(name)
   // can be useLazyQuery
-  const { data: userCollections, error: userCollectionsError, loading: userCollectionsLoading } = useQuery(USER_COLLECTIONS, {
+  const { data: userCollections, error: userCollectionsError, loading: userCollectionsLoading } = useQuery(name?.length ? USER_COLLECTIONS_SEARCH :  USER_COLLECTIONS, {
     fetchPolicy: 'network-only', // Used for first execution
     nextFetchPolicy: 'cache-first',
-    variables: { limit, offset, owner: account }
+    variables: { limit, offset, owner: account, name}
   }) as unknown as { data: UserCollections, error: string, loading: boolean };
 
   return {
