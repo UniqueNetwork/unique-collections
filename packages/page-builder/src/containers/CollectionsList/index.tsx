@@ -40,13 +40,13 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const fetchScrolledData = useCallback(() => {
       if(!searchString){
         !userCollectionsLoading && setPage((prevPage: number) => prevPage + 1);
-      }else {
+      } else {
         setPage(1);
       }
   }, [userCollectionsLoading, searchString]);
 
   const initializeCollections = useCallback(() => {
-    if (account && !userCollectionsLoading && userCollections?.collections && !searchString) {
+    if (account && !userCollectionsLoading && userCollections?.collections) {
       mountedRef.current && setCollectionsLoaded((prevState: CollectionsListType) => {
         const collectionsList: CollectionsListType = { ...prevState };
         for (let j = 0; j < userCollections.collections.length; j++) {
@@ -55,24 +55,13 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
 
         return collectionsList;
       });
-    } else {
-      if(userCollections?.collections.length && searchString) {
-        mountedRef.current && setCollectionsLoaded(() => {
-          const searchList: CollectionsListType = {};
-          for (let j = 0; j < userCollections.collections.length; j++) {
-            searchList[`${userCollections.collections[j].collection_id}`] = userCollections.collections[j];
-          }
-          return searchList;
-        });
-      } else if (userCollections?.collections.length === 0) {
-        setCollectionsLoaded({});
-      }
     }
   }, [account, mountedRef, userCollections, userCollectionsLoading, searchString]);
 
   useEffect(() => {
     if(searchString) {
       setPage(1);
+      setCollectionsLoaded({});
     }
   },[searchString])
 
