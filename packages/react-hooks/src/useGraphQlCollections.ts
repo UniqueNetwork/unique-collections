@@ -23,36 +23,25 @@ export type UseGraphQlInterface = {
 };
 
 const USER_COLLECTIONS = gql`
-  query Collections($limit: Int!, $offset: Int!, $owner: String!) {
-    collections(limit: $limit, offset: $offset, where: { owner: { _eq: $owner } }) {
+  query Collections($limit: Int!, $offset: Int!, $owner: String!, $name: String!) {
+    collections(limit: $limit, offset: $offset, where: { owner: { _eq: $owner }, name: { _like: $name } }) {
       collection_id
       description
       name
       offchain_schema
       owner
       token_limit
+      mode
     }
   }
 `;
 
-const USER_COLLECTIONS_SEARCH = gql`
-  query Collections($name: String!) {
-    collections(where: { name: { _eq: $name } }) {
-       collection_id
-       description
-       mode
-       name
-    }
-  }
-`;
-
-export const useGraphQlCollections = (account: string, limit: number, offset: number, name?:string): UseGraphQlInterface => {
-  console.log(name)
+export const useGraphQlCollections = (account: string, limit: number, offset: number, name:string): UseGraphQlInterface => {
   // can be useLazyQuery
-  const { data: userCollections, error: userCollectionsError, loading: userCollectionsLoading } = useQuery(name?.length ? USER_COLLECTIONS_SEARCH :  USER_COLLECTIONS, {
+  const { data: userCollections, error: userCollectionsError, loading: userCollectionsLoading } = useQuery( USER_COLLECTIONS, {
     fetchPolicy: 'network-only', // Used for first execution
     nextFetchPolicy: 'cache-first',
-    variables: { limit, offset, owner: account, name}
+    variables: { limit, offset, owner: account, name: name.length === 0 ? '%' : name}
   }) as unknown as { data: UserCollections, error: string, loading: boolean };
 
   return {
