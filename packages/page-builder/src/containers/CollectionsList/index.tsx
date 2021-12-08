@@ -31,23 +31,25 @@ const limit = 10;
 function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const [searchString, setSearchString] = useState<string>('');
   const [page, setPage] = useState<number>(1);
-  const { userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString);
+  const [offset, setOffset] = useState<number>(0);
+  const { userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, offset, searchString);
   const [collectionsLoaded, setCollectionsLoaded] = useState<CollectionsListType>({});
   const hasMore = (userCollections?.collections && Object.keys(collectionsLoaded).length < userCollections.collections?.length);
   const mountedRef = useIsMountedRef();
   const currentAccount = useRef<string>();
 
   const fetchScrolledData = useCallback(() => {
-    if(userCollections?.collections.length >= 10) {
       !userCollectionsLoading && setPage((prevPage: number) => prevPage + 1);
-    }
   }, [userCollectionsLoading]);
 
+  useEffect(() => {
+      setOffset((page - 1) * limit)
+  },[page])
+
   const initializeCollections = useCallback(() => {
-    if (account && !userCollectionsLoading && userCollections?.collections) {
+    if (account && !userCollectionsLoading && userCollections?.collections && !searchString) {
       mountedRef.current && setCollectionsLoaded((prevState: CollectionsListType) => {
         const collectionsList: CollectionsListType = { ...prevState };
-
         for (let j = 0; j < userCollections.collections.length; j++) {
           collectionsList[`${userCollections.collections[j].collection_id}`] = userCollections.collections[j];
         }
@@ -55,9 +57,25 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
         return collectionsList;
       });
     } else {
-      setCollectionsLoaded({});
+      if(userCollections?.collections.length && searchString) {
+        mountedRef.current && setCollectionsLoaded(() => {
+          const searchList: CollectionsListType = {};
+          for (let j = 0; j < userCollections.collections.length; j++) {
+            searchList[`${userCollections.collections[j].collection_id}`] = userCollections.collections[j];
+          }
+          return searchList;
+        });
+      } else if (userCollections?.collections.length === 0) {
+        setCollectionsLoaded({});
+      }
     }
-  }, [account, mountedRef, userCollections, userCollectionsLoading, searchString]);
+  }, [account, mountedRef, userCollections, userCollectionsLoading, searchString, offset]);
+
+  useEffect(() => {
+    if(searchString) {
+      setOffset(0);
+    }
+  },[searchString])
 
   const refillCollections = useCallback(() => {
     if (currentAccount.current !== account) {
