@@ -31,7 +31,7 @@ const limit = 10;
 function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const [searchString, setSearchString] = useState<string>('');
   const [page, setPage] = useState<number>(1);
-  const { userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit);
+  const { userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString);
   const [collectionsLoaded, setCollectionsLoaded] = useState<CollectionsListType>({});
   const hasMore = (userCollections?.collections && Object.keys(collectionsLoaded).length < userCollections.collections?.length);
   const mountedRef = useIsMountedRef();
@@ -54,6 +54,13 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
       });
     }
   }, [account, mountedRef, userCollections, userCollectionsLoading]);
+
+  useEffect(() => {
+    if (searchString) {
+      setPage(1);
+      setCollectionsLoaded({});
+    }
+  }, [searchString]);
 
   const refillCollections = useCallback(() => {
     if (currentAccount.current !== account) {
