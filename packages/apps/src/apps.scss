@@ -48,6 +48,10 @@
   }
 }
 
+.user-icon {
+  display: none; 
+}
+
 .mark {
   padding: calc(var(--gap) / 2) var(--gap);
   display: flex;
@@ -599,6 +603,21 @@
     opacity: 0.8;
     max-width: 255px !important;
   }
+
+  .user-icon {
+    display: block; 
+  }
+
+  .menu-arrow {
+    display: none;
+  }
+
+  .identity-icon {
+    svg {
+      display: none;
+    }
+  }
+
 }
 
 .manage-accounts {
