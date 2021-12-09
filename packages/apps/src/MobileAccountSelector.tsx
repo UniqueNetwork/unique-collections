@@ -10,6 +10,7 @@ import { Menu } from 'semantic-ui-react';
 import IdentityIcon from '@polkadot/react-components/IdentityIcon';
 
 import menuArrow from './images/menu-arrow.svg';
+import userIcon from './images/userIcon.svg';
 
 interface MobileAccountSelectorProps {
   address?: string;
@@ -46,7 +47,14 @@ const MobileAccountSelector = (props: MobileAccountSelectorProps): React.ReactEl
             className='menu-arrow'
             onClick={onClick}
             src={menuArrow as string}
-          /> </>)) ||
+          />
+          <img
+            alt='user-icon'
+            className='user-icon'
+            onClick={onClick}
+            src={userIcon as string}
+          />
+        </>)) ||
           <Menu className='create-account'>
             <Menu.Item
               active={location.pathname === '/accounts'}
