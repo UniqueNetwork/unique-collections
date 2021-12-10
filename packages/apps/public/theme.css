@@ -81,8 +81,8 @@
   --modal-border-color: transparent;
   --modal-text-color: #000;
   --color-checkbox: #000;
-  --modal-warning-background-color: #fef6da;
-  --modal-warning-text-color: #E7AA0F;
+  --modal-warning-background-color: #FFF4E0;
+  --modal-warning-text-color: #F9A400;
 }
 
 [data-theme="NF3Digital"] {
