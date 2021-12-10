@@ -206,7 +206,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
           )}
         </div>
       </div>
-      {constAttributes.length
+      {constAttributes.length > 1
         ? (
           <form className='attributes'>
             <h1 className='header-text'>Attributes</h1>
