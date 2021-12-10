@@ -206,21 +206,27 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
           )}
         </div>
       </div>
-      {constAttributes && <form className='attributes'>
-        { Object.keys(tokenConstAttributes).length > 0 && constAttributes?.map((collectionAttribute: AttributeItemType, index) => {
-          return (
-            <>
-              <h1 className='header-text'>Attributes</h1>
-              <TokenAttributesRowEditable
-                collectionAttribute={collectionAttribute}
-                key={`${collectionAttribute.name}-${index}`}
-                setAttributeValue={setAttributeValue}
-                tokenConstAttributes={tokenConstAttributes}
-              />
-            </>
-          );
-        })}
-      </form>}
+      {constAttributes.length
+        ? (
+          <form className='attributes'>
+            <h1 className='header-text'>Attributes</h1>
+            { Object.keys(tokenConstAttributes).length > 0 && constAttributes?.map((collectionAttribute: AttributeItemType, index) => {
+              if (collectionAttribute.name !== 'ipfsJson') {
+                return (
+                  <TokenAttributesRowEditable
+                    collectionAttribute={collectionAttribute}
+                    key={`${collectionAttribute.name}-${index}`}
+                    setAttributeValue={setAttributeValue}
+                    tokenConstAttributes={tokenConstAttributes}
+                  />
+                );
+              } else {
+                return null;
+              }
+            })}
+          </form>
+        )
+        : null}
       { createFees && (
         <WarningText fee={createFees} />
       )}
