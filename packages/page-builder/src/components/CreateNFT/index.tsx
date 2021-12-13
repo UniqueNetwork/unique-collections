@@ -6,7 +6,7 @@ import './styles.scss';
 import type { TokenAttribute } from '../../types';
 
 import BN from 'bn.js';
-import React, { memo, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, SyntheticEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 
 import { Checkbox, UnqButton } from '@polkadot/react-components';
@@ -161,6 +161,8 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
     );
   }
 
+  const checkAttributes = useMemo(() => constAttributes.filter((elem: {name: string}) => elem.name !== 'ipfsJson'), [constAttributes]);
+
   return (
     <div className='create-nft'>
       <h1 className='header-text'>Image</h1>
@@ -206,23 +208,21 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
           )}
         </div>
       </div>
-      <h1 className='header-text'>Attributes</h1>
-      <form className='attributes'>
-        { Object.keys(tokenConstAttributes).length > 0 && constAttributes?.map((collectionAttribute: AttributeItemType, index) => {
-          if (collectionAttribute.name !== 'ipfsJson') {
-            return (
+      {!!checkAttributes.length &&
+        (
+          <form className='attributes'>
+            <h1 className='header-text'>Attributes</h1>
+            { Object.keys(tokenConstAttributes).length > 0 && checkAttributes.map((collectionAttribute: AttributeItemType, index) => (
               <TokenAttributesRowEditable
                 collectionAttribute={collectionAttribute}
                 key={`${collectionAttribute.name}-${index}`}
                 setAttributeValue={setAttributeValue}
                 tokenConstAttributes={tokenConstAttributes}
               />
-            );
-          } else {
-            return null;
-          }
-        })}
-      </form>
+            )
+            )}
+          </form>
+        )}
       { createFees && (
         <WarningText fee={createFees} />
       )}

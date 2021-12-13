@@ -3,7 +3,7 @@
 
 import './styles.scss';
 
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { TokenAttribute } from '@polkadot/app-builder/types';
 import { AttributeItemType } from '@polkadot/react-components/util/protobufUtils';
@@ -48,6 +48,8 @@ function TokenPreview ({ collectionInfo, collectionName, constAttributes, tokenC
     }
   }, [constAttributes, tokenConstAttributes]);
 
+  const checkAttributes = useMemo(() => constAttributes.filter((elem: {name: string}) => elem.name !== 'ipfsJson'), [constAttributes]);
+
   useEffect(() => {
     fillAttributesValues();
   }, [fillAttributesValues]);
@@ -67,25 +69,20 @@ function TokenPreview ({ collectionInfo, collectionName, constAttributes, tokenC
             {collectionInfo ? hex2a(collectionInfo.tokenPrefix) : (tokenPrefix || 'Prefix')} #1
           </h3>
           <p className='content-text'>{ collectionInfo ? collectionName16Decoder(collectionInfo.name) : (collectionName || 'Collection name')}</p>
-          { constAttributes?.length > 0 && (
+          { !!checkAttributes.length && (
             <div className='const-attributes'>
-              <h4>Token attributes  </h4>
+              <h4>Token attributes</h4>
               { Object.keys(values).length > 0 && (
                 <div className='const-attributes--block'>
-                  { constAttributes?.map((collectionAttribute: AttributeItemType) => {
-                    if (collectionAttribute.name !== 'ipfsJson') {
-                      return (
-                        <p
-                          className='content-text'
-                          key={collectionAttribute.name}
-                        >
-                          {collectionAttribute.name}: {values[collectionAttribute.name] || ''}
-                        </p>
-                      );
-                    }
-
-                    return null;
-                  })}
+                  { checkAttributes.map((collectionAttribute: AttributeItemType) => (
+                    <p
+                      className='content-text'
+                      key={collectionAttribute.name}
+                    >
+                      {collectionAttribute.name}: {values[collectionAttribute.name] || ''}
+                    </p>
+                  )
+                  )}
                 </div>
               )}
               { !Object.keys(values).length && (
