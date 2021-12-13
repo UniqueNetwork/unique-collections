@@ -66,10 +66,11 @@ function TokenPreview ({ collectionInfo, collectionName, constAttributes, tokenC
           <h3 className='content-header'>
             {collectionInfo ? hex2a(collectionInfo.tokenPrefix) : (tokenPrefix || 'Prefix')} #1
           </h3>
+          {console.log(constAttributes, 'constAttributes>>>>>>>>>>>>>>>>>>>>>>>>>>>>')}
           <p className='content-text'>{ collectionInfo ? collectionName16Decoder(collectionInfo.name) : (collectionName || 'Collection name')}</p>
-          { constAttributes?.length > 0 && (
+          { constAttributes.length > 1 && (
             <div className='const-attributes'>
-              <h4>Token attributes  </h4>
+              <h4>Token attributes</h4>
               { Object.keys(values).length > 0 && (
                 <div className='const-attributes--block'>
                   { constAttributes?.map((collectionAttribute: AttributeItemType) => {
