@@ -280,7 +280,8 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
           cancelButton='No, return'
           className='unique-modal'
           confirmButton='Yes, I am sure'
-          header='Are you sure that you want to save collection without attributes?'
+          content='You cannot return to editing the attributes in this product version.'
+          header='You have not entered attributes. Are you sure that you want to create the collection without them?'
           onCancel={closeSaveConfirmation}
           onConfirm={onSaveForm}
           open={isSaveConfirmationOpen}
