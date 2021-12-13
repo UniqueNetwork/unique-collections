@@ -48,6 +48,16 @@ function TokenPreview ({ collectionInfo, collectionName, constAttributes, tokenC
     }
   }, [constAttributes, tokenConstAttributes]);
 
+  const checkAtributs: () => boolean = () => {
+    let checker = false;
+
+    constAttributes.forEach((elem) => {
+      elem.name === 'ipfsJson' ? checker = false : checker = true;
+    });
+
+    return checker;
+  };
+
   useEffect(() => {
     fillAttributesValues();
   }, [fillAttributesValues]);
@@ -66,9 +76,8 @@ function TokenPreview ({ collectionInfo, collectionName, constAttributes, tokenC
           <h3 className='content-header'>
             {collectionInfo ? hex2a(collectionInfo.tokenPrefix) : (tokenPrefix || 'Prefix')} #1
           </h3>
-          {console.log(constAttributes, 'constAttributes>>>>>>>>>>>>>>>>>>>>>>>>>>>>')}
           <p className='content-text'>{ collectionInfo ? collectionName16Decoder(collectionInfo.name) : (collectionName || 'Collection name')}</p>
-          { constAttributes.length > 1 && (
+          { checkAtributs() && (
             <div className='const-attributes'>
               <h4>Token attributes</h4>
               { Object.keys(values).length > 0 && (

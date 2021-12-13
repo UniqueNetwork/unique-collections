@@ -161,6 +161,16 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
     );
   }
 
+  const checkAtributs: () => boolean = () => {
+    let checker = false;
+
+    constAttributes.forEach((elem) => {
+      elem.name === 'ipfsJson' ? checker = false : checker = true;
+    });
+
+    return checker;
+  };
+
   return (
     <div className='create-nft'>
       <h1 className='header-text'>Image</h1>
@@ -206,7 +216,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
           )}
         </div>
       </div>
-      {constAttributes.length > 1
+      {checkAtributs()
         ? (
           <form className='attributes'>
             <h1 className='header-text'>Attributes</h1>
