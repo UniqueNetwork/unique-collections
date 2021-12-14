@@ -102,11 +102,16 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         />
       </div>
       <div className='info-block'>
+<<<<<<< HEAD
         <h2>Symbol*</h2>
         <p>Token name as displayed in Wallet (max 16 symbols)</p>
+=======
+        <h2>Prefix*</h2>
+        <p>Token name as displayed in Wallet (max 4 symbols)</p>
+>>>>>>> b58528771e29647f800f216ef206704977425c75
         <Input
           className='isSmall'
-          maxLength={16}
+          maxLength={4}
           onChange={setTokenPrefix}
           value={tokenPrefix}
         />
