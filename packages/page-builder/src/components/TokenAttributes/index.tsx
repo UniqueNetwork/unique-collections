@@ -6,11 +6,11 @@ import './styles.scss';
 import type { AttributeItemType, FieldRuleType, FieldType, ProtobufAttributeType } from '@polkadot/react-components/util/protobufUtils';
 
 import BN from 'bn.js';
-import React, { memo, ReactElement, useCallback, useEffect, useState } from 'react';
+import React, { memo, ReactElement, useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 
-import { HelpTooltip, UnqButton } from '@polkadot/react-components';
+import { HelpTooltip, StatusContext, UnqButton } from '@polkadot/react-components';
 import { fillAttributes, fillProtobufJson } from '@polkadot/react-components/util/protobufUtils';
 import { useCollection } from '@polkadot/react-hooks';
 import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
@@ -43,6 +43,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   const [formErrors, setFormErrors] = useState<number[]>([]);
   const [fees, setFees] = useState<BN | null>(null);
   const history = useHistory();
+  const { queueAction } = useContext(StatusContext);
   const isOwner = collectionInfo?.owner === account;
 
   console.log('attributes', attributes, 'collectionId', collectionId);
@@ -66,8 +67,13 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   }, []);
 
   const onSuccess = useCallback(() => {
+    queueAction({
+      action: '',
+      message: 'Collection successfully created',
+      status: 'success'
+    });
     history.push('/builder');
-  }, [history]);
+  }, [queueAction, history]);
 
   const calculateFees = useCallback(async () => {
     try {
