@@ -10,12 +10,11 @@ import React, { memo, ReactElement, useCallback, useContext, useEffect, useState
 import { useHistory } from 'react-router';
 import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 
-import { HelpTooltip, UnqButton } from '@polkadot/react-components';
+import { HelpTooltip, StatusContext, UnqButton } from '@polkadot/react-components';
 import { fillAttributes, fillProtobufJson } from '@polkadot/react-components/util/protobufUtils';
 import { useCollection } from '@polkadot/react-hooks';
 import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
-import StatusContext from '../../../../../packages/react-components/src/Status/Context';
 import plusIcon from '../../images/plusIcon.svg';
 import AttributesRowEditable from '../TokenAttributes/AttributesRowEditable';
 import WarningText from '../WarningText';
@@ -63,23 +62,18 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     setAttributes(newAttributes);
   }, [attributes]);
 
-  const _onSuccess = useCallback(
-    (account: string) => queueAction({
-      action: '',
-      message: 'Collection successfully created',
-      status: 'success'
-    }),
-    [queueAction]
-  );
-
   const closeSaveConfirmation = useCallback(() => {
     setIsSaveConfirmationOpen(false);
   }, []);
 
   const onSuccess = useCallback(() => {
     history.push('/builder');
-    _onSuccess(account);
-  }, [_onSuccess, account, history]);
+    queueAction({
+      action: '',
+      message: 'Collection successfully created',
+      status: 'success'
+    });
+  }, [queueAction, history]);
 
   const calculateFees = useCallback(async () => {
     try {
