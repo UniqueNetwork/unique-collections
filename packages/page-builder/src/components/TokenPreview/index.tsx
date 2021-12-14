@@ -66,7 +66,7 @@ function TokenPreview ({ collectionInfo, collectionName, constAttributes, tokenC
         </div>
         <div className='content-description'>
           <h3 className='content-header'>
-            {collectionInfo ? hex2a(collectionInfo.tokenPrefix) : (tokenPrefix || 'Prefix')} #1
+            {collectionInfo ? hex2a(collectionInfo.tokenPrefix) : (tokenPrefix || 'Symbol')} #1
           </h3>
           <p className='content-text'>{ collectionInfo ? collectionName16Decoder(collectionInfo.name) : (collectionName || 'Collection name')}</p>
           { !!checkAttributes.length && (

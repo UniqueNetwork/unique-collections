@@ -102,7 +102,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         />
       </div>
       <div className='info-block'>
-        <h2>Prefix*</h2>
+        <h2>Symbol*</h2>
         <p>Token name as displayed in Wallet (max 16 symbols)</p>
         <Input
           className='isSmall'
