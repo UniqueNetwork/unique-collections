@@ -6,7 +6,7 @@ import './styles.scss';
 import type { AttributeItemType, FieldRuleType, FieldType, ProtobufAttributeType } from '@polkadot/react-components/util/protobufUtils';
 
 import BN from 'bn.js';
-import React, { memo, ReactElement, useCallback, useEffect, useState } from 'react';
+import React, { memo, ReactElement, useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 
@@ -15,6 +15,7 @@ import { fillAttributes, fillProtobufJson } from '@polkadot/react-components/uti
 import { useCollection } from '@polkadot/react-hooks';
 import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
+import StatusContext from '../../../../../packages/react-components/src/Status/Context';
 import plusIcon from '../../images/plusIcon.svg';
 import AttributesRowEditable from '../TokenAttributes/AttributesRowEditable';
 import WarningText from '../WarningText';
@@ -43,6 +44,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   const [formErrors, setFormErrors] = useState<number[]>([]);
   const [fees, setFees] = useState<BN | null>(null);
   const history = useHistory();
+  const { queueAction } = useContext(StatusContext);
   const isOwner = collectionInfo?.owner === account;
 
   console.log('attributes', attributes, 'collectionId', collectionId);
@@ -61,13 +63,23 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     setAttributes(newAttributes);
   }, [attributes]);
 
+  const _onSuccess = useCallback(
+    (account: string) => queueAction({
+      action: '',
+      message: 'Collection successfully created',
+      status: 'success'
+    }),
+    [queueAction]
+  );
+
   const closeSaveConfirmation = useCallback(() => {
     setIsSaveConfirmationOpen(false);
   }, []);
 
   const onSuccess = useCallback(() => {
     history.push('/builder');
-  }, [history]);
+    _onSuccess(account);
+  }, [_onSuccess, account, history]);
 
   const calculateFees = useCallback(async () => {
     try {
