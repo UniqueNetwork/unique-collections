@@ -67,12 +67,12 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   }, []);
 
   const onSuccess = useCallback(() => {
-    history.push('/builder');
     queueAction({
       action: '',
       message: 'Collection successfully created',
       status: 'success'
     });
+    history.push('/builder');
   }, [queueAction, history]);
 
   const calculateFees = useCallback(async () => {
