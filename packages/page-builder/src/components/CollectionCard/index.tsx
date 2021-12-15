@@ -134,10 +134,12 @@ function CollectionCard ({ account, collectionId }: CollectionCardProps): React.
               )}
             </div>
             <div className='content-links'>
-              <UnqButton content='Go to Block Explorer' />
+              <UnqButton
+                content='Go to Block Explorer'
+                isDisabled
+              />
               <UnqButton
                 content='Go to my Wallet'
-                isDisabled
               />
             </div>
           </div>
