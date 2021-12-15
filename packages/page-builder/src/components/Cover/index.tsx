@@ -6,6 +6,7 @@ import './styles.scss';
 import BN from 'bn.js';
 import React, { memo, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
+import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 
 import clearIcon from '@polkadot/app-builder/images/closeIcon.svg';
 import { UnqButton } from '@polkadot/react-components';
@@ -25,6 +26,7 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
   const { calculateSetSchemaVersionFee, calculateSetVariableOnChainSchemaFee, saveVariableOnChainSchema, setSchemaVersion } = useCollection();
   const [coverFees, setCoverFees] = useState<BN | null>(null);
   const [imgAddress, setImgAddress] = useState<string>();
+  const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const { uploadImg } = useImageService();
   const history = useHistory();
   const inputFileRef = useRef<HTMLInputElement>(null);
@@ -92,6 +94,18 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
     }
   }, [account, collectionId, imgAddress, onSuccess, saveVariableOnChainSchema, onSaveVariableSchemaSuccess]);
 
+  const closeSaveConfirmation = useCallback(() => {
+    setIsSaveConfirmationOpen(false);
+  }, []);
+
+  const saveConfirm = useCallback(() => {
+    if (!avatarImg) {
+      setIsSaveConfirmationOpen(true);
+    } else {
+      saveVariableSchema();
+    }
+  }, [saveVariableSchema, avatarImg]);
+
   useEffect(() => {
     void uploadImage();
   }, [uploadImage]);
@@ -150,10 +164,20 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
       { coverFees && (
         <WarningText fee={coverFees} />
       )}
+      <Confirm
+        cancelButton='No, return'
+        className='unique-modal'
+        confirmButton='Yes, I am sure'
+        content='You cannot return to editing the cover in this product version.'
+        header='You have not entered the cover. Are you sure that you want to create the collection without it?'
+        onCancel={closeSaveConfirmation}
+        onConfirm={saveVariableSchema}
+        open={isSaveConfirmationOpen}
+      />
       <UnqButton
         content='Confirm'
         isFilled
-        onClick={saveVariableSchema}
+        onClick={saveConfirm}
         size='medium'
       />
     </div>
