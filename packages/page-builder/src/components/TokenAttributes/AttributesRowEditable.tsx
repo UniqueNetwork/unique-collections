@@ -1,19 +1,32 @@
 // Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { FieldRuleType, FieldType } from '@polkadot/react-components/util/protobufUtils';
+import type { FieldRuleType } from '@polkadot/react-components/util/protobufUtils';
 
 import React, { memo, ReactElement, useCallback, useEffect, useState } from 'react';
 
 import { Dropdown, HelpTooltip, Input } from '@polkadot/react-components';
 import EnumsInput from '@polkadot/react-components/EnumsInput';
-import { AttributeItemType } from '@polkadot/react-components/util/protobufUtils';
 
 import trashIcon from '../../images/trashIcon.svg';
 
+export type ArtificialFieldType = 'string' | 'enum' | 'repeated';
+export type ArtificialFieldRuleType = 'optional' | 'required';
+
+// export type FieldType = 'string' | 'enum';
+// export type FieldRuleType = 'optional' | 'required' | 'repeated';
+
+export type ArtificialAttributeItemType = {
+  id?: number,
+  fieldType: ArtificialFieldType;
+  name: string;
+  rule: ArtificialFieldRuleType;
+  values: string[];
+}
+
 export type TypeOption = {
   text: string;
-  value: FieldType;
+  value: ArtificialFieldType;
 }
 
 export type CountOption = {
@@ -29,6 +42,10 @@ export const TypeOptions: TypeOption[] = [
   {
     text: 'Select',
     value: 'enum'
+  },
+  {
+    text: 'Multiselect',
+    value: 'repeated'
   }
 ];
 
@@ -40,27 +57,23 @@ export const CountOptions: CountOption[] = [
   {
     text: 'Required',
     value: 'required'
-  },
-  {
-    text: 'Repeated',
-    value: 'repeated'
   }
 ];
 
 interface AttributesRowEditableProps {
   attributeName: string;
-  attributeType: FieldType;
-  attributeCountType: FieldRuleType;
+  attributeType: ArtificialFieldType;
+  attributeCountType: ArtificialFieldRuleType;
   attributeValues: string[];
   index: number;
   isOwner: boolean;
   removeItem: (index: number) => void;
   setFormErrors: (arr: (prevErrors: number[]) => number[]) => void;
-  setAttributeCountType: (attributeCountType: FieldRuleType, index: number) => void;
+  setAttributeCountType: (attributeCountType: ArtificialFieldRuleType, index: number) => void;
   setAttributeName: (attributeName: string, index: number) => void;
-  setAttributeType: (attributeType: FieldType, index: number) => void;
+  setAttributeType: (attributeType: ArtificialFieldType, index: number) => void;
   setAttributeValues: (attributeValues: string[], index: number) => void;
-  attributes: AttributeItemType[]
+  attributes: ArtificialAttributeItemType[]
   formErrors: number[]
 }
 
@@ -111,11 +124,15 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
     setAttributeName(currentAttributeName, index);
   }, [attributes, currentAttributeName, formErrors, index, setAttributeName, setFormErrors]);
 
-  const onSetAttributeType = useCallback((type: FieldType) => {
+  const onSetAttributeType = useCallback((type: ArtificialFieldType) => {
     setAttributeType(type, index);
-  }, [index, setAttributeType]);
 
-  const onSetAttributeCountType = useCallback((countType: FieldRuleType) => {
+    if (type === 'repeated') {
+      setAttributeCountType('optional', index);
+    }
+  }, [index, setAttributeType, setAttributeCountType]);
+
+  const onSetAttributeCountType = useCallback((countType: ArtificialFieldRuleType) => {
     setAttributeCountType(countType, index);
   }, [index, setAttributeCountType]);
 
@@ -173,6 +190,7 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
         </div>
         <div className='dropdown-container'>
           <Dropdown
+            isDisabled={attributeType === 'repeated'}
             onChange={onSetAttributeCountType}
             options={CountOptions}
             placeholder='Rule'
