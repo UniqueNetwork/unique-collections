@@ -23,7 +23,7 @@ interface CoverProps {
 }
 
 function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps): React.ReactElement {
-  const { calculateSetSchemaVersionFee, calculateSetVariableOnChainSchemaFee, saveVariableOnChainSchema, setSchemaVersion } = useCollection();
+  const { calculateSetSchemaVersionFee, calculateSetVariableOnChainSchemaFee, saveVariableOnChainSchema } = useCollection();
   const [coverFees, setCoverFees] = useState<BN | null>(null);
   const [imgAddress, setImgAddress] = useState<string>();
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
@@ -77,11 +77,6 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
     history.push(`/builder/collections/${collectionId}/token-attributes`);
   }, [collectionId, history]);
 
-  // @todo - api.tx.utility.batch
-  const onSaveVariableSchemaSuccess = useCallback(() => {
-    setSchemaVersion({ account, collectionId, schemaVersion: 'Unique', successCallback: onSuccess });
-  }, [account, collectionId, onSuccess, setSchemaVersion]);
-
   const saveVariableSchema = useCallback(() => {
     if (!imgAddress) {
       onSuccess();
@@ -90,9 +85,9 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
         collectionCover: imgAddress
       };
 
-      saveVariableOnChainSchema({ account, collectionId, schema: JSON.stringify(varDataWithImage), successCallback: onSaveVariableSchemaSuccess });
+      saveVariableOnChainSchema({ account, collectionId, schema: JSON.stringify(varDataWithImage), successCallback: onSuccess });
     }
-  }, [account, collectionId, imgAddress, onSuccess, saveVariableOnChainSchema, onSaveVariableSchemaSuccess]);
+  }, [account, collectionId, imgAddress, onSuccess, saveVariableOnChainSchema, onSuccess]);
 
   const closeSaveConfirmation = useCallback(() => {
     setIsSaveConfirmationOpen(false);
