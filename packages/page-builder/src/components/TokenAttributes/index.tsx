@@ -37,7 +37,7 @@ const defaultAttributesWithTokenIpfs: ArtificialAttributeItemType[] = [
 ];
 
 function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttributes): ReactElement {
-  const { calculateSetConstOnChainSchemaFees, getCollectionOnChainSchema, saveConstOnChainSchema } = useCollection();
+  const { calculateSetConstOnChainSchemaFees, getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
   const [attributes, setAttributes] = useState<ArtificialAttributeItemType[]>([]);
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<number[]>([]);
@@ -45,8 +45,6 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   const history = useHistory();
   const { queueAction } = useContext(StatusContext);
   const isOwner = collectionInfo?.owner === account;
-
-  console.log('attributes', attributes, 'collectionId', collectionId);
 
   const onAddItem = useCallback(() => {
     const newAttributes = [...attributes];
@@ -74,6 +72,10 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     });
     history.push('/builder');
   }, [queueAction, history]);
+
+  const setUniqueSchemaVersion = useCallback(() => {
+    setSchemaVersion({ account, collectionId, schemaVersion: 'Unique', successCallback: onSuccess });
+  }, [account, collectionId, onSuccess, setSchemaVersion]);
 
   const convertArtificialAttributesToProtobuf = useCallback((attributes: ArtificialAttributeItemType[]): AttributeItemType[] => {
     return attributes.map((attr: ArtificialAttributeItemType): AttributeItemType => {
@@ -116,12 +118,12 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
       const protobufJson: ProtobufAttributeType = fillProtobufJson(converted);
 
       if (account && collectionId) {
-        saveConstOnChainSchema({ account, collectionId, schema: JSON.stringify(protobufJson), successCallback: onSuccess });
+        saveConstOnChainSchema({ account, collectionId, schema: JSON.stringify(protobufJson), successCallback: setUniqueSchemaVersion });
       }
     } catch (e) {
       console.log('save onChain schema error', e);
     }
-  }, [account, attributes, collectionId, convertArtificialAttributesToProtobuf, onSuccess, saveConstOnChainSchema]);
+  }, [account, attributes, collectionId, convertArtificialAttributesToProtobuf, setUniqueSchemaVersion, saveConstOnChainSchema]);
 
   const deleteAttribute = useCallback((index) => {
     setAttributes([
@@ -181,20 +183,22 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   const fillCollectionAttributes = useCallback(() => {
     if (collectionInfo?.constOnChainSchema) {
       const onChainSchema = getCollectionOnChainSchema(collectionInfo);
+      let previousAttributes: AttributeItemType[] = [];
+      let converted: ArtificialAttributeItemType[] = [];
 
       if (onChainSchema) {
         const { constSchema } = onChainSchema;
 
         if (constSchema) {
-          const previousAttributes: AttributeItemType[] = fillAttributes(constSchema);
-          const converted: ArtificialAttributeItemType[] = convertProtobufToArtificialAttributes(previousAttributes);
-
-          if (previousAttributes.find((attr) => attr.name === 'ipfsJson')) {
-            setAttributes(converted);
-          } else {
-            setAttributes([...converted, ...defaultAttributesWithTokenIpfs]);
-          }
+          previousAttributes = fillAttributes(constSchema);
         }
+      }
+
+      if (previousAttributes.find((attr) => attr.name === 'ipfsJson')) {
+        converted = convertProtobufToArtificialAttributes(previousAttributes);
+        setAttributes(converted);
+      } else {
+        setAttributes([...converted, ...defaultAttributesWithTokenIpfs]);
       }
     }
   }, [collectionInfo, convertProtobufToArtificialAttributes, getCollectionOnChainSchema]);

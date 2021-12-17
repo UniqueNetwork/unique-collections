@@ -8,7 +8,6 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 
 import { Input, TextArea, UnqButton } from '@polkadot/react-components';
-import { AttributeItemType, fillProtobufJson, ProtobufAttributeType } from '@polkadot/react-components/util/protobufUtils';
 import { useCollection } from '@polkadot/react-hooks';
 
 import WarningText from '../WarningText';
@@ -23,19 +22,9 @@ interface MainInformationProps {
   tokenPrefix: string;
 }
 
-const defaultAttributesWithTokenIpfs: AttributeItemType[] = [
-  {
-    fieldType: 'string',
-    id: 0,
-    name: 'ipfsJson',
-    rule: 'required',
-    values: []
-  }
-];
-
 function MainInformation (props: MainInformationProps): React.ReactElement {
   const { account, description, name, setDescription, setName, setTokenPrefix, tokenPrefix } = props;
-  const { calculateCreateCollectionFee, createCollection, getCreatedCollectionCount, saveConstOnChainSchema, setSchemaVersion } = useCollection();
+  const { calculateCreateCollectionFee, createCollection, getCreatedCollectionCount } = useCollection();
   const [createFees, setCreateFees] = useState<BN | null>(null);
   const history = useHistory();
 
@@ -67,23 +56,11 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
      return result;
     }
    */
-  const goToNextStep = useCallback((collectionId: string) => {
-    history.push(`/builder/collections/${collectionId}/cover`);
-  }, [history]);
-
-  const setDefaultAttributes = useCallback((collectionId: string) => {
-    const protobufJson: ProtobufAttributeType = fillProtobufJson(defaultAttributesWithTokenIpfs);
-
-    saveConstOnChainSchema({ account, collectionId, schema: JSON.stringify(protobufJson), successCallback: goToNextStep.bind(null, collectionId) });
-  }, [account, goToNextStep, saveConstOnChainSchema]);
-
-  const setUniqueSchemaVersion = useCallback(async () => {
-    // todo - replace this to id returned from createCollection transaction
+  const goToNextStep = useCallback(async () => {
     const collectionCount = await getCreatedCollectionCount();
-    const collectionId = collectionCount.toString();
 
-    setSchemaVersion({ account, collectionId, schemaVersion: 'Unique', successCallback: setDefaultAttributes.bind(null, collectionId) });
-  }, [account, getCreatedCollectionCount, setDefaultAttributes, setSchemaVersion]);
+    history.push(`/builder/collections/${collectionCount}/cover`);
+  }, [history, getCreatedCollectionCount]);
 
   const onCreateCollection = useCallback(() => {
     if (account && name && tokenPrefix) {
@@ -93,10 +70,10 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         name,
         tokenPrefix
       }, {
-        onSuccess: setUniqueSchemaVersion
+        onSuccess: goToNextStep
       });
     }
-  }, [account, createCollection, description, setUniqueSchemaVersion, name, tokenPrefix]);
+  }, [account, createCollection, description, goToNextStep, name, tokenPrefix]);
 
   useEffect(() => {
     void calculateFee();
