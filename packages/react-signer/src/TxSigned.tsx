@@ -357,7 +357,7 @@ function TxSigned ({ className, currentItem, requestAddress }: Props): React.Rea
             flags.isQr
               ? 'Sign via Qr'
               : isSubmit
-                ? 'Sign and Submit'
+                ? 'Sign and submit'
                 : 'Sign (no submission)'
           }
           onClick={_doStart}
