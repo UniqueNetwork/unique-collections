@@ -87,7 +87,7 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
 
       saveVariableOnChainSchema({ account, collectionId, schema: JSON.stringify(varDataWithImage), successCallback: onSuccess });
     }
-  }, [account, collectionId, imgAddress, onSuccess, saveVariableOnChainSchema, onSuccess]);
+  }, [account, collectionId, imgAddress, onSuccess, saveVariableOnChainSchema]);
 
   const closeSaveConfirmation = useCallback(() => {
     setIsSaveConfirmationOpen(false);
@@ -135,6 +135,7 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
                   className='token-img'
                   src={URL.createObjectURL(avatarImg)}
                 />
+
               )
               : (
                 <img
