@@ -33,16 +33,55 @@ interface CreateNFTProps {
   tokenImg: File | null;
 }
 
+interface IFieldType {
+  fieldType: string;
+  id: number;
+  name: string | number;
+  rule: string;
+  values: Array<[]>
+}
+
+interface IValueType {
+  name: string;
+  value?: string;
+  values?: number[] | undefined
+}
+
 function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, constOnChainSchema, isOwner, resetAttributes, setTokenConstAttributes, setTokenImg, tokenConstAttributes, tokenImg }: CreateNFTProps): React.ReactElement {
   const { calculateCreateItemFee, createNft } = useToken();
   const [createFees, setCreateFees] = useState<BN | null>(null);
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const history = useHistory();
   const { uploadImg } = useImageService();
 
+  const isAllRequiredFieldsAreFilled = (reqTargetArr: any[], valTargetObj: { [x: string]: IValueType | { name: string; }; }) => {
+    const filteredArray = reqTargetArr.filter((item: {rule: string}) => item.rule === 'required');
+
+    if (!filteredArray.length) {
+      return true;
+    }
+
+    return filteredArray.every((reqItem: IFieldType) => {
+      const valItem: IValueType = valTargetObj[(reqItem.name)];
+
+      return typeof valItem.value === 'string' ? valItem.value.length >= 3 : String(valItem.value);
+    });
+  };
+
   console.log('createFees', createFees?.toString());
+  const checkAttributes = useMemo(() => constAttributes.filter((elem: {name: string}) => elem.name !== 'ipfsJson'), [constAttributes]);
+
+  useEffect(() => {
+    const status = !!Object.keys(tokenConstAttributes).length;
+
+    if (status) {
+      const flag = isAllRequiredFieldsAreFilled(checkAttributes, tokenConstAttributes);
+
+      setIsDisabled(!flag);
+    }
+  }, [tokenConstAttributes, checkAttributes]);
 
   const [tokenImageAddress, setTokenImageAddress] = useState<string>();
-  const [formErrors, setFormErrors] = useState<string[]>([]);
   const [createAnother, setCreateAnother] = useState<boolean>(false);
 
   const inputFileRef = useRef<HTMLInputElement>(null);
@@ -65,7 +104,6 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
   const resetData = useCallback(() => {
     resetAttributes();
     setTokenImg(null);
-    setFormErrors([]);
     setCreateAnother(false);
   }, [resetAttributes, setTokenImg]);
 
@@ -161,8 +199,6 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
     );
   }
 
-  const checkAttributes = useMemo(() => constAttributes.filter((elem: {name: string}) => elem.name !== 'ipfsJson'), [constAttributes]);
-
   return (
     <div className='create-nft'>
       <h1 className='header-text'>Image</h1>
@@ -216,6 +252,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
               <TokenAttributesRowEditable
                 collectionAttribute={collectionAttribute}
                 key={`${collectionAttribute.name}-${index}`}
+                maxLength={64}
                 setAttributeValue={setAttributeValue}
                 tokenConstAttributes={tokenConstAttributes}
               />
@@ -229,7 +266,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
       <div className='footer-buttons'>
         <UnqButton
           content='Confirm'
-          isDisabled={formErrors.length > 0}
+          isDisabled={isDisabled}
           isFilled
           onClick={onCreateNft}
           size={'medium'}

@@ -139,7 +139,7 @@ function CollectionCard ({ account, collectionId }: CollectionCardProps): React.
                 isDisabled
               />
               <UnqButton
-                content='Go to my Wallet'
+                content='Go to Wallet'
               />
             </div>
           </div>
