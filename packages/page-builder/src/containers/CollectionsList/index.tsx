@@ -84,7 +84,7 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
           exact
           path={`${basePath}/collections`}
         >
-          <Header as='h1'>My Collections</Header>
+          <Header as='h1'>My collections</Header>
           <CreateCollectionOrSearch
             searchString={searchString}
             setSearchString={setSearchString}

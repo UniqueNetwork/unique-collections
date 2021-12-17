@@ -85,7 +85,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
           as='h1'
           className={`${isPreviewOpen ? 'hidden' : ''}`}
         >
-          Create Collection
+          Create collection
         </Header>
       )}
       { location.pathname === `/builder/collections/${collectionId}/new-nft` && (
@@ -93,7 +93,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
           as='h1'
           className={`${isPreviewOpen ? 'hidden' : ''}`}
         >
-          Create Nft
+          Create NFT
         </Header>
       )}
       <div className='page-main'>
