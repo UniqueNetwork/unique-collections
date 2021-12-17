@@ -18,6 +18,7 @@
 
   .token-preview-content{
     display: flex;
+    flex-direction: column;
     gap: calc((var(--gap) / 2) * 3);;
     padding-top: calc((var(--gap) / 2) * 3);
     font-family: var(--font-roboto);
