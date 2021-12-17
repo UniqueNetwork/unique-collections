@@ -60,7 +60,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
     const collectionCount = await getCreatedCollectionCount();
 
     history.push(`/builder/collections/${collectionCount}/cover`);
-  }, [getCreatedCollectionCount, history]);
+  }, [history, getCreatedCollectionCount]);
 
   const onCreateCollection = useCallback(() => {
     if (account && name && tokenPrefix) {

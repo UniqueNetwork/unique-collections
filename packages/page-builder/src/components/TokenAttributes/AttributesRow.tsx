@@ -6,12 +6,13 @@ import './styles.scss';
 import React, { memo, ReactElement } from 'react';
 
 import { HelpTooltip } from '@polkadot/react-components';
-import { FieldRuleType, FieldType } from '@polkadot/react-components/util/protobufUtils';
+
+import { ArtificialFieldRuleType, ArtificialFieldType } from './AttributesRowEditable';
 
 interface AttributesRowProps {
   attributeName: string;
-  attributeType: FieldType;
-  attributeCountType: FieldRuleType;
+  attributeType: ArtificialFieldType;
+  attributeCountType: ArtificialFieldRuleType;
   attributeValues: string[];
   isOwner: boolean;
 }
