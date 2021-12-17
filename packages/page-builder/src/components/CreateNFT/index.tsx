@@ -34,7 +34,7 @@ interface CreateNFTProps {
 }
 
 function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, constOnChainSchema, isOwner, resetAttributes, setTokenConstAttributes, setTokenImg, tokenConstAttributes, tokenImg }: CreateNFTProps): React.ReactElement {
-  const { calculateCreateItemFee, createNft } = useToken();
+  const { calculateCreateItemFee, createNft, getDetailedTokenInfo } = useToken();
   const [createFees, setCreateFees] = useState<BN | null>(null);
   const history = useHistory();
   const { uploadImg } = useImageService();
@@ -152,6 +152,12 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
   useEffect(() => {
     void calculateFee();
   }, [calculateFee]);
+
+  useEffect(() => {
+    if (collectionInfo) {
+      void getDetailedTokenInfo(collectionId, '1');
+    }
+  }, [collectionInfo, collectionId, getDetailedTokenInfo]);
 
   if (collectionInfo && !isOwner) {
     return (

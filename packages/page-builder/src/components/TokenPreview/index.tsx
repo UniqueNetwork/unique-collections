@@ -25,8 +25,6 @@ function TokenPreview ({ collectionInfo, collectionName, constAttributes, tokenC
   const { collectionName16Decoder, hex2a } = useDecoder();
   const [values, setValues] = useState<{ [key: string]: string | string[] | undefined }>({});
 
-  console.log('tokenConstAttributes', tokenConstAttributes, 'constAttributes', constAttributes, 'values', values);
-
   /*
   setTokenConstAttributes((prevAttributes: { [key: string]: TokenAttribute }) => ({ ...prevAttributes,
       [attribute.name]: {
