@@ -128,7 +128,11 @@
 
 @media (max-width: 1024px) {
   .builder-page  {
-    padding: 0 var(--gap);
+    padding: 16px 24px 0 24px;
+
+    .collection-card{
+      box-shadow: none;
+    }
 
     .no-collections{
       box-shadow: none;
@@ -138,6 +142,10 @@
       padding: 0;
       box-shadow: none;
     }
+
+    h1.ui.header {
+    font-size: 28px;
+}
   }
 }
 
@@ -145,12 +153,39 @@
 
 @media (max-width: 768px) {
   .builder-page {
-    padding: 16px 16px 0 16px;
+    padding: 16px 24px 0 24px;
+
+    .create-and-search {
+     flex-direction: row;
+      gap: var(--gap);
+
+      .create-btn{
+       width: 40%;
+       margin: 0;
+     }
+    }
+  }  
+}
+
+@media (max-width: 425px) {
+  .builder-page {
+    padding: 16px 0;
+
+    .content-links {
+      min-width: 50%;
+      
+    }
 
     .create-and-search {
      flex-direction: column;
-      gap: var(--gap);
+      padding: 0 16px;
+
+      .create-btn{
+       width: 100%;
+       margin: 0;
+     }
     }
-  }
+  }  
 }
+
 
