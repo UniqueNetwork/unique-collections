@@ -11,7 +11,7 @@ import { useHistory } from 'react-router';
 
 import { Checkbox, UnqButton } from '@polkadot/react-components';
 import { AttributeItemType, ProtobufAttributeType, serializeNft } from '@polkadot/react-components/util/protobufUtils';
-import { useImageService, useToken } from '@polkadot/react-hooks';
+import { useImageService, useIsMountedRef, useToken } from '@polkadot/react-hooks';
 import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
 import clearIcon from '../../images/closeIcon.svg';
@@ -52,9 +52,10 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
   const [createFees, setCreateFees] = useState<BN | null>(null);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const history = useHistory();
+  const mountedRef = useIsMountedRef();
   const { uploadImg } = useImageService();
 
-  const isAllRequiredFieldsAreFilled = (reqTargetArr: any[], valTargetObj: { [x: string]: IValueType | { name: string; }; }) => {
+  const isAllRequiredFieldsAreFilled = useCallback((reqTargetArr: any[], valTargetObj: { [x: string]: IValueType | { name: string; }; }) => {
     const filteredArray = reqTargetArr.filter((item: {rule: string}) => item.rule === 'required');
 
     if (!filteredArray.length) {
@@ -64,9 +65,9 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
     return filteredArray.every((reqItem: IFieldType) => {
       const valItem: IValueType = valTargetObj[(reqItem.name)];
 
-      return typeof valItem.value === 'string' ? valItem.value.length >= 3 : String(valItem.value);
+      return typeof valItem.value === 'string' ? valItem.value.trim().length > 0 : String(valItem.value);
     });
-  };
+  }, []);
 
   console.log('createFees', createFees?.toString());
   const checkAttributes = useMemo(() => constAttributes.filter((elem: {name: string}) => elem.name !== 'ipfsJson'), [constAttributes]);
@@ -77,9 +78,9 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
     if (status) {
       const flag = isAllRequiredFieldsAreFilled(checkAttributes, tokenConstAttributes);
 
-      setIsDisabled(!flag);
+      mountedRef.current && setIsDisabled(!flag);
     }
-  }, [tokenConstAttributes, checkAttributes]);
+  }, [checkAttributes, tokenConstAttributes, isAllRequiredFieldsAreFilled, mountedRef]);
 
   const [tokenImageAddress, setTokenImageAddress] = useState<string>();
   const [createAnother, setCreateAnother] = useState<boolean>(false);
