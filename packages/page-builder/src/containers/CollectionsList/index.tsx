@@ -76,6 +76,8 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
     refillCollections();
   }, [refillCollections]);
 
+  console.log(collectionsLoaded, '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+
   return (
     <div className='collections-list'>
 
@@ -86,6 +88,7 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
         >
           <Header as='h1'>My collections</Header>
           <CreateCollectionOrSearch
+            collectionsLoaded={collectionsLoaded}
             searchString={searchString}
             setSearchString={setSearchString}
           />
