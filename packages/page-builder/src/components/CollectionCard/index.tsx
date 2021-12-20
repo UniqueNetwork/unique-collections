@@ -128,7 +128,7 @@ function CollectionCard ({ account, collectionId }: CollectionCardProps): React.
             </div>
             <div className='collection-info'>
               <p><span>ID:</span> {collectionId}</p>
-              <p><span>Prefix:</span> {collectionInfo.tokenPrefix && hex2a(collectionInfo.tokenPrefix)}</p>
+              <p><span>Symbol:</span> {collectionInfo.tokenPrefix && hex2a(collectionInfo.tokenPrefix)}</p>
               { !!collectionTokensCount && (
                 <p><span>Items</span> {collectionTokensCount}</p>
               )}
