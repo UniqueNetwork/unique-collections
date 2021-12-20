@@ -9,11 +9,10 @@ import { OpenPanelType } from '@polkadot/apps-routing/types';
 interface Props {
   account?: string;
   setOpenPanel: (openPanel: OpenPanelType) => void;
-  theme: { theme: string, logo?: string; };
 }
 
 const MobileMenuHeader = (props: Props): React.ReactElement<Props> => {
-  const { account, setOpenPanel, theme } = props;
+  const { account, setOpenPanel } = props;
   const location = useLocation();
   const currentLocation = useRef<string>();
 
@@ -27,12 +26,6 @@ const MobileMenuHeader = (props: Props): React.ReactElement<Props> => {
 
   return (
     <div className={`menu-mobile ${account ? '' : 'no-accounts'}`}>
-      <div className='menu-mobile--logo'>
-        <img
-          alt={`logo ${theme.theme}`}
-          src={theme.logo}
-        />
-      </div>
       <NavLink
         className={`menu-mobile--link ${location.pathname === '/builder/collections' ? 'active' : ''}`}
         exact={true}
