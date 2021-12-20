@@ -60,7 +60,7 @@ const MobileAccountSelector = (props: MobileAccountSelectorProps): React.ReactEl
               active={location.pathname === '/accounts'}
               as={NavLink}
               className='create-account-btn'
-              name='Create or connect account'
+              content='Create or connect account'
               to='/accounts'
             />
           </Menu>}
