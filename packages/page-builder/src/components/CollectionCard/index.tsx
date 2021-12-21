@@ -95,9 +95,13 @@ function CollectionCard ({ account, collectionId }: CollectionCardProps): React.
                 <p className='content-description-title'>
                   {collectionInfo.name && collectionName16Decoder(collectionInfo.name)}
                 </p>
-                <div className='content-description-text'>
-                  {collectionInfo.description && collectionName16Decoder(collectionInfo.description)}
-                </div>
+                {collectionInfo.description.length
+                  ? (
+                    <div className='content-description-text'>
+                      {collectionInfo.description && collectionName16Decoder(collectionInfo.description)}
+                    </div>
+                  )
+                  : ''}
               </div>
               <div className='content-buttons'>
                 <UnqButton
