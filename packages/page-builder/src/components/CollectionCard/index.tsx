@@ -130,7 +130,7 @@ function CollectionCard ({ account, collectionId }: CollectionCardProps): React.
               <p><span>ID:</span> {collectionId}</p>
               <p><span>Prefix:</span> {collectionInfo.tokenPrefix && hex2a(collectionInfo.tokenPrefix)}</p>
               { !!collectionTokensCount && (
-                <p><span>Items</span> {collectionTokensCount}</p>
+                <p><span>Items:</span> {collectionTokensCount}</p>
               )}
             </div>
             <div className='content-links'>

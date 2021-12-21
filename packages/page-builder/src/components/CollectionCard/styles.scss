@@ -19,6 +19,7 @@
     background-color: transparent;
     margin-right: var(--gap);
     overflow-y: hidden;
+    border-radius: 50%;
 
     img {
       max-width: 100%;
@@ -43,7 +44,8 @@
           color: var(--title-color);
           font-weight: 600;
           font-size: 20px;
-          line-height: 28px
+          line-height: 28px;
+          margin-bottom: 8px
         }
 
         .content-description-text{
