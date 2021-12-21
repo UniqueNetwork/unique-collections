@@ -62,3 +62,9 @@
     }
   }
 }
+
+@media (max-width: 768px) {
+  .collection-preview{
+    box-shadow: none;
+  }
+}

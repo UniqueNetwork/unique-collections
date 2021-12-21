@@ -62,3 +62,13 @@
   }
 }
 
+@media (max-width: 1280px) {
+  .stepper-main {
+      box-shadow: none;
+    }
+
+    .steps-text {
+      display: none;
+    }
+  }
+

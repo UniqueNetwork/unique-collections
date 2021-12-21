@@ -28,6 +28,7 @@
 @media (max-width: 1024px) {
   .collection-page {
     .page-main {
+      display: flex;
       flex-direction: column;
     }
   }
@@ -35,13 +36,16 @@
 
 @media (max-width: 768px) {
   .collection-page{
+    .main-section{
+      width: 100%;
     .page-main{
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
     }
-
+  }
+ 
     .hidden{
       display: none !important;
     }
@@ -50,6 +54,7 @@
       display: flex;
       justify-content: flex-start;
       align-items: center;
+      width: 100%;
       padding: 10px 16px;
       box-shadow: 0 -8px 12px rgba(0, 0, 0, 0.06);
     }

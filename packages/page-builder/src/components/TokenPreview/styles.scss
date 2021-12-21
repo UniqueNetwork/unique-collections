@@ -68,3 +68,9 @@
     }
   }
 }
+
+@media (max-width: 768px) {
+  .token-preview{
+    box-shadow: none;
+  }
+}
