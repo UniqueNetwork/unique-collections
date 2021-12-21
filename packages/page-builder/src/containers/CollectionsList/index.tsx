@@ -5,6 +5,7 @@ import './styles.scss';
 
 import type { UserCollection } from '@polkadot/react-hooks/useGraphQlCollections';
 
+import { useApolloClient } from '@apollo/client';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { Route, Switch } from 'react-router';
@@ -35,6 +36,7 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const [collectionsLoaded, setCollectionsLoaded] = useState<CollectionsListType>({});
   const hasMore = (userCollections?.collections && Object.keys(collectionsLoaded).length < userCollections.collections?.length);
   const mountedRef = useIsMountedRef();
+  const client = useApolloClient();
   const currentAccount = useRef<string>();
 
   const fetchScrolledData = useCallback(() => {
@@ -54,6 +56,19 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
       });
     }
   }, [account, mountedRef, userCollections, userCollectionsLoading]);
+
+  const onReRemoveCollection = useCallback(async (collectionId: string) => {
+    await client.refetchQueries({
+      include: ['Collections']
+    });
+    setCollectionsLoaded((prevCollections) => {
+      const newCollections = { ...prevCollections };
+
+      delete newCollections[collectionId];
+
+      return newCollections;
+    });
+  }, [client]);
 
   useEffect(() => {
     if (searchString) {
@@ -75,6 +90,8 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   useEffect(() => {
     refillCollections();
   }, [refillCollections]);
+
+  console.log('userCollections', userCollections);
 
   return (
     <div className='collections-list'>
@@ -125,6 +142,7 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
                     account={account}
                     collectionId={collection.collection_id}
                     key={collection.collection_id}
+                    onReRemoveCollection={onReRemoveCollection}
                   />
                 ))}
               </div>

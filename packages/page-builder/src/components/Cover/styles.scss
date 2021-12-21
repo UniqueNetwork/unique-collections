@@ -1,18 +1,18 @@
-.cover{
+.cover {
   background-color: var(--white-color);
   padding:  calc(var(--gap) * 2);
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
   border-radius: calc(var(--gap) / 4);
   font-family: var(--font-roboto);
 
-  .header-text{
+  .header-text {
     font-family: var(--font-inter);
     font-weight: bold;
     font-size: 28px;
     line-height: 42px;
   }
 
-    h2{
+    h2 {
       color: var(--title-color);
       font-family: var(--font-roboto);
       font-size: 16px;
@@ -20,7 +20,7 @@
       margin-bottom: 4px;
     }
 
-    p{
+    p {
       font-size: 14px;
       line-height: 22px;
       font-family: var(--font-roboto);
@@ -28,12 +28,12 @@
       margin-bottom: 16px;
     }
 
-  .upload-block{
+  .upload-block {
     display: flex;
     gap: calc(var(--gap) / 2);
     margin: 24px 0 48px;
 
-    .upload-img{
+    .upload-img {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -43,19 +43,19 @@
       border: 1px dashed var(--button-color);
       cursor: pointer;
 
-      &:hover{
+      &:hover {
         background: var(--button-background-hover);
       }
 
 
-      .token-img{
+      .token-img {
         width: 96px;
         height: 96px;
         border-radius: 50%;
       }
     }
 
-    .clear-btn{
+    .clear-btn {
       cursor: pointer;
     }
   }

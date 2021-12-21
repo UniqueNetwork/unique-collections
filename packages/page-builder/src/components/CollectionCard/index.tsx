@@ -19,9 +19,10 @@ import CollectionCover from './CollectionCover';
 interface CollectionCardProps {
   account: string;
   collectionId: string;
+  onReRemoveCollection: (collectionId: string) => void;
 }
 
-function CollectionCard ({ account, collectionId }: CollectionCardProps): React.ReactElement {
+function CollectionCard ({ account, collectionId, onReRemoveCollection }: CollectionCardProps): React.ReactElement {
   const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface | null>(null);
   const [collectionTokensCount, setCollectionTokensCount] = useState<number>(0);
   const [collectionInfoLoading, setCollectionInfoLoading] = useState<boolean>(false);
@@ -44,16 +45,14 @@ function CollectionCard ({ account, collectionId }: CollectionCardProps): React.
   }, [collectionId, getDetailedCollectionInfo, getCollectionTokensCount]);
 
   const fetchCollectionList = useCallback(() => {
-    // @todo add fetch collection logic here
-    console.log('success');
-  }, []);
+    onReRemoveCollection(collectionId);
+  }, [collectionId, onReRemoveCollection]);
 
   const onCreateNft = useCallback(() => {
     history.push(`/builder/collections/${collectionId}/new-nft`);
   }, [collectionId, history]);
 
   const onBurnNft = useCallback(() => {
-    console.log('onBurnNft');
     setIsBurnCollectionOpen(true);
   }, []);
 
