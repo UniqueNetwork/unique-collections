@@ -289,7 +289,7 @@ export function useCollection () {
   }, [api, queueExtrinsic]);
 
   const destroyCollection = useCallback(({ account, collectionId, errorCallback, successCallback }: { account: string, collectionId: string, successCallback?: () => void, errorCallback?: () => void }) => {
-    const transaction = api.tx.nft.destroyCollection(collectionId);
+    const transaction = api.tx.unique.destroyCollection(collectionId);
 
     queueExtrinsic({
       accountId: account && account.toString(),
