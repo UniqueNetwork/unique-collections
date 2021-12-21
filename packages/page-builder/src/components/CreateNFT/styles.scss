@@ -29,6 +29,16 @@
     margin: 0;
   }
 
+  .warning-text {
+    p {
+    color: var(--modal-warning-text-color);
+    font-family: var(--font-roboto);
+    font-size: 14px;
+    line-height: 22px;
+    margin-bottom: 0;
+    }
+  }
+
   .avatar{
     display: flex;
     gap: calc(var(--gap) / 2);
