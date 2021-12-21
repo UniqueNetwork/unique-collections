@@ -128,8 +128,7 @@
 
 @media (max-width: 1024px) {
   .builder-page  {
-    padding: 16px 24px 0 24px;
-
+    
     .collection-card{
       box-shadow: none;
     }
@@ -153,8 +152,6 @@
 
 @media (max-width: 768px) {
   .builder-page {
-    padding: 16px 24px 0 24px;
-
     .create-and-search {
      flex-direction: row;
       gap: var(--gap);
