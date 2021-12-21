@@ -8,12 +8,15 @@ import clearIcon from '@polkadot/app-accounts/Accounts/clearIcon.svg';
 import searchIcon from '@polkadot/app-accounts/Accounts/searchIcon.svg';
 import { Input, UnqButton } from '@polkadot/react-components';
 
+import { CollectionsListType } from '../containers/CollectionsList';
+
 interface Props {
   searchString: string;
   setSearchString: (searchString: string) => void;
+  collectionsLoaded: CollectionsListType;
 }
 
-function CreateCollectionOrSearch ({ searchString, setSearchString }: Props): React.ReactElement {
+function CreateCollectionOrSearch ({ collectionsLoaded, searchString, setSearchString }: Props): React.ReactElement {
   const history = useHistory();
 
   const handleClearSearch = useCallback(() => {
@@ -33,29 +36,31 @@ function CreateCollectionOrSearch ({ searchString, setSearchString }: Props): Re
         onClick={onCreateCollection}
         size='medium'
       />
-      <Input
-        className='isSmall'
-        icon={
-          <img
-            alt='search'
-            className='search-icon'
-            src={searchIcon as string}
-          />
-        }
-        onChange={setSearchString}
-        placeholder='Search'
-        value={searchString}
-        withLabel
-      >
-        { searchString?.length > 0 && (
-          <img
-            alt='clear'
-            className='clear-icon'
-            onClick={handleClearSearch}
-            src={clearIcon as string}
-          />
-        )}
-      </Input>
+      {Object.values(collectionsLoaded)?.length
+        ? (<Input
+          className='isSmall'
+          icon={
+            <img
+              alt='search'
+              className='search-icon'
+              src={searchIcon as string}
+            />
+          }
+          onChange={setSearchString}
+          placeholder='Search'
+          value={searchString}
+          withLabel
+        >
+          { searchString?.length > 0 && (
+            <img
+              alt='clear'
+              className='clear-icon'
+              onClick={handleClearSearch}
+              src={clearIcon as string}
+            />
+          )}
+        </Input>)
+        : null}
     </div>
   );
 }

@@ -86,6 +86,7 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
         >
           <Header as='h1'>My collections</Header>
           <CreateCollectionOrSearch
+            collectionsLoaded={collectionsLoaded}
             searchString={searchString}
             setSearchString={setSearchString}
           />
