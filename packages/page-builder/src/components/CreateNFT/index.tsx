@@ -53,7 +53,6 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [tokenImageAddress, setTokenImageAddress] = useState<string>();
   const [createAnother, setCreateAnother] = useState<boolean>(false);
-
   const inputFileRef = useRef<HTMLInputElement>(null);
   const history = useHistory();
   const mountedRef = useIsMountedRef();
@@ -75,7 +74,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
     });
   }, []);
 
-  const gago = useCallback(() => {
+  const reqFieldsFlag = useCallback(() => {
     const flag = isAllRequiredFieldsAreFilled(checkAttributes, tokenConstAttributes);
 
     mountedRef.current && setIsDisabled(!flag);
@@ -87,9 +86,9 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
     const status = !!Object.keys(tokenConstAttributes).length;
 
     if (status) {
-      gago();
+      reqFieldsFlag();
     }
-  }, [gago, isAllRequiredFieldsAreFilled, tokenConstAttributes]);
+  }, [reqFieldsFlag, isAllRequiredFieldsAreFilled, tokenConstAttributes]);
 
   const onLoadTokenImage = useCallback((event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
