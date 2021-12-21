@@ -23,8 +23,8 @@
 
     .collection-img {
       display: flex;
-      height: calc(var(--gap)*4);
-      min-width: calc(var(--gap)*4);
+      height: calc(var(--gap)*5);
+      width: calc(var(--gap)*5);
       margin-right: var(--gap);
       justify-content: center;
       align-items: center;
