@@ -10,12 +10,13 @@ import { AttributeItemType } from '@polkadot/react-components/util/protobufUtils
 
 interface TokenAttributesRowEditableProps {
   collectionAttribute: AttributeItemType;
+  maxLength: number;
   setAttributeValue: (attribute: AttributeItemType, value: string | number[]) => void;
   tokenConstAttributes: { [key: string]: TokenAttribute };
 }
 
 function TokenAttributesRowEditable (props: TokenAttributesRowEditableProps): ReactElement {
-  const { collectionAttribute, setAttributeValue, tokenConstAttributes } = props;
+  const { collectionAttribute, maxLength, setAttributeValue, tokenConstAttributes } = props;
 
   const onSetAttributeValue = useCallback((value: string | number[]) => {
     setAttributeValue(collectionAttribute, value);
@@ -28,6 +29,7 @@ function TokenAttributesRowEditable (props: TokenAttributesRowEditableProps): Re
           <h2>{collectionAttribute.name}{collectionAttribute.rule === 'required' && '*'}</h2>
           <Input
             className='isSmall'
+            maxLength={maxLength}
             onChange={onSetAttributeValue}
             value={tokenConstAttributes[collectionAttribute.name].value as string}
           />
