@@ -15,6 +15,7 @@ import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader';
 import CollectionCard from '@polkadot/app-builder/components/CollectionCard';
 import CreateCollectionOrSearch from '@polkadot/app-builder/components/CreateCollectionOrSearch';
 import NoCollections from '@polkadot/app-builder/components/NoCollections';
+import NoCollectionsFound from '@polkadot/app-builder/components/NoCollectionsFound';
 import CollectionPage from '@polkadot/app-builder/containers/CollectionPage';
 import { useGraphQlCollections, useIsMountedRef } from '@polkadot/react-hooks';
 
@@ -70,12 +71,7 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
     });
   }, [client]);
 
-  useEffect(() => {
-    if (searchString) {
-      setPage(1);
-      setCollectionsLoaded({});
-    }
-  }, [searchString]);
+  const hasCollections = !!(Object.keys(collectionsLoaded).length || searchString.length || userCollectionsLoading);
 
   const refillCollections = useCallback(() => {
     if (currentAccount.current !== account) {
@@ -88,10 +84,15 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   }, [account, initializeCollections]);
 
   useEffect(() => {
+    if (searchString) {
+      setPage(1);
+      setCollectionsLoaded({});
+    }
+  }, [searchString]);
+
+  useEffect(() => {
     refillCollections();
   }, [refillCollections]);
-
-  console.log('userCollections', userCollections);
 
   return (
     <div className='collections-list'>
@@ -103,7 +104,7 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
         >
           <Header as='h1'>My collections</Header>
           <CreateCollectionOrSearch
-            collectionsLoaded={collectionsLoaded}
+            hasCollections={hasCollections}
             searchString={searchString}
             setSearchString={setSearchString}
           />
@@ -117,8 +118,11 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
                 Loading collections...
               </Loader>
             )}
-            { (!userCollections?.collections?.length && !Object.values(collectionsLoaded)?.length && !userCollectionsLoading) && (
+            { (!userCollections?.collections?.length && !Object.values(collectionsLoaded)?.length && !userCollectionsLoading && !searchString) && (
               <NoCollections />
+            )}
+            { (!userCollections?.collections?.length && !Object.values(collectionsLoaded)?.length && !userCollectionsLoading && searchString) && (
+              <NoCollectionsFound />
             )}
             <InfiniteScroll
               hasMore={hasMore}
