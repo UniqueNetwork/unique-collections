@@ -17,6 +17,7 @@ interface Props {
   label?: React.ReactNode;
   maxLength?: number;
   onChange?: (arg: string) => void;
+  onBlur?: (arg: string) => void;
   placeholder?: string;
   seed?: string;
   withLabel?: boolean;
