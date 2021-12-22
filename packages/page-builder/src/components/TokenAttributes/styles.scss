@@ -29,7 +29,7 @@
 
   .attributes-title{
     display: grid;
-    grid-template-columns: 236px 138px 128px 2fr 24px;
+    grid-template-columns: 236px 138px 128px 2fr;
 
     .row-title{
       display: flex;
@@ -53,13 +53,28 @@
 
   .create-attributes {
     display: grid;
-    grid-template-columns: 2fr 130px 120px 2fr 24px;
+    grid-template-columns: 2fr 120px 105px 2fr 40px;
     padding: calc(var(--gap) / 4) 16px 4px 0;
     border-bottom: 1px solid var(--border-color);
     column-gap:calc(var(--gap) / 2);
 
+    &:hover {
+      background-color: var(--input-background-disabled-color);
+
+      .actions {
+        img {
+          display: block;
+        }
+      }
+    }
+
     .actions {
+      display: grid;
+      justify-content: center;
+      padding: 5px 0;
+
       img {
+        width: 24px;
         display: none;
       }
     }
@@ -198,6 +213,7 @@
       .actions {
         display: flex;
         flex-direction: row;
+        justify-content: flex-start;
 
         img {
           display: block;

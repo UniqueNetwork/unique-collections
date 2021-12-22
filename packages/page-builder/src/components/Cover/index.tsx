@@ -48,8 +48,6 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
     }
   }, [account, calculateSetSchemaVersionFee, calculateSetVariableOnChainSchemaFee, collectionId, imgAddress]);
 
-  // saveConstOnChainSchema({ account, collectionId, schema: JSON.stringify(protobufJson), successCallback: onSuccess });
-
   const uploadAvatar = useCallback((event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
     const file: File = (target.files as FileList)[0];

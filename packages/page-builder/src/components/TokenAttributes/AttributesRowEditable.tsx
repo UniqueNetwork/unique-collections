@@ -17,7 +17,7 @@ export type ArtificialFieldRuleType = 'optional' | 'required';
 // export type FieldRuleType = 'optional' | 'required' | 'repeated';
 
 export type ArtificialAttributeItemType = {
-  id?: number,
+  id: number,
   fieldType: ArtificialFieldType;
   name: string;
   rule: ArtificialFieldRuleType;
@@ -65,7 +65,7 @@ interface AttributesRowEditableProps {
   attributeType: ArtificialFieldType;
   attributeCountType: ArtificialFieldRuleType;
   attributeValues: string[];
-  index: number;
+  id: number;
   isOwner: boolean;
   removeItem: (index: number) => void;
   setFormErrors: (arr: (prevErrors: number[]) => number[]) => void;
@@ -78,34 +78,34 @@ interface AttributesRowEditableProps {
 }
 
 function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement {
-  const { attributeCountType, attributeName, attributeType, attributeValues, attributes, formErrors, index, isOwner, removeItem, setAttributeCountType, setAttributeName, setAttributeType, setAttributeValues, setFormErrors } = props;
+  const { attributeCountType, attributeName, attributeType, attributeValues, attributes, formErrors, id, isOwner, removeItem, setAttributeCountType, setAttributeName, setAttributeType, setAttributeValues, setFormErrors } = props;
   const [currentAttributeName, setCurrentAttributeName] = useState<string>(attributeName);
   const [isAttributeNameError, setIsAttributeNameError] = useState<boolean>(false);
 
   const removeError = useCallback(() => {
-    if (isAttributeNameError && formErrors.includes(index)) {
+    if (isAttributeNameError && formErrors.includes(id)) {
       setFormErrors((prev) => {
-        prev.splice(prev.indexOf(index), 1);
+        prev.splice(prev.indexOf(id), 1);
 
         return prev;
       });
     }
-  }, [formErrors, index, isAttributeNameError, setFormErrors]);
+  }, [formErrors, id, isAttributeNameError, setFormErrors]);
 
   useEffect(() => {
     removeError();
   }, [removeError]);
 
   const onRemoveItem = useCallback(() => {
-    removeItem(index);
-  }, [index, removeItem]);
+    removeItem(id);
+  }, [id, removeItem]);
 
   const onSetAttributeName = useCallback(() => {
     const newAttributes = [...attributes];
 
     for (let i = 0; i < newAttributes.length; i++) {
       // check if name of the attribute does not exist
-      const isNameUniq: boolean = newAttributes[i].id !== index && newAttributes[i].name === currentAttributeName;
+      const isNameUniq: boolean = newAttributes[i].id !== id && newAttributes[i].name === currentAttributeName;
       // check if name of the attribute is not empty
       const isNameEmpty = !currentAttributeName.trim().length;
 
@@ -113,32 +113,32 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
         setIsAttributeNameError(true);
 
         // check if we already have current error
-        if (!formErrors.includes(index)) {
-          setFormErrors((prevErrors) => [...prevErrors, index]);
+        if (!formErrors.includes(id)) {
+          setFormErrors((prevErrors) => [...prevErrors, id]);
         }
 
         return;
       }
     }
 
-    setAttributeName(currentAttributeName, index);
-  }, [attributes, currentAttributeName, formErrors, index, setAttributeName, setFormErrors]);
+    setAttributeName(currentAttributeName, id);
+  }, [attributes, currentAttributeName, formErrors, id, setAttributeName, setFormErrors]);
 
   const onSetAttributeType = useCallback((type: ArtificialFieldType) => {
-    setAttributeType(type, index);
+    setAttributeType(type, id);
 
     if (type === 'repeated') {
-      setAttributeCountType('optional', index);
+      setAttributeCountType('optional', id);
     }
-  }, [index, setAttributeType, setAttributeCountType]);
+  }, [id, setAttributeType, setAttributeCountType]);
 
   const onSetAttributeCountType = useCallback((countType: ArtificialFieldRuleType) => {
-    setAttributeCountType(countType, index);
-  }, [index, setAttributeCountType]);
+    setAttributeCountType(countType, id);
+  }, [id, setAttributeCountType]);
 
   const onSetAttributeValues = useCallback((values: string[]) => {
-    setAttributeValues(values, index);
-  }, [index, setAttributeValues]);
+    setAttributeValues(values, id);
+  }, [id, setAttributeValues]);
 
   return (
     <div className='create-attributes'>
@@ -208,12 +208,11 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
           />
         </div>
         <div className='last-section'>
-          { attributeType !== 'string' && (
-            <EnumsInput
-              setValues={onSetAttributeValues}
-              values={attributeValues}
-            />
-          )}
+          <EnumsInput
+            isDisabled={attributeType === 'string'}
+            setValues={onSetAttributeValues}
+            values={attributeValues}
+          />
         </div>
       </div>
       <div className='row-section actions'>
