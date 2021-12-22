@@ -65,10 +65,10 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
   const onCreateCollection = useCallback(() => {
     if (account && name && tokenPrefix) {
       createCollection(account, {
-        description,
+        description: description.trim(),
         modeprm: { nft: null },
-        name,
-        tokenPrefix
+        name: name.trim(),
+        tokenPrefix: tokenPrefix.trim()
       }, {
         onSuccess: goToNextStep
       });
@@ -116,7 +116,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
       )}
       <UnqButton
         content='Confirm'
-        isDisabled={!name || !tokenPrefix || tokenPrefix.length > 16}
+        isDisabled={!name.trim() || !tokenPrefix.trim()}
         isFilled
         onClick={onCreateCollection}
         size='medium'
