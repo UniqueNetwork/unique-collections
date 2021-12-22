@@ -13,39 +13,39 @@ import { strToUTF16 } from '@polkadot/react-hooks/utils';
 export type SchemaVersionTypes = 'ImageURL' | 'Unique';
 
 export interface NftCollectionInterface {
-  Access?: 'Normal' | 'WhiteList'
+  access?: 'Normal' | 'WhiteList'
   id: string;
-  DecimalPoints: BN | number;
-  Description: number[];
-  TokenPrefix: string;
-  MintMode?: boolean;
-  Mode: {
+  decimalPoints: BN | number;
+  description: number[];
+  tokenPrefix: string;
+  mintMode?: boolean;
+  mode: {
     nft: null;
     fungible: null;
     reFungible: null;
     invalid: null;
   };
-  Name: number[];
-  OffchainSchema: string;
-  Owner?: string;
-  SchemaVersion: SchemaVersionTypes;
-  Sponsorship: {
+  name: number[];
+  offchainSchema: string;
+  owner?: string;
+  schemaVersion: SchemaVersionTypes;
+  sponsorship: {
     confirmed?: string;
     disabled?: string | null;
     unconfirmed?: string | null;
   };
-  Limits?: {
-    AccountTokenOwnershipLimit: string;
-    SponsoredDataSize: string;
-    SponsoredDataRateLimit: string;
-    SponsoredMintSize: string;
-    TokenLimit: string;
-    SponsorTimeout: string;
-    OwnerCanTransfer: boolean;
-    OwnerCanDestroy: boolean;
+  limits?: {
+    accountTokenOwnershipLimit: string;
+    sponsoredDataSize: string;
+    sponsoredDataRateLimit: string;
+    sponsoredMintSize: string;
+    tokenLimit: string;
+    sponsorTimeout: string;
+    ownerCanTransfer: boolean;
+    ownerCanDestroy: boolean;
   },
-  VariableOnChainSchema: string;
-  ConstOnChainSchema: string;
+  variableOnChainSchema: string;
+  constOnChainSchema: string;
 }
 
 interface TransactionCallBacks {
@@ -60,23 +60,23 @@ export function useCollection () {
   const { queueExtrinsic } = useContext(StatusContext);
   const { hex2a } = useDecoder();
 
-  const getCollectionTokensCount = useCallback(async (collectionId: string) => {
+  const getCollectionTokensCount = useCallback(async (collectionId: string): Promise<number> => {
     if (!api || !collectionId) {
-      return [];
+      return 0;
     }
 
     try {
-      return await api.query.nft.itemListIndex(collectionId);
+      return (await api.rpc.unique.lastTokenId(collectionId)).toJSON() as number;
     } catch (e) {
-      console.log('getTokensOfCollection error', e);
+      console.log('getCollectionTokensCount error', e);
     }
 
     return 0;
   }, [api]);
 
-  const getCreatedCollectionCount = useCallback(async () => {
+  const getCreatedCollectionCount = useCallback(async (): Promise<number> => {
     try {
-      return parseInt((await api.query.nft.createdCollectionCount()).toString(), 10);
+      return (await api.rpc.unique.collectionStats()).created.toNumber();
     } catch (e) {
       console.log('getCreatedCollectionCount error', e);
     }
@@ -84,8 +84,20 @@ export function useCollection () {
     return 0;
   }, [api]);
 
+  const calculateCreateCollectionFee = useCallback(async ({ account, description, modeprm, name, tokenPrefix }: { account: string, name: string, description: string, tokenPrefix: string, modeprm: { nft?: null, fungible?: null, refungible?: null, invalid?: null }}): Promise<BN | null> => {
+    try {
+      const fee = await api.tx.unique.createCollection(strToUTF16(name), strToUTF16(description), strToUTF16(tokenPrefix), modeprm).paymentInfo(account) as { partialFee: BN };
+
+      return fee.partialFee;
+    } catch (error) {
+      console.error((error as Error).message);
+
+      return null;
+    }
+  }, [api]);
+
   const createCollection = useCallback((account: string, { description, modeprm, name, tokenPrefix }: { name: string, description: string, tokenPrefix: string, modeprm: { nft?: null, fungible?: null, refungible?: null, invalid?: null }}, callBacks?: TransactionCallBacks) => {
-    const transaction = api.tx.nft.createCollection(strToUTF16(name), strToUTF16(description), strToUTF16(tokenPrefix), modeprm);
+    const transaction = api.tx.unique.createCollection(strToUTF16(name), strToUTF16(description), strToUTF16(tokenPrefix), modeprm);
 
     queueExtrinsic({
       accountId: account && account.toString(),
@@ -99,7 +111,7 @@ export function useCollection () {
   }, [api, queueExtrinsic]);
 
   const setCollectionSponsor = useCallback(({ account, collectionId, errorCallback, newSponsor, successCallback }: { account: string, collectionId: string, newSponsor: string, successCallback?: () => void, errorCallback?: () => void }) => {
-    const transaction = api.tx.nft.setCollectionSponsor(collectionId, newSponsor);
+    const transaction = api.tx.unique.setCollectionSponsor(collectionId, newSponsor);
 
     queueExtrinsic({
       accountId: account && account.toString(),
@@ -113,7 +125,7 @@ export function useCollection () {
   }, [api, queueExtrinsic]);
 
   const removeCollectionSponsor = useCallback(({ account, collectionId, errorCallback, successCallback }: { account: string, collectionId: string, successCallback?: () => void, errorCallback?: () => void }) => {
-    const transaction = api.tx.nft.removeCollectionSponsor(collectionId);
+    const transaction = api.tx.unique.removeCollectionSponsor(collectionId);
 
     queueExtrinsic({
       accountId: account && account.toString(),
@@ -127,7 +139,7 @@ export function useCollection () {
   }, [api, queueExtrinsic]);
 
   const confirmSponsorship = useCallback(({ account, collectionId, errorCallback, successCallback }: { account: string, collectionId: string, successCallback?: () => void, errorCallback?: () => void }) => {
-    const transaction = api.tx.nft.confirmSponsorship(collectionId);
+    const transaction = api.tx.unique.confirmSponsorship(collectionId);
 
     queueExtrinsic({
       accountId: account && account.toString(),
@@ -140,13 +152,13 @@ export function useCollection () {
     });
   }, [api, queueExtrinsic]);
 
-  const getCollectionAdminList = useCallback(async (collectionId: string) => {
+  const getCollectionAdminList = useCallback(async (collectionId: string): Promise<string[]> => {
     if (!api || !collectionId) {
       return [];
     }
 
     try {
-      return await api.query.nft.adminList(collectionId);
+      return (await api.rpc.unique.adminlist(collectionId)).toHuman() as string[];
     } catch (e) {
       console.log('getCollectionAdminList error', e);
     }
@@ -154,8 +166,20 @@ export function useCollection () {
     return [];
   }, [api]);
 
+  const calculateSetSchemaVersionFee = useCallback(async ({ account, collectionId, schemaVersion }: { account: string, schemaVersion: SchemaVersionTypes, collectionId: string }): Promise<BN | null> => {
+    try {
+      const fee = await api.tx.unique.setSchemaVersion(collectionId, schemaVersion).paymentInfo(account) as { partialFee: BN };
+
+      return fee.partialFee;
+    } catch (error) {
+      console.error((error as Error).message);
+
+      return null;
+    }
+  }, [api]);
+
   const setSchemaVersion = useCallback(({ account, collectionId, errorCallback, schemaVersion, successCallback }: { account: string, schemaVersion: SchemaVersionTypes, collectionId: string, successCallback?: () => void, errorCallback?: () => void }) => {
-    const transaction = api.tx.nft.setSchemaVersion(collectionId, schemaVersion);
+    const transaction = api.tx.unique.setSchemaVersion(collectionId, schemaVersion);
 
     queueExtrinsic({
       accountId: account && account.toString(),
@@ -169,7 +193,7 @@ export function useCollection () {
   }, [api, queueExtrinsic]);
 
   const setOffChainSchema = useCallback(({ account, collectionId, errorCallback, schema, successCallback }: { account: string, schema: string, collectionId: string, successCallback?: () => void, errorCallback?: () => void }) => {
-    const transaction = api.tx.nft.setOffchainSchema(collectionId, schema);
+    const transaction = api.tx.unique.setOffchainSchema(collectionId, schema);
 
     console.log('schema!!!', schema);
 
@@ -185,7 +209,7 @@ export function useCollection () {
   }, [api, queueExtrinsic]);
 
   const addCollectionAdmin = useCallback(({ account, collectionId, errorCallback, newAdminAddress, successCallback }: { account: string, collectionId: string, newAdminAddress: string, successCallback?: () => void, errorCallback?: () => void }) => {
-    const transaction = api.tx.nft.addCollectionAdmin(collectionId, newAdminAddress);
+    const transaction = api.tx.unique.addCollectionAdmin(collectionId, newAdminAddress);
 
     queueExtrinsic({
       accountId: account && account.toString(),
@@ -199,7 +223,7 @@ export function useCollection () {
   }, [api, queueExtrinsic]);
 
   const removeCollectionAdmin = useCallback(({ account, adminAddress, collectionId, errorCallback, successCallback }: { account: string, collectionId: string, adminAddress: string, successCallback?: () => void, errorCallback?: () => void }) => {
-    const transaction = api.tx.nft.removeCollectionAdmin(collectionId, adminAddress);
+    const transaction = api.tx.unique.removeCollectionAdmin(collectionId, adminAddress);
 
     queueExtrinsic({
       accountId: account && account.toString(),
@@ -212,8 +236,20 @@ export function useCollection () {
     });
   }, [api, queueExtrinsic]);
 
+  const calculateSetConstOnChainSchemaFees = useCallback(async ({ account, collectionId, schema }: { account: string, schema: string, collectionId: string }): Promise<BN | null> => {
+    try {
+      const fee = await api.tx.unique.setConstOnChainSchema(collectionId, schema).paymentInfo(account) as { partialFee: BN };
+
+      return fee.partialFee;
+    } catch (error) {
+      console.error((error as Error).message);
+
+      return null;
+    }
+  }, [api]);
+
   const saveConstOnChainSchema = useCallback(({ account, collectionId, errorCallback, schema, successCallback }: { account: string, collectionId: string, schema: string, successCallback?: () => void, errorCallback?: () => void }) => {
-    const transaction = api.tx.nft.setConstOnChainSchema(collectionId, schema);
+    const transaction = api.tx.unique.setConstOnChainSchema(collectionId, schema);
 
     queueExtrinsic({
       accountId: account && account.toString(),
@@ -226,8 +262,20 @@ export function useCollection () {
     });
   }, [api, queueExtrinsic]);
 
+  const calculateSetVariableOnChainSchemaFee = useCallback(async ({ account, collectionId, schema }: { account: string, schema: string, collectionId: string }): Promise<BN | null> => {
+    try {
+      const fee = await api.tx.unique.setVariableOnChainSchema(collectionId, schema).paymentInfo(account) as { partialFee: BN };
+
+      return fee.partialFee;
+    } catch (error) {
+      console.error((error as Error).message);
+
+      return null;
+    }
+  }, [api]);
+
   const saveVariableOnChainSchema = useCallback(({ account, collectionId, errorCallback, schema, successCallback }: { account: string, collectionId: string, schema: string, successCallback?: () => void, errorCallback?: () => void }) => {
-    const transaction = api.tx.nft.setVariableOnChainSchema(collectionId, schema);
+    const transaction = api.tx.unique.setVariableOnChainSchema(collectionId, schema);
 
     queueExtrinsic({
       accountId: account && account.toString(),
@@ -240,44 +288,62 @@ export function useCollection () {
     });
   }, [api, queueExtrinsic]);
 
-  const getDetailedCollectionInfo = useCallback(async (collectionId: string) => {
+  const destroyCollection = useCallback(({ account, collectionId, errorCallback, successCallback }: { account: string, collectionId: string, successCallback?: () => void, errorCallback?: () => void }) => {
+    const transaction = api.tx.unique.destroyCollection(collectionId);
+
+    queueExtrinsic({
+      accountId: account && account.toString(),
+      extrinsic: transaction,
+      isUnsigned: false,
+      txFailedCb: () => { console.log('set collection varOnChain fail'); errorCallback && errorCallback(); },
+      txStartCb: () => { console.log('set collection varOnChain start'); },
+      txSuccessCb: () => { console.log('set collection varOnChain success'); successCallback && successCallback(); },
+      txUpdateCb: () => { console.log('set collection varOnChain update'); }
+    });
+  }, [api, queueExtrinsic]);
+
+  const getDetailedCollectionInfo = useCallback(async (collectionId: string): Promise<NftCollectionInterface | null> => {
     if (!api) {
       return null;
     }
 
     try {
-      const collectionInfo = (await api.query.nft.collectionById(collectionId)).toJSON() as unknown as NftCollectionInterface;
+      const collectionInfo = (await api.rpc.unique.collectionById(collectionId)).toJSON() as unknown as NftCollectionInterface | null;
 
-      return {
-        ...collectionInfo,
-        id: collectionId
-      };
+      if (collectionInfo) {
+        return {
+          ...collectionInfo,
+          id: collectionId
+        };
+      }
+
+      return null;
     } catch (e) {
       console.log('getDetailedCollectionInfo error', e);
     }
 
-    return {};
+    return null;
   }, [api]);
 
-  const getCollectionOnChainSchema = useCallback((collectionInfo: NftCollectionInterface): { constSchema: ProtobufAttributeType | undefined, variableSchema: ProtobufAttributeType | undefined } => {
+  const getCollectionOnChainSchema = useCallback((collectionInfo: NftCollectionInterface): { constSchema: ProtobufAttributeType | undefined, variableSchema: { collectionCover: string } | undefined } => {
     const result: {
       constSchema: ProtobufAttributeType | undefined,
-      variableSchema: ProtobufAttributeType | undefined,
+      variableSchema: { collectionCover: string } | undefined
     } = {
       constSchema: undefined,
       variableSchema: undefined
     };
 
     try {
-      const constSchema = hex2a(collectionInfo.ConstOnChainSchema);
-      const varSchema = hex2a(collectionInfo.VariableOnChainSchema);
+      const constSchema = hex2a(collectionInfo.constOnChainSchema);
+      const varSchema = hex2a(collectionInfo.variableOnChainSchema);
 
       if (constSchema && constSchema.length) {
         result.constSchema = JSON.parse(constSchema) as ProtobufAttributeType;
       }
 
       if (varSchema && varSchema.length) {
-        result.variableSchema = JSON.parse(varSchema) as ProtobufAttributeType;
+        result.variableSchema = JSON.parse(varSchema) as { collectionCover: string } | undefined;
       }
 
       return result;
@@ -294,7 +360,7 @@ export function useCollection () {
     }
 
     try {
-      return await api.query.nft.addressTokens(collectionId, ownerId);
+      return await api.query.unique.accountTokens(collectionId, { Substrate: ownerId });
     } catch (e) {
       console.log('getTokensOfCollection error', e);
     }
@@ -304,8 +370,13 @@ export function useCollection () {
 
   return {
     addCollectionAdmin,
+    calculateCreateCollectionFee,
+    calculateSetConstOnChainSchemaFees,
+    calculateSetSchemaVersionFee,
+    calculateSetVariableOnChainSchemaFee,
     confirmSponsorship,
     createCollection,
+    destroyCollection,
     getCollectionAdminList,
     getCollectionOnChainSchema,
     getCollectionTokensCount,

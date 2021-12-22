@@ -1,18 +1,23 @@
 .enum-input {
-  border: 1px solid var(--border-color);
-  background: var(--input-background-color) !important;
-  border-radius: 8px;
+  border: 1px solid var(--border-bottom);
+  background: var(--input-background-color);
+  border-radius: calc(var(--gap) / 4);
   width: 100%;
   padding: 4px 8px;
   font-family: var(--font-roboto) var(--font-mono);
-  overflow-y: scroll;
-  max-height: 100px;
-  // -ms-overflow-style: none;  /* IE and Edge */
-  // scrollbar-width: none;  /* Firefox */
 
-  /* &::-webkit-scrollbar {
-    width: 3px !important;
-  } */
+  &.disabled {
+    background: var(--enum-input-background-disabled-color);
+    border: 1px solid var(--enum-input-border-disabled-color);
+
+    .enum-input--content {
+      background: var(--enum-input-background-disabled-color);
+
+      input.enum-input--input {
+        background: var(--enum-input-background-disabled-color) !important;
+      }
+    }
+  }
 
   .enum-input--content {
     display: flex;
@@ -51,12 +56,12 @@
     }
   }
 
-  .enum-input--input {
+  input.enum-input--input {
     border: none !important;
     width: 100%;
     background: var(--input-background-color) !important;
     min-width: 100px;
-    margin-top: 5px;
+    line-height: 20px !important;
 
     &:active, &:hover, &:focus {
       outline: none;

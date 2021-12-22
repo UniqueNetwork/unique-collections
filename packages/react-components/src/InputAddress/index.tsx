@@ -15,9 +15,10 @@ import { createOptionItem } from '@polkadot/ui-keyring/options/item';
 import { isNull, isUndefined } from '@polkadot/util';
 
 import Dropdown from '../Dropdown';
+import infoBlue from '../images/infoBlue.svg';
 import { getAddressName } from '../util';
 import addressToAddress from '../util/toAddress';
-import createHeader from './createHeader';
+import CreateHeader from './CreateHeader';
 import createItem from './createItem';
 
 interface Props {
@@ -135,7 +136,8 @@ class InputAddress extends React.PureComponent<Props, State> {
 
   public override render (): React.ReactNode {
     const { className = '', defaultValue, help, hideAddress = false, isDisabled = false, isError, isMultiple, label, labelExtra, options, optionsAll, placeholder, type = DEFAULT_TYPE, withEllipsis, withLabel } = this.props;
-    const hasOptions = (options && options.length !== 0) || (optionsAll && Object.keys(optionsAll[type]).length !== 0);
+    // one option is account footer
+    const hasOptions = (options && options.length !== 0) || (optionsAll && Object.keys(optionsAll[type]).length > 1);
 
     // the options could be delayed, don't render without
     if (!hasOptions && !isDisabled) {
@@ -146,7 +148,7 @@ class InputAddress extends React.PureComponent<Props, State> {
           <Menu.Item
             active={location.pathname === '/accounts'}
             as={NavLink}
-            className='crateAccountBtn'
+            className='create-account-btn'
             name='Create or connect account'
             to='/accounts'
           />
@@ -163,11 +165,11 @@ class InputAddress extends React.PureComponent<Props, State> {
           ? lastValue
           : (lastOption && lastOption.value)
     );
-    const actualOptions: Option[] = options
-      ? options.map((o): Option => createItem(o))
-      : isDisabled && actualValue
-        ? [createOption(actualValue)]
-        : this.getFiltered();
+    const actualOptions: Option[] = options &&
+      isDisabled && actualValue
+      ? [createOption(actualValue)]
+      : this.getFiltered();
+
     const _defaultValue = (isMultiple || !isUndefined(value))
       ? undefined
       : actualValue;
@@ -212,13 +214,14 @@ class InputAddress extends React.PureComponent<Props, State> {
     }
 
     return getAddressName(value);
-  }
+  };
 
   private getLastOptionValue (): KeyringSectionOption | undefined {
     const available = this.getFiltered();
 
+    // first value is 'manage accounts', last value is 'footer', so we take penultimate value
     return available.length
-      ? available[available.length - 1]
+      ? available[available.length - 2]
       : undefined;
   }
 
@@ -244,7 +247,7 @@ class InputAddress extends React.PureComponent<Props, State> {
         ? transformToAccountId(address)
         : undefined
     );
-  }
+  };
 
   private onChangeMulti = (addresses: string[]): void => {
     const { onChangeMulti } = this.props;
@@ -256,7 +259,7 @@ class InputAddress extends React.PureComponent<Props, State> {
           .filter((address) => address as string) as string[]
       );
     }
-  }
+  };
 
   private onSearch = (filteredOptions: KeyringSectionOptions, _query: string): KeyringSectionOptions => {
     const { isInput = true } = this.props;
@@ -288,7 +291,7 @@ class InputAddress extends React.PureComponent<Props, State> {
 
       return !(isNull(item.value) || isUndefined(item.value)) || (!isLast && !!hasNext);
     });
-  }
+  };
 }
 
 const ExportedComponent = withMulti(
@@ -299,8 +302,26 @@ const ExportedComponent = withMulti(
       Object.entries(optionsAll).reduce((result: Record<string, (Option | React.ReactNode)[]>, [type, options]): Record<string, (Option | React.ReactNode)[]> => {
         result[type] = options.map((option): Option | React.ReactNode =>
           option.value === null
-            ? createHeader(option)
+            ? <CreateHeader
+              key={option.key || option.name}
+              option={option}
+            />
             : createItem(option)
+        );
+
+        result[type].push(
+          <div
+            className='accounts-footer'
+            key='footer-text'
+          >
+            <div className='info-panel'>
+              <img
+                alt='info'
+                src={infoBlue as string}
+              />
+              Click on image to copy the address
+            </div>
+          </div>
         );
 
         return result;

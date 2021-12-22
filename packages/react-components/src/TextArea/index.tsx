@@ -15,18 +15,21 @@ interface Props {
   isError?: boolean;
   isReadOnly?: boolean;
   label?: React.ReactNode;
+  maxLength?: number;
   onChange?: (arg: string) => void;
   placeholder?: string;
   seed?: string;
   withLabel?: boolean;
 }
 
-function Index ({ children, className, help, isDisabled, isError, isReadOnly, label, onChange, placeholder, seed, withLabel }: Props): React.ReactElement<Props> {
+function Index ({ children, className, help, isDisabled, isError, isReadOnly, label, maxLength, onChange, placeholder, seed, withLabel }: Props): React.ReactElement<Props> {
   const _onChange = useCallback(
     ({ target: { value } }: React.ChangeEvent<HTMLTextAreaElement>): void => {
-      onChange && onChange(value);
+      if (!maxLength || value.length <= maxLength) {
+        onChange && onChange(value);
+      }
     },
-    [onChange]
+    [maxLength, onChange]
   );
 
   return (
@@ -46,7 +49,6 @@ function Index ({ children, className, help, isDisabled, isError, isReadOnly, la
           onChange={_onChange}
           placeholder={placeholder}
           readOnly={isReadOnly}
-          rows={2}
           spellCheck={false}
           value={seed}
         />

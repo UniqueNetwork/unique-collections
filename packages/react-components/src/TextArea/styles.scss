@@ -3,13 +3,15 @@
   .TextAreaWithDropdown {
 
     textarea {
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
+      border: 1px solid var(--border-bottom);
+      border-radius: calc(var(--gap) / 4);
       color: var(--input-text-color);
       background: var(--input-background-color);
-      padding: 8px 16px;
+      padding: calc(var(--gap) / 2) var(--gap);
       width: 100%;
       font-size: 16px;
+      min-height: 88px;
+      resize: none;
 
       &::-webkit-input-placeholder {
         color:rgba(191,191,191,.87)
@@ -25,13 +27,13 @@
 
       &:active {
         background: var(--input-background-color);
-        border: 1px solid var(--border-color);
+        border: 1px solid var(--placeholder-color);
         outline: none;
       }
 
       &:focus {
         background: var(--input-background-color);
-        border: 1px solid var(--border-color);
+        border: 1px solid var(--placeholder-color);
         outline: none;
       }
 

@@ -8,6 +8,12 @@
     "jsx": "react",
     "baseUrl": ".",
     "paths": {
+      "@polkadot/api/augment": [
+        "@unique-nft/types/src/interfaces/augment-api.ts"
+      ],
+      "@polkadot/types/augment": [
+        "@unique-nft/types/src/interfaces/augment-types.ts"
+      ],
       "@polkadot/apps/*": ["packages/apps/src/*"],
       "@polkadot/apps": ["packages/apps/src"],
       "@polkadot/apps-config": [ "packages/apps-config/src" ],
@@ -16,14 +22,14 @@
       "@polkadot/apps-routing/*": [ "packages/apps-routing/src/*" ],
       "@polkadot/app-accounts": [ "packages/page-accounts/src" ],
       "@polkadot/app-accounts/*": [ "packages/page-accounts/src/*" ],
-      "@polkadot/app-nft-wallet": [ "packages/page-nft-wallet/src" ],
-      "@polkadot/app-nft-wallet/*": [ "packages/page-nft-wallet/src/*" ],
       "@polkadot/app-nft-market": [ "packages/page-nft-market/src" ],
       "@polkadot/app-nft-market/*": [ "packages/page-nft-market/src/*" ],
       "@polkadot/app-nft-trades": [ "packages/page-nft-trades/src" ],
       "@polkadot/app-nft-trades/*": [ "packages/page-nft-trades/src/*" ],
       "@polkadot/app-faq": [ "packages/page-faq/src" ],
       "@polkadot/app-faq/*": [ "packages/page-faq/src/*" ],
+      "@polkadot/app-builder": [ "packages/page-builder/src" ],
+      "@polkadot/app-builder/*": [ "packages/page-builder/src/*" ],
       "@polkadot/react-api": [ "packages/react-api/src" ],
       "@polkadot/react-api/*": [ "packages/react-api/src/*" ],
       "@polkadot/react-components": [ "packages/react-components/src" ],
@@ -42,7 +48,7 @@
     "skipLibCheck": true,
     "typeRoots": [
       "./node_modules/@polkadot/ts",
-      "./node_modules/@types"
+      "./node_modules/@types",
     ]
   }
 }

@@ -15,11 +15,6 @@ export default (_theme: ThemeDef): string => `
     width: 100%;
   }
 
-  .ui.dropdown,
-  .ui.input {
-    margin: 0.25rem 0;
-  }
-
   .ui.selection.dropdown,
   .ui.input > input,
   .ui.selection.dropdown > input {

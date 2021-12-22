@@ -25,9 +25,10 @@ interface UseSchemaInterface {
   tokenDetails?: TokenDetailsInterface;
   tokenName: { name: string, value: string } | null;
   tokenUrl: string;
+  shouldUpdateOwner?: boolean;
 }
 
-export function useSchema (account: string | undefined, collectionId: string, tokenId: string | number): UseSchemaInterface {
+export function useSchema (account: string | undefined, collectionId: string, tokenId: string | number, shouldUpdateOwner?: boolean): UseSchemaInterface {
   const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
   const [reFungibleBalance, setReFungibleBalance] = useState<number>(0);
   const [tokenUrl, setTokenUrl] = useState<string>('');
@@ -53,11 +54,11 @@ export function useSchema (account: string | undefined, collectionId: string, to
   const getReFungibleDetails = useCallback(() => {
     try {
       if (account && tokenDetails?.Owner) {
-        if (Object.prototype.hasOwnProperty.call(collectionInfo?.Mode, 'reFungible')) {
+        if (Object.prototype.hasOwnProperty.call(collectionInfo?.mode, 'reFungible')) {
           const owner = tokenDetails.Owner.find((item: { fraction: BN, owner: string }) => item.owner.toString() === account) as { fraction: BN, owner: string } | undefined;
 
-          if (typeof collectionInfo?.DecimalPoints === 'number') {
-            const balance = owner && owner.fraction.toNumber() / Math.pow(10, collectionInfo.DecimalPoints);
+          if (typeof collectionInfo?.decimalPoints === 'number') {
+            const balance = owner && owner.fraction.toNumber() / Math.pow(10, collectionInfo.decimalPoints);
 
             if (cleanup.current) {
               return;
@@ -133,6 +134,10 @@ export function useSchema (account: string | undefined, collectionId: string, to
   useEffect(() => {
     void getCollectionInfo();
   }, [getCollectionInfo]);
+
+  useEffect(() => {
+    void getTokenDetails();
+  }, [getTokenDetails, shouldUpdateOwner]);
 
   useEffect(() => {
     if (collectionInfo && tokenDetails) {

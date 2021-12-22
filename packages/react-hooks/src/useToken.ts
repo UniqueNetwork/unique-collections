@@ -1,19 +1,23 @@
 // Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import BN from 'bn.js';
 import { useCallback, useContext } from 'react';
 
 import { StatusContext } from '@polkadot/react-components';
 import { useApi } from '@polkadot/react-hooks/useApi';
 import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
+import { normalizeAccountId } from './utils';
+
 export interface TokenDetailsInterface {
-  Owner?: any[];
-  ConstData?: string;
-  VariableData?: string;
+  owner?: { Ethereum?: string, Substrate?: string };
+  constData?: string;
+  variableData?: string;
 }
 
 interface UseTokenInterface {
+  calculateCreateItemFee: (obj: { account: string, collectionId: string, constData: string, variableData: string, owner: string }) => Promise<BN | null>;
   createNft: (obj: { account: string, collectionId: string, constData: string, variableData: string, successCallback?: () => void, errorCallback?: () => void, owner: string }) => void;
   getDetailedReFungibleTokenInfo: (collectionId: string, tokenId: string) => Promise<TokenDetailsInterface>;
   getDetailedTokenInfo: (collectionId: string, tokenId: string) => Promise<TokenDetailsInterface>
@@ -25,14 +29,27 @@ export function useToken (): UseTokenInterface {
   const { api } = useApi();
   const { queueExtrinsic } = useContext(StatusContext);
 
-  // const createData = {nft: {const_data: [], variable_data: []}};
-  // tx = api.tx.nft.createItem(collectionId, owner, createData);
-  // setVariableMetaData(collection_id, item_id, data)
+  const calculateCreateItemFee = useCallback(async ({ account, collectionId, constData, owner, variableData }: { account: string, collectionId: string, constData: string, owner: string, variableData: string }): Promise<BN | null> => {
+    try {
+      const fee = await api.tx.unique.createItem(collectionId, { Substrate: owner }, {
+        nft: {
+          const_data: constData,
+          variable_data: variableData
+        }
+      }).paymentInfo(account) as { partialFee: BN };
+
+      return fee.partialFee;
+    } catch (error) {
+      console.error((error as Error).message);
+
+      return null;
+    }
+  }, [api]);
 
   const createNft = useCallback((
     { account, collectionId, constData, errorCallback, owner, successCallback, variableData }:
     { account: string, collectionId: string, constData: string, variableData: string, successCallback?: () => void, errorCallback?: () => void, owner: string }) => {
-    const transaction = api.tx.nft.createItem(collectionId, owner, { nft: { const_data: constData, variable_data: variableData } });
+    const transaction = api.tx.unique.createItem(collectionId, { Substrate: owner }, { nft: { const_data: constData, variable_data: variableData } });
 
     queueExtrinsic({
       accountId: account && account.toString(),
@@ -48,7 +65,7 @@ export function useToken (): UseTokenInterface {
   const setVariableMetadata = useCallback((
     { account, collectionId, errorCallback, successCallback, tokenId, variableData }:
     { account: string, collectionId: string, variableData: string, successCallback?: () => void, errorCallback?: () => void, tokenId: string }) => {
-    const transaction = api.tx.nft.setVariableMetaData(collectionId, tokenId, variableData);
+    const transaction = api.tx.unique.setVariableMetaData(collectionId, tokenId, variableData);
 
     queueExtrinsic({
       accountId: account && account.toString(),
@@ -67,9 +84,21 @@ export function useToken (): UseTokenInterface {
     }
 
     try {
-      const tokenInfo = await api.query.nft.nftItemList(collectionId, tokenId);
+      let tokenInfo: TokenDetailsInterface = {};
 
-      return tokenInfo.toJSON() as unknown as TokenDetailsInterface;
+      const variableData = (await api.rpc.unique.variableMetadata(collectionId, tokenId)).toJSON() as string;
+      const constData: string = (await api.rpc.unique.constMetadata(collectionId, tokenId)).toString() as string;
+      const crossAccount = normalizeAccountId((await api.rpc.unique.tokenOwner(collectionId, tokenId)).toJSON() as string) as { Substrate: string };
+
+      tokenInfo = {
+        constData,
+        owner: crossAccount,
+        variableData
+      };
+
+      console.log('tokenInfo.toJSON()', tokenInfo);
+
+      return tokenInfo;
     } catch (e) {
       console.log('getDetailedTokenInfo error', e);
 
@@ -83,7 +112,8 @@ export function useToken (): UseTokenInterface {
     }
 
     try {
-      return (await api.query.nft.reFungibleItemList(collectionId, tokenId) as unknown as TokenDetailsInterface);
+      // in old version reFungibleItemList
+      return (await api.query.unique.nftItemList(collectionId, tokenId) as unknown as TokenDetailsInterface);
     } catch (e) {
       console.log('getDetailedReFungibleTokenInfo error', e);
 
@@ -95,17 +125,19 @@ export function useToken (): UseTokenInterface {
     let tokenDetailsData: TokenDetailsInterface = {};
 
     if (tokenId && collectionInfo) {
-      if (Object.prototype.hasOwnProperty.call(collectionInfo.Mode, 'nft')) {
+      tokenDetailsData = await getDetailedTokenInfo(collectionInfo.id, tokenId);
+      /* if (Object.prototype.hasOwnProperty.call(collectionInfo.mode, 'nft')) {
         tokenDetailsData = await getDetailedTokenInfo(collectionInfo.id, tokenId);
-      } else if (Object.prototype.hasOwnProperty.call(collectionInfo.Mode, 'reFungible')) {
+      } else if (Object.prototype.hasOwnProperty.call(collectionInfo.mode, 'reFungible')) {
         tokenDetailsData = await getDetailedReFungibleTokenInfo(collectionInfo.id, tokenId);
-      }
+      } */
     }
 
     return tokenDetailsData;
-  }, [getDetailedTokenInfo, getDetailedReFungibleTokenInfo]);
+  }, [getDetailedTokenInfo]);
 
   return {
+    calculateCreateItemFee,
     createNft,
     getDetailedReFungibleTokenInfo,
     getDetailedTokenInfo,

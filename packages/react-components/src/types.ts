@@ -17,12 +17,14 @@ export interface BareProps {
 }
 
 export interface AppProps {
-  account?: string;
+  account: string;
   basePath: string;
   className?: string;
   onStatusChange: (status: ActionStatus) => void;
   openPanel?: OpenPanelType;
   setOpenPanel?: (openPanel: OpenPanelType) => void;
+  setAccount?: (account?: string) => void;
+
 }
 
 export type I18nProps = BareProps & WithTranslation;
