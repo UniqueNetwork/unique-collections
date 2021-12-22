@@ -45,6 +45,9 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   const history = useHistory();
   const { queueAction } = useContext(StatusContext);
   const isOwner = collectionInfo?.owner === account;
+  const schemaVersion = collectionInfo?.schemaVersion;
+
+  console.log('schemaVersion', schemaVersion);
 
   const onAddItem = useCallback(() => {
     const newAttributes = [...attributes];
@@ -74,8 +77,12 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   }, [queueAction, history]);
 
   const setUniqueSchemaVersion = useCallback(() => {
-    setSchemaVersion({ account, collectionId, schemaVersion: 'Unique', successCallback: onSuccess });
-  }, [account, collectionId, onSuccess, setSchemaVersion]);
+    if (collectionInfo?.schemaVersion === 'Unique') {
+      onSuccess();
+    } else {
+      setSchemaVersion({ account, collectionId, schemaVersion: 'Unique', successCallback: onSuccess });
+    }
+  }, [account, collectionId, collectionInfo, onSuccess, setSchemaVersion]);
 
   const convertArtificialAttributesToProtobuf = useCallback((attributes: ArtificialAttributeItemType[]): AttributeItemType[] => {
     return attributes.map((attr: ArtificialAttributeItemType): AttributeItemType => {
@@ -89,11 +96,15 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
 
   const convertProtobufToArtificialAttributes = useCallback((attributes: AttributeItemType[]): ArtificialAttributeItemType[] => {
     return attributes.map((attr: AttributeItemType): ArtificialAttributeItemType => {
+      /*
+      type: 'string' | 'enum' -> 'string' | 'enum' | 'repeated';
+      rule: 'optional' | 'required' | 'repeated' -> 'optional' | 'required';
+       */
       if (attr.rule === 'repeated') {
         return { ...attr, fieldType: 'repeated', rule: 'optional' };
       }
 
-      return { ...attr } as ArtificialAttributeItemType;
+      return attr as ArtificialAttributeItemType;
     });
   }, []);
 
@@ -126,9 +137,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   }, [account, attributes, collectionId, convertArtificialAttributesToProtobuf, setUniqueSchemaVersion, saveConstOnChainSchema]);
 
   const deleteAttribute = useCallback((index) => {
-    setAttributes([
-      ...attributes.filter((attribute: ArtificialAttributeItemType) => attribute.id !== index)
-    ]);
+    setAttributes(attributes.filter((attribute: ArtificialAttributeItemType) => attribute.id !== index));
   }, [attributes]);
 
   const onSaveAll = useCallback(() => {
@@ -140,14 +149,8 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     }
   }, [attributes, onSaveForm]);
 
-  const setAttributeCountType = useCallback((countType: ArtificialFieldRuleType, index: number) => {
-    setAttributes((prevAttributes: ArtificialAttributeItemType[]) => {
-      const newAttributes = [...prevAttributes];
-
-      newAttributes[index].rule = countType;
-
-      return newAttributes;
-    });
+  const setAttributeCountType = useCallback((countType: ArtificialFieldRuleType, id: number) => {
+    setAttributes((prevAttributes: ArtificialAttributeItemType[]) => prevAttributes.map((item) => item.id === id ? { ...item, rule: countType } : item));
   }, []);
 
   const setAttributeName = useCallback((name: string, index: number) => {
@@ -160,24 +163,12 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     });
   }, []);
 
-  const setAttributeType = useCallback((type: ArtificialFieldType, index: number) => {
-    setAttributes((prevAttributes: ArtificialAttributeItemType[]) => {
-      const newAttributes = [...prevAttributes];
-
-      newAttributes[index].fieldType = type;
-
-      return newAttributes;
-    });
+  const setAttributeType = useCallback((type: ArtificialFieldType, id: number) => {
+    setAttributes((prevAttributes: ArtificialAttributeItemType[]) => prevAttributes.map((item) => item.id === id ? { ...item, fieldType: type } : item));
   }, []);
 
-  const setAttributeValues = useCallback((values: string[], index: number) => {
-    setAttributes((prevAttributes: ArtificialAttributeItemType[]) => {
-      const newAttributes = [...prevAttributes];
-
-      newAttributes[index].values = values;
-
-      return newAttributes;
-    });
+  const setAttributeValues = useCallback((values: string[], id: number) => {
+    setAttributes((prevAttributes: ArtificialAttributeItemType[]) => prevAttributes.map((item) => item.id === id ? { ...item, values: values } : item));
   }, []);
 
   const fillCollectionAttributes = useCallback(() => {
@@ -211,8 +202,6 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     void calculateFees();
   }, [calculateFees]);
 
-  console.log('token attributes', attributes, 'owner', isOwner);
-
   return (
     <div className='token-attributes '>
       <div className='token-attributes-header'>
@@ -221,7 +210,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
       </div>
       <div className='attributes-title'>
         <div className='row-title'>
-          <p>Attribute name</p>
+          <p>Attribute</p>
           <HelpTooltip
             className={'help attributes'}
             content={<span>Textual traits that show up on Token</span>}
@@ -279,7 +268,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
               attributeValues={attribute.values}
               attributes={attributes}
               formErrors={formErrors}
-              index={index}
+              id={attribute.id}
               isOwner={isOwner}
               key={`${attribute.name}-${index}`}
               removeItem={deleteAttribute}

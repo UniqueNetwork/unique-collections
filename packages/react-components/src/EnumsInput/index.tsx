@@ -5,8 +5,7 @@ import './styles.scss';
 
 import React, { memo, useCallback, useState } from 'react';
 
-// import { Popup } from '@polkadot/react-components';
-import closeIcon from './closeIcon.svg';
+import EnumInputItem from './EnumInputItem';
 
 interface Props {
   isDisabled?: boolean;
@@ -54,40 +53,15 @@ function EnumInput ({ isDisabled, setValues, values }: Props): React.ReactElemen
   }, [addItem]);
 
   return (
-    <div className='enum-input'>
+    <div className={`${isDisabled ? 'enum-input disabled' : 'enum-input'}`}>
       <div className='enum-input--content'>
         <div className='enum-input--content--elements'>
           { values.map((enumItem: string) => (
-            <div
-              className='enum-input--item'
+            <EnumInputItem
+              deleteItem={deleteItem}
+              enumItem={enumItem}
               key={enumItem}
-            >
-              {enumItem}
-              <img
-                alt='delete item'
-                onClick={deleteItem.bind(null, enumItem)}
-                src={closeIcon as string}
-              />
-            </div>
-            /* <Popup
-              basic
-              key={enumItem}
-              style={{ top: '-50px' }}
-              trigger={
-                <div
-                  className='enum-input--item'
-                >
-                  {enumItem}
-                  <img
-                    alt='delete item'
-                    onClick={deleteItem.bind(null, enumItem)}
-                    src={closeIcon as string}
-                  />
-                </div>
-              }
-            >
-              popup content
-            </Popup> */
+            />
           ))}
         </div>
         <input
@@ -96,6 +70,7 @@ function EnumInput ({ isDisabled, setValues, values }: Props): React.ReactElemen
           onBlur={addItem}
           onChange={changeCurrentEnum}
           onKeyDown={onKeyDown}
+          placeholder={isDisabled ? 'Values' : ''}
           type='text'
           value={currentEnum}
         />

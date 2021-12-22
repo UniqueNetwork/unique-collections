@@ -65,6 +65,8 @@
   --input-border-color-hover: #e1e1e1;
   --input-border-color-outline: #cccccc;
   --input-background-disabled-color: #fafafa;
+  --enum-input-background-disabled-color: #EDEDEE;
+  --enum-input-border-disabled-color: #D2D3D6;
   --input-placeholder-search-color: #81858E;
   --input-copy-icon-color:  #A9AFBD;
   --input-text-color: #040b1d;
