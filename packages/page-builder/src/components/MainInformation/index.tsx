@@ -37,26 +37,26 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
   }, [account, calculateCreateCollectionFee, description, name, tokenPrefix]);
 
   // @todo - get latest index if account is owner
-  /*
-    export function getCreateCollectionResult(events: EventRecord[]): CreateCollectionResult {
-     let success = false;
-     let collectionId = 0;
-     events.forEach(({event: {data, method, section}}) => {
-      // console.log(`  ${phase}: ${section}.${method}:: ${data}`);
-      if (method == 'ExtrinsicSuccess') {
-       success = true;
-      } else if ((section == 'common') && (method == 'CollectionCreated')) {
-       collectionId = parseInt(data[0].toString(), 10);
-      }
-     });
-     const result: CreateCollectionResult = {
-      success,
-      collectionId,
-     };
-     return result;
-    }
-   */
   const goToNextStep = useCallback(async () => {
+    /*
+   export function getCreateCollectionResult(events: EventRecord[]): CreateCollectionResult {
+    let success = false;
+    let collectionId = 0;
+    events.forEach(({event: {data, method, section}}) => {
+     // console.log(`  ${phase}: ${section}.${method}:: ${data}`);
+     if (method == 'ExtrinsicSuccess') {
+      success = true;
+     } else if ((section == 'common') && (method == 'CollectionCreated')) {
+      collectionId = parseInt(data[0].toString(), 10);
+     }
+    });
+    const result: CreateCollectionResult = {
+     success,
+     collectionId,
+    };
+    return result;
+   }
+  */
     const collectionCount = await getCreatedCollectionCount();
 
     history.push(`/builder/collections/${collectionCount}/cover`);
@@ -81,6 +81,18 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
     setTokenPrefix(replaceValue);
   }, [setTokenPrefix]);
 
+  const handleBlurName = useCallback(() => {
+    setName(name.trim());
+  }, [setName, name]);
+
+  const handleBlurDescription = useCallback(() => {
+    setDescription(description.trim());
+  }, [setDescription, description]);
+
+  const handleBlurSymbol = useCallback(() => {
+    setTokenPrefix(tokenPrefix.trim());
+  }, [setTokenPrefix, tokenPrefix]);
+
   useEffect(() => {
     void calculateFee();
   }, [calculateFee]);
@@ -94,6 +106,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <Input
           className='isSmall'
           maxLength={64}
+          onBlur={handleBlurName}
           onChange={setName}
           value={name}
         />
@@ -103,6 +116,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <p>Max 256 symbols</p>
         <TextArea
           maxLength={256}
+          onBlur={handleBlurDescription}
           onChange={setDescription}
           seed={description}
         />
@@ -113,6 +127,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <Input
           className='isSmall'
           maxLength={4}
+          onBlur={handleBlurSymbol}
           onChange={handleTokenPrefix}
           value={tokenPrefix}
         />
@@ -122,7 +137,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
       )}
       <UnqButton
         content='Confirm'
-        isDisabled={!name || !tokenPrefix || tokenPrefix.length > 16}
+        isDisabled={!name || !tokenPrefix}
         isFilled
         onClick={onCreateCollection}
         size='medium'

@@ -8,15 +8,13 @@ import clearIcon from '@polkadot/app-accounts/Accounts/clearIcon.svg';
 import searchIcon from '@polkadot/app-accounts/Accounts/searchIcon.svg';
 import { Input, UnqButton } from '@polkadot/react-components';
 
-import { CollectionsListType } from '../containers/CollectionsList';
-
 interface Props {
+  hasCollections: boolean;
   searchString: string;
   setSearchString: (searchString: string) => void;
-  collectionsLoaded: CollectionsListType;
 }
 
-function CreateCollectionOrSearch ({ collectionsLoaded, searchString, setSearchString }: Props): React.ReactElement {
+function CreateCollectionOrSearch ({ hasCollections, searchString, setSearchString }: Props): React.ReactElement {
   const history = useHistory();
 
   const handleClearSearch = useCallback(() => {
@@ -36,8 +34,8 @@ function CreateCollectionOrSearch ({ collectionsLoaded, searchString, setSearchS
         onClick={onCreateCollection}
         size='medium'
       />
-      {Object.values(collectionsLoaded)?.length
-        ? (<Input
+      { hasCollections && (
+        <Input
           className='isSmall'
           icon={
             <img
@@ -59,8 +57,8 @@ function CreateCollectionOrSearch ({ collectionsLoaded, searchString, setSearchS
               src={clearIcon as string}
             />
           )}
-        </Input>)
-        : null}
+        </Input>
+      )}
     </div>
   );
 }
