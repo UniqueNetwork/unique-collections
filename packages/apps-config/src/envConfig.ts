@@ -4,6 +4,7 @@
 export type EnvConfigType = {
   commission: number;
   decimals: number;
+  discordChannel: string;
   environment: string;
   faviconPath: string;
   graphQlAdminSecret: string;
@@ -17,6 +18,7 @@ export type EnvConfigType = {
   minPrice: number;
   quoteId: number; // 2
   uniqueSubstrateApi: string;
+  uniqueTelegram: string;
   value: number; // 0
   version: string;
   whiteLabelUrl: string;
@@ -27,6 +29,7 @@ declare global {
     ENV: {
       COMMISSION: number;
       DECIMALS: number;
+      DISCORD_CHANNEL: string;
       ENVIRONMENT: string;
       FAVICON_PATH: string;
       GRAPH_QL_ADMIN_SECRET: string;
@@ -40,6 +43,7 @@ declare global {
       MIN_PRICE: number;
       QUOTE_ID: number; // 2
       UNIQUE_SUBSTRATE_API: string;
+      UNQ_TELEGRAM: string;
       VALUE: number; // 0
       VERSION: string;
       WHITE_LABEL_URL: string;
@@ -50,6 +54,7 @@ declare global {
 const envConfig: EnvConfigType = {
   commission: +window.ENV.COMMISSION,
   decimals: +window.ENV.DECIMALS,
+  discordChannel: window.ENV.DISCORD_CHANNEL,
   environment: window.ENV.ENVIRONMENT,
   faviconPath: window.ENV.FAVICON_PATH,
   graphQlAdminSecret: window.ENV.GRAPH_QL_ADMIN_SECRET,
@@ -63,6 +68,7 @@ const envConfig: EnvConfigType = {
   minPrice: +window.ENV.MIN_PRICE,
   quoteId: +window.ENV.QUOTE_ID,
   uniqueSubstrateApi: window.ENV.UNIQUE_SUBSTRATE_API,
+  uniqueTelegram: window.ENV.UNQ_TELEGRAM,
   value: +window.ENV.VALUE,
   version: window.ENV.VERSION,
   whiteLabelUrl: window.ENV.WHITE_LABEL_URL
