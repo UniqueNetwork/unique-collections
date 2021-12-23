@@ -18,37 +18,61 @@ function Footer ({ className = '' }): ReactElement {
     <div className={`app-footer ${className || ''}`}>
       <div className='app-footer--container'>
         <div className='app-footer__info'>
-          <div className='app-footer__info__powered'>Powered by <a href='https://unique.network/'>Unique Network</a> —
+          <div className='app-footer__info__powered'>Powered by <a
+            href='https://unique.network/'
+            rel='noreferrer nooperer'
+            target='_blank'
+          >Unique Network</a> —
             the NFT chain build for Polkadot and Kusama.
           </div>
           <div className='app-footer__info__version'>Version {(packageJson as { version: string }).version}</div>
         </div>
         <div className='app-footer__social-links'>
-          <a href='https://t.me/Uniquechain'>
+          <a
+            href='https://t.me/Uniquechain'
+            rel='noreferrer nooperer'
+            target='_blank'
+          >
             <img
               alt='telegram'
               src={telegram as string}
             />
           </a>
-          <a href='https://twitter.com/Unique_NFTchain'>
+          <a
+            href='https://twitter.com/Unique_NFTchain'
+            rel='noreferrer nooperer'
+            target='_blank'
+          >
             <img
               alt='twitter'
               src={twitter as string}
             />
           </a>
-          <a href='https://discord.gg/jHVdZhsakC'>
+          <a
+            href='https://discord.gg/jHVdZhsakC'
+            rel='noreferrer nooperer'
+            target='_blank'
+          >
             <img
               alt='discord'
               src={discord as string}
             />
           </a>
-          <a href='https://github.com/UniqueNetwork'>
+          <a
+            href='https://github.com/UniqueNetwork'
+            rel='noreferrer nooperer'
+            target='_blank'
+          >
             <img
               alt='github'
               src={github as string}
             />
           </a>
-          <a href='https://app.subsocial.network/@UniqueNetwork_NFT'>
+          <a
+            href='https://app.subsocial.network/@UniqueNetwork_NFT'
+            rel='noreferrer nooperer'
+            target='_blank'
+          >
             <img
               alt='subsocial'
               src={subsocial as string}
