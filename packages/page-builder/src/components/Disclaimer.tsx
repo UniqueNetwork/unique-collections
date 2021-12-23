@@ -13,6 +13,10 @@ function Disclaimer (): React.ReactElement {
     setIsChecked((prev) => !prev);
   }, []);
 
+  const onAcceptDisclaimer = useCallback(() => {
+    localStorage.setItem('BUILDER_DISCLAIMER', 'accepted');
+  }, []);
+
   return (
     <div className='disclaimer'>
       <Header as='h1'>Disclaimer</Header>
@@ -36,7 +40,9 @@ function Disclaimer (): React.ReactElement {
           <UnqButton
             className='create-btn'
             content='Start Creating'
+            isDisabled={!isChecked}
             isFilled
+            onClick={onAcceptDisclaimer}
             size='medium'
           />
         </div>
