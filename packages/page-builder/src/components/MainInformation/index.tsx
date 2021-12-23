@@ -75,6 +75,12 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
     }
   }, [account, createCollection, description, goToNextStep, name, tokenPrefix]);
 
+  const handleTokenPrefix = useCallback((value: string) => {
+    const replaceValue = value.replace(/[^a-zA-Z0-9]+/, '');
+
+    setTokenPrefix(replaceValue);
+  }, [setTokenPrefix]);
+
   useEffect(() => {
     void calculateFee();
   }, [calculateFee]);
@@ -107,7 +113,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <Input
           className='isSmall'
           maxLength={4}
-          onChange={setTokenPrefix}
+          onChange={handleTokenPrefix}
           value={tokenPrefix}
         />
       </div>
