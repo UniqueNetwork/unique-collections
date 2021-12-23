@@ -75,6 +75,18 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
     }
   }, [account, createCollection, description, goToNextStep, name, tokenPrefix]);
 
+  const handleBlurName = useCallback(() => {
+    setName(name.trim());
+  }, [setName, name]);
+
+  const handleBlurDescription = useCallback(() => {
+    setDescription(description.trim());
+  }, [setDescription, description]);
+
+  const handleBlurSymbol = useCallback(() => {
+    setTokenPrefix(tokenPrefix.trim());
+  }, [setTokenPrefix, tokenPrefix]);
+
   useEffect(() => {
     void calculateFee();
   }, [calculateFee]);
@@ -88,6 +100,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <Input
           className='isSmall'
           maxLength={64}
+          onBlur={handleBlurName}
           onChange={setName}
           value={name}
         />
@@ -97,6 +110,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <p>Max 256 symbols</p>
         <TextArea
           maxLength={256}
+          onBlur={handleBlurDescription}
           onChange={setDescription}
           seed={description}
         />
@@ -107,6 +121,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <Input
           className='isSmall'
           maxLength={4}
+          onBlur={handleBlurSymbol}
           onChange={setTokenPrefix}
           value={tokenPrefix}
         />
@@ -116,7 +131,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
       )}
       <UnqButton
         content='Confirm'
-        isDisabled={!name || !tokenPrefix || tokenPrefix.length > 16}
+        isDisabled={!name || !tokenPrefix}
         isFilled
         onClick={onCreateCollection}
         size='medium'
