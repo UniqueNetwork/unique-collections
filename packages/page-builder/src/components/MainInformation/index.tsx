@@ -75,11 +75,17 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
     }
   }, [account, createCollection, description, goToNextStep, name, tokenPrefix]);
 
-  const handleBlur = useCallback(() => {
+  const handleBlurName = useCallback(() => {
     setName(name.trim());
-    setTokenPrefix(tokenPrefix.trim());
+  }, [setName, name]);
+
+  const handleBlurDescription = useCallback(() => {
     setDescription(description.trim());
-  }, [setName, name, setTokenPrefix, tokenPrefix, setDescription, description]);
+  }, [setDescription, description]);
+
+  const handleBlurSymbol = useCallback(() => {
+    setTokenPrefix(tokenPrefix.trim());
+  }, [setTokenPrefix, tokenPrefix]);
 
   useEffect(() => {
     void calculateFee();
@@ -94,7 +100,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <Input
           className='isSmall'
           maxLength={64}
-          onBlur={handleBlur}
+          onBlur={handleBlurName}
           onChange={setName}
           value={name}
         />
@@ -104,7 +110,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <p>Max 256 symbols</p>
         <TextArea
           maxLength={256}
-          onBlur={handleBlur}
+          onBlur={handleBlurDescription}
           onChange={setDescription}
           seed={description}
         />
@@ -115,7 +121,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <Input
           className='isSmall'
           maxLength={4}
-          onBlur={handleBlur}
+          onBlur={handleBlurSymbol}
           onChange={setTokenPrefix}
           value={tokenPrefix}
         />
