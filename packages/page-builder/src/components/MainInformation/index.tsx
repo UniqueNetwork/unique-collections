@@ -75,6 +75,12 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
     }
   }, [account, createCollection, description, goToNextStep, name, tokenPrefix]);
 
+  const handleTokenPrefix = useCallback((value: string) => {
+    const replaceValue = value.replace(/[^a-zA-Z0-9]+/, '');
+
+    setTokenPrefix(replaceValue);
+  }, [setTokenPrefix]);
+
   const handleBlurName = useCallback(() => {
     setName(name.trim());
   }, [setName, name]);
@@ -122,7 +128,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
           className='isSmall'
           maxLength={4}
           onBlur={handleBlurSymbol}
-          onChange={setTokenPrefix}
+          onChange={handleTokenPrefix}
           value={tokenPrefix}
         />
       </div>
