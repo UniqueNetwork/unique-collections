@@ -45,13 +45,15 @@
           font-weight: 600;
           font-size: 20px;
           line-height: 28px;
-          margin-bottom: 8px
+          margin-bottom: 8px;
+          overflow-wrap: anywhere;
         }
 
         .content-description-text{
           font-family: Roboto;
           line-height: 22px;
           color: var(--tabs-color);
+          overflow-wrap: anywhere;
         }
       }
 
