@@ -67,7 +67,7 @@ function CollectionCard ({ account, collectionId, onReRemoveCollection }: Collec
   }, [account, collectionId, destroyCollection, fetchCollectionList]);
 
   const onWallet = useCallback(() => {
-    window.open(`${envConfig?.uniqueWallet}${collectionId}`);
+    window.open(`${envConfig?.uniqueWallet}${collectionId}`, '_blank', 'noopener, noreferrer');
   }, [collectionId]);
 
   useEffect(() => {
