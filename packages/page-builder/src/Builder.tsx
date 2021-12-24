@@ -4,7 +4,7 @@
 import './styles.scss';
 
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Route, Switch, useHistory } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
@@ -13,6 +13,7 @@ import { AppProps as Props } from '@polkadot/react-components/types';
 
 import CollectionPage from './containers/CollectionPage';
 import CollectionsList from './containers/CollectionsList';
+import TransactionContext from './TransactionContext/TransactionContext';
 
 const { graphQlAdminSecret, graphQlApi } = envConfig;
 
@@ -31,6 +32,9 @@ function Builder (props: Props): React.ReactElement {
   const { account, basePath } = props;
   const location = useLocation();
   const history = useHistory();
+  const builderTransactions = useContext(TransactionContext);
+
+  console.log('builderTransactions', builderTransactions);
 
   useEffect(() => {
     if (location.pathname === '/builder' || location.pathname === '/builder/') {

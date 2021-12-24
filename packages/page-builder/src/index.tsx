@@ -7,6 +7,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { AppProps as Props } from '@polkadot/react-components/types';
 
+import Transactions from './TransactionContext';
 import Disclaimer from './components/Disclaimer';
 import Builder from './Builder';
 
@@ -43,9 +44,11 @@ function CollectionBuilder (props: Props): React.ReactElement {
 
   return (
     <main className='builder-page'>
-      <Builder
-        {...props}
-      />
+      <Transactions>
+        <Builder
+          {...props}
+        />
+      </Transactions>
     </main>
   );
 }

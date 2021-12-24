@@ -23,13 +23,13 @@ import { useApi } from '@polkadot/react-hooks';
 import Signer from '@polkadot/react-signer';
 
 import BalancesHeader from './BalancesHeader';
+import { Footer } from './Footer';
 import ManageAccounts from './ManageAccounts';
 import MobileAccountSelector from './MobileAccountSelector';
 import MobileMenu from './MobileMenu';
 import MobileMenuHeader from './MobileMenuHeader';
 import ScrollToTop from './ScrollToTop';
 import WarmUp from './WarmUp';
-import { Footer } from './Footer';
 
 export const PORTAL_ID = 'portals';
 
