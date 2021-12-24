@@ -35,7 +35,6 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const [page, setPage] = useState<number>(1);
   const { userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString);
   const [collectionsLoaded, setCollectionsLoaded] = useState<CollectionsListType>({});
-  const hasMore = (userCollections?.collections && Object.keys(collectionsLoaded).length < userCollections.collections?.length);
   const mountedRef = useIsMountedRef();
   const client = useApolloClient();
   const currentAccount = useRef<string>();
@@ -125,7 +124,7 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
               <NoCollectionsFound />
             )}
             <InfiniteScroll
-              hasMore={hasMore}
+              hasMore={userCollections?.collections.length !== 0}
               initialLoad={false}
               loadMore={fetchScrolledData}
               loader={(
