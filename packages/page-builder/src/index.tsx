@@ -34,7 +34,9 @@ function CollectionBuilder (props: Props): React.ReactElement {
   if (showDisclaimer) {
     return (
       <main className='builder-page'>
-        <Disclaimer />
+        <Disclaimer
+          checkDisclaimer={checkDisclaimer}
+        />
       </main>
     );
   }

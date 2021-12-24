@@ -8,12 +8,14 @@ import envConfig from '@polkadot/apps-config/envConfig';
 import { UnqButton } from '@polkadot/react-components';
 import { useApi } from '@polkadot/react-hooks';
 
-function Disclaimer (): React.ReactElement {
+interface Props {
+  checkDisclaimer: () => void;
+}
+
+function Disclaimer ({ checkDisclaimer }: Props): React.ReactElement<Props> {
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const { api } = useApi();
   const tokensName = api.registry.chainTokens?.join('');
-
-  console.log('tokensName', tokensName);
 
   const handleOnCheck = useCallback(() => {
     setIsChecked((prev) => !prev);
@@ -21,7 +23,8 @@ function Disclaimer (): React.ReactElement {
 
   const onAcceptDisclaimer = useCallback(() => {
     localStorage.setItem('BUILDER_DISCLAIMER', 'accepted');
-  }, []);
+    checkDisclaimer();
+  }, [checkDisclaimer]);
 
   return (
     <div className='disclaimer'>
