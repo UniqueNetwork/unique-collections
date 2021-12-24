@@ -1,34 +1,49 @@
 // Copyright 2017-2021 @polkadot/react-api authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import TransactionContext from './TransactionContext';
-import TransactionModal from './TransactionModal';
+import TransactionModal, { TransactionType } from './TransactionModal';
 
 interface Props {
   children: React.ReactNode;
 }
 
+const defaultTransactions: TransactionType[] = [
+  {
+    state: 'finished',
+    step: 1,
+    text: 'Setting image location'
+  },
+  {
+    state: 'active',
+    step: 2,
+    text: 'Setting collection trait'
+  },
+  {
+    state: 'not-active',
+    step: 3,
+    text: 'Setting something else'
+  }
+];
+
 function Transactions ({ children }: Props): React.ReactElement<Props> | null {
-  const [transactions, setTransactions] = useState<any[]>([]);
-  const [showModal, toggleModal] = useState<boolean>(true);
+  const [transactions, setTransactions] = useState<any[]>(defaultTransactions);
 
   const value = useMemo(() => ({
     setTransactions,
     transactions
   }), [transactions, setTransactions]);
 
-  const closeModal = useCallback(() => {
-    toggleModal(false);
-  }, []);
-
   return (
     <TransactionContext.Provider value={value}>
       {children}
-      <TransactionModal
-        closeModal={closeModal}
-      />
+      { transactions.length > 0 && (
+        <TransactionModal
+          transactions={defaultTransactions}
+        />
+      )}
     </TransactionContext.Provider>
   );
 }

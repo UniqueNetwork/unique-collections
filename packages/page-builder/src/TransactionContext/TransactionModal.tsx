@@ -1,9 +1,11 @@
 // Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
+
 import React from 'react';
-import Modal from 'semantic-ui-react/dist/commonjs/modules/Modal/Modal';
 import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader';
+import Modal from 'semantic-ui-react/dist/commonjs/modules/Modal/Modal';
 import styled from 'styled-components';
+
 import check from '../images/check.svg';
 
 export type TransactionType = {
@@ -14,33 +16,13 @@ export type TransactionType = {
 
 interface Props {
   className?: string;
-  closeModal: () => void;
   transactions: TransactionType[];
 }
 
-const defaultTransactions: TransactionType[] = [
-  {
-    state: 'finished',
-    step: 1,
-    text: 'Setting image location'
-  },
-  {
-    state: 'active',
-    step: 2,
-    text: 'Setting collection trait'
-  },
-  {
-    state: 'not-active',
-    step: 3,
-    text: 'Setting something else'
-  }
-]
-
-function TransactionModal ({ className = '', closeModal, transactions = defaultTransactions }: Props): React.ReactElement<Props> {
+function TransactionModal ({ className = '', transactions }: Props): React.ReactElement<Props> {
   return (
     <Modal
       className={`${className} transition-modal unique-modal`}
-      onClose={closeModal}
       open
       size='tiny'
     >
@@ -48,10 +30,13 @@ function TransactionModal ({ className = '', closeModal, transactions = defaultT
         <h2>Please wait</h2>
       </Modal.Header>
       <Modal.Content>
-        { transactions.map((transaction) => {
+        { transactions?.map((transaction) => {
           if (transaction.state === 'finished') {
             return (
-              <div className='transition-modal-row with-icon'>
+              <div
+                className='transition-modal-row with-icon'
+                key={transaction.step}
+              >
                 <img
                   alt='check'
                   src={check as string}
@@ -66,7 +51,10 @@ function TransactionModal ({ className = '', closeModal, transactions = defaultT
 
           if (transaction.state === 'active') {
             return (
-              <div className='transition-modal-row'>
+              <div
+                className='transition-modal-row'
+                key={transaction.step}
+              >
                 <Loader
                   active
                   className='load-transaction'
@@ -75,18 +63,21 @@ function TransactionModal ({ className = '', closeModal, transactions = defaultT
                   <p>Step {transaction.step}</p>
                 </Loader>
               </div>
-            )
+            );
           }
 
           return (
-            <div className='transition-modal-row with-icon'>
+            <div
+              className='transition-modal-row with-icon'
+              key={transaction.step}
+            >
               <div />
-                <div>
-                  {transaction.text}
-                  <p>Step {transaction.step}</p>
-                </div>
+              <div>
+                {transaction.text}
+                <p>Step {transaction.step}</p>
+              </div>
             </div>
-          )
+          );
         })}
       </Modal.Content>
     </Modal>
