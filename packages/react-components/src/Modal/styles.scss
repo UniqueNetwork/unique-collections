@@ -68,6 +68,7 @@
   }
 
   &.unique-modal {
+    border-radius: calc(var(--gap) / 2);
 
     .header {
       padding: 1.71rem !important;
