@@ -48,6 +48,7 @@
     QUOTE_ID: defaults('${QUOTE_ID}', 2),
     UNIQUE_SUBSTRATE_API: defaults('${UNIQUE_SUBSTRATE_API}', 'wss://ws-opal.unique.network'),
     UNQ_TELEGRAM: defaults('${UNQ_TELEGRAM}', 'https://t.me/unique2faucetbot'),
+    UNQ_WALLET: defaults('${UNQ_WALLET}', 'https://dev-wallet.unique.network/#/myStuff/nft?collectionId='),
     VALUE: defaults('${VALUE}', 0),
     WHITE_LABEL_URL: defaults('${WHITE_LABEL_URL}', 'https://whitelabel.unique.network')
   };

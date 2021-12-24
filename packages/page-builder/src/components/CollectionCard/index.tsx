@@ -10,6 +10,7 @@ import { useHistory } from 'react-router';
 import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader';
 
+import envConfig from '@polkadot/apps-config/envConfig';
 import { UnqButton } from '@polkadot/react-components';
 import { useCollection, useDecoder } from '@polkadot/react-hooks';
 
@@ -64,6 +65,10 @@ function CollectionCard ({ account, collectionId, onReRemoveCollection }: Collec
     setIsBurnCollectionOpen(false);
     destroyCollection({ account, collectionId, successCallback: fetchCollectionList });
   }, [account, collectionId, destroyCollection, fetchCollectionList]);
+
+  const onWallet = useCallback(() => {
+    window.open(`${envConfig?.uniqueWallet}${collectionId}`, '_blank', 'noopener, noreferrer');
+  }, [collectionId]);
 
   useEffect(() => {
     void fetchCollectionInfo();
@@ -143,6 +148,7 @@ function CollectionCard ({ account, collectionId, onReRemoveCollection }: Collec
               />
               <UnqButton
                 content='Go to Wallet'
+                onClick={onWallet}
               />
             </div>
           </div>
