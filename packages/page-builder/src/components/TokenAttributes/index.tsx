@@ -10,6 +10,7 @@ import React, { memo, ReactElement, useCallback, useContext, useEffect, useState
 import { useHistory } from 'react-router';
 import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 
+import TransactionContext from '@polkadot/app-builder/TransactionContext/TransactionContext';
 import { HelpTooltip, StatusContext, UnqButton } from '@polkadot/react-components';
 import { fillAttributes, fillProtobufJson } from '@polkadot/react-components/util/protobufUtils';
 import { useCollection } from '@polkadot/react-hooks';
@@ -46,6 +47,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   const { queueAction } = useContext(StatusContext);
   const isOwner = collectionInfo?.owner === account;
   const schemaVersion = collectionInfo?.schemaVersion;
+  const { setTransactions } = useContext(TransactionContext);
 
   console.log('schemaVersion', schemaVersion);
 
@@ -68,21 +70,49 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   }, []);
 
   const onSuccess = useCallback(() => {
+    setTransactions([
+      {
+        state: 'finished',
+        step: 1,
+        text: 'Setting token attributes'
+      },
+      {
+        state: 'finished',
+        step: 2,
+        text: 'Setting token image location'
+      }
+    ]);
+    setTimeout(() => {
+      setTransactions([]);
+    }, 3000);
+
     queueAction({
       action: '',
       message: 'Collection successfully created',
       status: 'success'
     });
     history.push('/builder');
-  }, [queueAction, history]);
+  }, [setTransactions, queueAction, history]);
 
   const setUniqueSchemaVersion = useCallback(() => {
     if (collectionInfo?.schemaVersion === 'Unique') {
       onSuccess();
     } else {
+      setTransactions([
+        {
+          state: 'finished',
+          step: 1,
+          text: 'Setting token attributes'
+        },
+        {
+          state: 'active',
+          step: 2,
+          text: 'Setting token image location'
+        }
+      ]);
       setSchemaVersion({ account, collectionId, schemaVersion: 'Unique', successCallback: onSuccess });
     }
-  }, [account, collectionId, collectionInfo, onSuccess, setSchemaVersion]);
+  }, [account, collectionId, collectionInfo?.schemaVersion, onSuccess, setSchemaVersion, setTransactions]);
 
   const convertArtificialAttributesToProtobuf = useCallback((attributes: ArtificialAttributeItemType[]): AttributeItemType[] => {
     return attributes.map((attr: ArtificialAttributeItemType): AttributeItemType => {
@@ -127,6 +157,19 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     try {
       const converted: AttributeItemType[] = convertArtificialAttributesToProtobuf(attributes);
       const protobufJson: ProtobufAttributeType = fillProtobufJson(converted);
+
+      setTransactions([
+        {
+          state: 'active',
+          step: 1,
+          text: 'Setting token attributes'
+        },
+        {
+          state: 'not-active',
+          step: 2,
+          text: 'Setting token image location'
+        }
+      ]);
 
       if (account && collectionId) {
         saveConstOnChainSchema({ account, collectionId, schema: JSON.stringify(protobufJson), successCallback: setUniqueSchemaVersion });

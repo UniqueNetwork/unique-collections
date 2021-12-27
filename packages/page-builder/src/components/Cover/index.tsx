@@ -4,11 +4,12 @@
 import './styles.scss';
 
 import BN from 'bn.js';
-import React, { memo, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, SyntheticEvent, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 
 import clearIcon from '@polkadot/app-builder/images/closeIcon.svg';
+import TransactionContext from '@polkadot/app-builder/TransactionContext/TransactionContext';
 import { UnqButton } from '@polkadot/react-components';
 import { useCollection, useImageService } from '@polkadot/react-hooks';
 
@@ -30,6 +31,7 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
   const { uploadImg } = useImageService();
   const history = useHistory();
   const inputFileRef = useRef<HTMLInputElement>(null);
+  const { setTransactions } = useContext(TransactionContext);
 
   const calculateFee = useCallback(async () => {
     if (account) {
@@ -72,20 +74,35 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
   }, [avatarImg, uploadImg]);
 
   const onSuccess = useCallback(() => {
+    setTransactions([
+      {
+        state: 'finished',
+        text: 'Setting cover image location'
+      }
+    ]);
+    setTimeout(() => {
+      setTransactions([]);
+    }, 3000);
     history.push(`/builder/collections/${collectionId}/token-attributes`);
-  }, [collectionId, history]);
+  }, [collectionId, history, setTransactions]);
 
   const saveVariableSchema = useCallback(() => {
     if (!imgAddress) {
       onSuccess();
     } else if (account && collectionId && imgAddress) {
+      setTransactions([
+        {
+          state: 'active',
+          text: 'Setting cover image location'
+        }
+      ]);
       const varDataWithImage = {
         collectionCover: imgAddress
       };
 
       saveVariableOnChainSchema({ account, collectionId, schema: JSON.stringify(varDataWithImage), successCallback: onSuccess });
     }
-  }, [account, collectionId, imgAddress, onSuccess, saveVariableOnChainSchema]);
+  }, [account, collectionId, imgAddress, onSuccess, saveVariableOnChainSchema, setTransactions]);
 
   const closeSaveConfirmation = useCallback(() => {
     setIsSaveConfirmationOpen(false);

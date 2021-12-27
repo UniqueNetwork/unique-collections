@@ -4,9 +4,10 @@
 import './styles.scss';
 
 import BN from 'bn.js';
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 
+import TransactionContext from '@polkadot/app-builder/TransactionContext/TransactionContext';
 import { Input, TextArea, UnqButton } from '@polkadot/react-components';
 import { useCollection } from '@polkadot/react-hooks';
 
@@ -27,6 +28,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
   const { calculateCreateCollectionFee, createCollection, getCreatedCollectionCount } = useCollection();
   const [createFees, setCreateFees] = useState<BN | null>(null);
   const history = useHistory();
+  const { setTransactions } = useContext(TransactionContext);
 
   const calculateFee = useCallback(async () => {
     if (account) {
@@ -57,23 +59,39 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
     return result;
    }
   */
+    setTransactions([
+      {
+        state: 'finished',
+        text: 'Creating collection'
+      }
+    ]);
+    setTimeout(() => {
+      setTransactions([]);
+    }, 3000);
     const collectionCount = await getCreatedCollectionCount();
 
     history.push(`/builder/collections/${collectionCount}/cover`);
-  }, [history, getCreatedCollectionCount]);
+  }, [setTransactions, getCreatedCollectionCount, history]);
 
   const onCreateCollection = useCallback(() => {
     if (account && name && tokenPrefix) {
+      setTransactions([
+        {
+          state: 'active',
+          text: 'Creating collection'
+        }
+      ]);
       createCollection(account, {
         description,
         modeprm: { nft: null },
         name,
         tokenPrefix
       }, {
+        onFailed: setTransactions.bind(null, []),
         onSuccess: goToNextStep
       });
     }
-  }, [account, createCollection, description, goToNextStep, name, tokenPrefix]);
+  }, [account, createCollection, description, goToNextStep, name, setTransactions, tokenPrefix]);
 
   const handleTokenPrefix = useCallback((value: string) => {
     const replaceValue = value.replace(/[^a-zA-Z0-9]+/, '');

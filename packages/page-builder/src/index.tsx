@@ -9,6 +9,7 @@ import { AppProps as Props } from '@polkadot/react-components/types';
 
 import Disclaimer from './components/Disclaimer';
 import Builder from './Builder';
+import Transactions from './TransactionContext';
 
 function CollectionBuilder (props: Props): React.ReactElement {
   // const { allAccounts } = useAccounts();
@@ -43,9 +44,11 @@ function CollectionBuilder (props: Props): React.ReactElement {
 
   return (
     <main className='builder-page'>
-      <Builder
-        {...props}
-      />
+      <Transactions>
+        <Builder
+          {...props}
+        />
+      </Transactions>
     </main>
   );
 }
