@@ -132,7 +132,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
     setTransactions([
       {
         state: 'finished',
-        text: 'Creating nft'
+        text: 'Creating token and saving it to blockchain'
       }
     ]);
     setTimeout(() => {

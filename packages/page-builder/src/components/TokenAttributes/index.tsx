@@ -162,6 +162,8 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   }, [account, attributes, calculateSetConstOnChainSchemaFees, collectionId, convertArtificialAttributesToProtobuf]);
 
   const onSaveForm = useCallback(() => {
+    setIsSaveConfirmationOpen(false);
+
     try {
       const converted: AttributeItemType[] = convertArtificialAttributesToProtobuf(attributes);
       const protobufJson: ProtobufAttributeType = fillProtobufJson(converted);
