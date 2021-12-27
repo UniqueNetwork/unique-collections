@@ -23,7 +23,7 @@ interface CoverProps {
   setAvatarImg: (avatarImg: File | null) => void;
 }
 
-const stepText = 'Uploading collection cover to IPFS';
+const stepTexts = ['Uploading collection cover to IPFS', 'Saving cover img url to blockchain'];
 
 function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps): React.ReactElement {
   const { calculateSetSchemaVersionFee, calculateSetVariableOnChainSchemaFee, saveVariableOnChainSchema } = useCollection();
@@ -33,7 +33,7 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
   const { uploadImg } = useImageService();
   const history = useHistory();
   const inputFileRef = useRef<HTMLInputElement>(null);
-  const { setTransactions } = useContext(TransactionContext);
+  const { setTransactions, transactions } = useContext(TransactionContext);
 
   const calculateFee = useCallback(async () => {
     if (account) {
@@ -52,12 +52,37 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
     }
   }, [account, calculateSetSchemaVersionFee, calculateSetVariableOnChainSchemaFee, collectionId, imgAddress]);
 
+  const uploadImage = useCallback(async (file: File): Promise<void> => {
+    if (file) {
+      setTransactions([
+        {
+          state: 'active',
+          text: stepTexts[0]
+        }
+      ]);
+      const address = await uploadImg(file);
+
+      setTransactions([
+        {
+          state: 'finished',
+          text: stepTexts[0]
+        }
+      ]);
+      setTimeout(() => {
+        setTransactions([]);
+      }, 3000);
+
+      setImgAddress(address);
+    }
+  }, [setTransactions, uploadImg]);
+
   const uploadAvatar = useCallback((event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
     const file: File = (target.files as FileList)[0];
 
     setAvatarImg(file);
-  }, [setAvatarImg]);
+    void uploadImage(file);
+  }, [setAvatarImg, uploadImage]);
 
   const clearTokenImg = useCallback(() => {
     setAvatarImg(null);
@@ -67,19 +92,11 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
     }
   }, [setAvatarImg]);
 
-  const uploadImage = useCallback(async () => {
-    if (avatarImg) {
-      const address = await uploadImg(avatarImg);
-
-      setImgAddress(address);
-    }
-  }, [avatarImg, uploadImg]);
-
   const onSuccess = useCallback(() => {
     setTransactions([
       {
         state: 'finished',
-        text: stepText
+        text: stepTexts[1]
       }
     ]);
     setTimeout(() => {
@@ -95,7 +112,7 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
       setTransactions([
         {
           state: 'active',
-          text: stepText
+          text: stepTexts[1]
         }
       ]);
       const varDataWithImage = {
@@ -124,9 +141,16 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
     }
   }, [saveVariableSchema, avatarImg]);
 
+  const clearFileImage = useCallback(() => {
+    if (!imgAddress && inputFileRef.current) {
+      inputFileRef.current.value = '';
+      setAvatarImg(null);
+    }
+  }, [imgAddress, setAvatarImg]);
+
   useEffect(() => {
-    void uploadImage();
-  }, [uploadImage]);
+    clearFileImage();
+  }, [clearFileImage]);
 
   useEffect(() => {
     void calculateFee();
@@ -195,6 +219,7 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
       />
       <UnqButton
         content='Confirm'
+        isDisabled={transactions?.length > 0}
         isFilled
         onClick={saveConfirm}
         size='medium'
