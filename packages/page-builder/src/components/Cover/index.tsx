@@ -100,7 +100,13 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
         collectionCover: imgAddress
       };
 
-      saveVariableOnChainSchema({ account, collectionId, schema: JSON.stringify(varDataWithImage), successCallback: onSuccess });
+      saveVariableOnChainSchema({
+        account,
+        collectionId,
+        errorCallback: setTransactions.bind(null, []),
+        schema: JSON.stringify(varDataWithImage),
+        successCallback: onSuccess
+      });
     }
   }, [account, collectionId, imgAddress, onSuccess, saveVariableOnChainSchema, setTransactions]);
 

@@ -110,7 +110,13 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
           text: 'Setting token image location'
         }
       ]);
-      setSchemaVersion({ account, collectionId, schemaVersion: 'Unique', successCallback: onSuccess });
+      setSchemaVersion({
+        account,
+        collectionId,
+        errorCallback: setTransactions.bind(null, []),
+        schemaVersion: 'Unique',
+        successCallback: onSuccess
+      });
     }
   }, [account, collectionId, collectionInfo?.schemaVersion, onSuccess, setSchemaVersion, setTransactions]);
 
@@ -172,12 +178,18 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
       ]);
 
       if (account && collectionId) {
-        saveConstOnChainSchema({ account, collectionId, schema: JSON.stringify(protobufJson), successCallback: setUniqueSchemaVersion });
+        saveConstOnChainSchema({
+          account,
+          collectionId,
+          errorCallback: setTransactions.bind(null, []),
+          schema: JSON.stringify(protobufJson),
+          successCallback: setUniqueSchemaVersion
+        });
       }
     } catch (e) {
       console.log('save onChain schema error', e);
     }
-  }, [account, attributes, collectionId, convertArtificialAttributesToProtobuf, setUniqueSchemaVersion, saveConstOnChainSchema]);
+  }, [convertArtificialAttributesToProtobuf, attributes, setTransactions, account, collectionId, saveConstOnChainSchema, setUniqueSchemaVersion]);
 
   const deleteAttribute = useCallback((index) => {
     setAttributes(attributes.filter((attribute: ArtificialAttributeItemType) => attribute.id !== index));
