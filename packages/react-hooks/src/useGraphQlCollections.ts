@@ -12,8 +12,15 @@ export type UserCollection = {
   'token_limit': number;
 }
 
+export type CollectionsAggregate = {
+  aggregate: {
+    count: number
+  }
+}
+
 export type UserCollections = {
   collections: UserCollection[];
+  collections_aggregate: CollectionsAggregate;
 }
 
 export type UseGraphQlInterface = {
