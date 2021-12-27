@@ -6,9 +6,10 @@ import './styles.scss';
 import type { TokenAttribute } from '../../types';
 
 import BN from 'bn.js';
-import React, { memo, SyntheticEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, SyntheticEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 
+import TransactionContext from '@polkadot/app-builder/TransactionContext/TransactionContext';
 import { Checkbox, UnqButton } from '@polkadot/react-components';
 import { AttributeItemType, ProtobufAttributeType, serializeNft } from '@polkadot/react-components/util/protobufUtils';
 import { useImageService, useIsMountedRef, useToken } from '@polkadot/react-hooks';
@@ -57,6 +58,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
   const history = useHistory();
   const mountedRef = useIsMountedRef();
   const { uploadImg } = useImageService();
+  const { setTransactions } = useContext(TransactionContext);
 
   const checkAttributes = useMemo(() => constAttributes.filter((elem: {name: string}) => elem.name !== 'ipfsJson'), [constAttributes]);
 
@@ -79,8 +81,6 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
 
     mountedRef.current && setIsDisabled(!flag);
   }, [checkAttributes, tokenConstAttributes, mountedRef, isAllRequiredFieldsAreFilled]);
-
-  console.log('createFees', createFees?.toString());
 
   useEffect(() => {
     const status = !!Object.keys(tokenConstAttributes).length;
@@ -129,12 +129,22 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
   }, [setTokenConstAttributes]);
 
   const onCreateSuccess = useCallback(() => {
+    setTransactions([
+      {
+        state: 'finished',
+        text: 'Creating nft'
+      }
+    ]);
+    setTimeout(() => {
+      setTransactions([]);
+    }, 3000);
+
     if (createAnother) {
       resetData();
     } else {
       history.push('/builder');
     }
-  }, [createAnother, history, resetData]);
+  }, [createAnother, history, resetData, setTransactions]);
 
   const buildAttributes = useCallback(() => {
     if (account) {
@@ -171,9 +181,24 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
     if (account) {
       const constData = buildAttributes();
 
-      createNft({ account, collectionId, constData, owner: account, successCallback: onCreateSuccess, variableData: '' });
+      setTransactions([
+        {
+          state: 'active',
+          text: 'Creating nft'
+        }
+      ]);
+
+      createNft({
+        account,
+        collectionId,
+        constData,
+        errorCallback: setTransactions.bind(null, []),
+        owner: account,
+        successCallback: onCreateSuccess,
+        variableData: ''
+      });
     }
-  }, [account, buildAttributes, createNft, collectionId, onCreateSuccess]);
+  }, [account, buildAttributes, setTransactions, createNft, collectionId, onCreateSuccess]);
 
   useEffect(() => {
     if (tokenImageAddress) {

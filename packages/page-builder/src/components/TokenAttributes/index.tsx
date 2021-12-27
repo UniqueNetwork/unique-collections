@@ -37,6 +37,11 @@ const defaultAttributesWithTokenIpfs: ArtificialAttributeItemType[] = [
   }
 ];
 
+const stepTexts = [
+  'Setting collection traits',
+  'Setting image location'
+];
+
 function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttributes): ReactElement {
   const { calculateSetConstOnChainSchemaFees, getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
   const [attributes, setAttributes] = useState<ArtificialAttributeItemType[]>([]);
@@ -46,10 +51,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   const history = useHistory();
   const { queueAction } = useContext(StatusContext);
   const isOwner = collectionInfo?.owner === account;
-  const schemaVersion = collectionInfo?.schemaVersion;
   const { setTransactions } = useContext(TransactionContext);
-
-  console.log('schemaVersion', schemaVersion);
 
   const onAddItem = useCallback(() => {
     const newAttributes = [...attributes];
@@ -74,12 +76,12 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
       {
         state: 'finished',
         step: 1,
-        text: 'Setting token attributes'
+        text: stepTexts[0]
       },
       {
         state: 'finished',
         step: 2,
-        text: 'Setting token image location'
+        text: stepTexts[1]
       }
     ]);
     setTimeout(() => {
@@ -102,12 +104,12 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
         {
           state: 'finished',
           step: 1,
-          text: 'Setting token attributes'
+          text: stepTexts[0]
         },
         {
           state: 'active',
           step: 2,
-          text: 'Setting token image location'
+          text: stepTexts[1]
         }
       ]);
       setSchemaVersion({
@@ -168,12 +170,12 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
         {
           state: 'active',
           step: 1,
-          text: 'Setting token attributes'
+          text: stepTexts[0]
         },
         {
           state: 'not-active',
           step: 2,
-          text: 'Setting token image location'
+          text: stepTexts[1]
         }
       ]);
 

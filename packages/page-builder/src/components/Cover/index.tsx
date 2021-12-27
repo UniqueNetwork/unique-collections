@@ -23,6 +23,8 @@ interface CoverProps {
   setAvatarImg: (avatarImg: File | null) => void;
 }
 
+const stepText = 'Uploading collection cover to IPFS';
+
 function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps): React.ReactElement {
   const { calculateSetSchemaVersionFee, calculateSetVariableOnChainSchemaFee, saveVariableOnChainSchema } = useCollection();
   const [coverFees, setCoverFees] = useState<BN | null>(null);
@@ -77,7 +79,7 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
     setTransactions([
       {
         state: 'finished',
-        text: 'Setting cover image location'
+        text: stepText
       }
     ]);
     setTimeout(() => {
@@ -93,7 +95,7 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
       setTransactions([
         {
           state: 'active',
-          text: 'Setting cover image location'
+          text: stepText
         }
       ]);
       const varDataWithImage = {

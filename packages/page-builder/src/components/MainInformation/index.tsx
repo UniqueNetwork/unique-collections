@@ -23,6 +23,8 @@ interface MainInformationProps {
   tokenPrefix: string;
 }
 
+const stepText = 'Creating collection and saving it to blockchain';
+
 function MainInformation (props: MainInformationProps): React.ReactElement {
   const { account, description, name, setDescription, setName, setTokenPrefix, tokenPrefix } = props;
   const { calculateCreateCollectionFee, createCollection, getCreatedCollectionCount } = useCollection();
@@ -62,7 +64,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
     setTransactions([
       {
         state: 'finished',
-        text: 'Creating collection'
+        text: stepText
       }
     ]);
     setTimeout(() => {
@@ -78,7 +80,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
       setTransactions([
         {
           state: 'active',
-          text: 'Creating collection'
+          text: stepText
         }
       ]);
       createCollection(account, {
