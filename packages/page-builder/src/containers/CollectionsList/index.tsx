@@ -35,7 +35,7 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const [page, setPage] = useState<number>(1);
   const { userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString);
   const [collectionsLoaded, setCollectionsLoaded] = useState<CollectionsListType>({});
-  const [isHasMore, setHasMore] = useState<boolean>(true);
+  const isHasMore = Object.keys(collectionsLoaded).length < userCollections?.collections_aggregate.aggregate.count;
   const mountedRef = useIsMountedRef();
   const client = useApolloClient();
   const currentAccount = useRef<string>();
@@ -82,12 +82,6 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
 
     initializeCollections();
   }, [account, initializeCollections]);
-
-  useEffect(() => {
-    if (userCollections) {
-      setHasMore(Object.keys(collectionsLoaded).length !== userCollections.collections_aggregate?.aggregate.count);
-    }
-  }, [collectionsLoaded, userCollections]);
 
   useEffect(() => {
     if (searchString) {
