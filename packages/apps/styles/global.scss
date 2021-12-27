@@ -717,6 +717,35 @@ button.ui.button, .button-link, .ui--Button {
   }
 }
 
+.ui.loader.simple-loader {
+  left: 0;
+  top: 0;
+  position: relative;
+  transform: none;
+  color: var(--title-color);
+  font-size: 16px;
+  line-height: 26px;
+
+  &:after {
+    border-color: var(--link-color) transparent transparent;
+    border-width: 2px;
+    width: 24px;
+    height: 24px;
+    left: 0;
+  }
+
+  &:before {
+    left: 0;
+    width: 24px;
+    height: 24px;
+  }
+
+  &.text {
+    padding: 0 0 0 40px;
+    text-align: left;
+  }
+}
+
 @media (max-width: 1024px) {
   h1.ui.header {
     margin-top: calc(var(--gap) * 1.5) !important;
