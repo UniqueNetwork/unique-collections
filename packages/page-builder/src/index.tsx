@@ -7,9 +7,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { AppProps as Props } from '@polkadot/react-components/types';
 
-import Transactions from './TransactionContext';
 import Disclaimer from './components/Disclaimer';
 import Builder from './Builder';
+import Transactions from './TransactionContext';
 
 function CollectionBuilder (props: Props): React.ReactElement {
   // const { allAccounts } = useAccounts();

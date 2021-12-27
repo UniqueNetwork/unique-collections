@@ -10,7 +10,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const defaultTransactions: TransactionType[] = [
+/* const defaultTransactions: TransactionType[] = [
   {
     state: 'finished',
     step: 1,
@@ -26,10 +26,10 @@ const defaultTransactions: TransactionType[] = [
     step: 3,
     text: 'Setting something else'
   }
-];
+]; */
 
 function Transactions ({ children }: Props): React.ReactElement<Props> | null {
-  const [transactions, setTransactions] = useState<any[]>(defaultTransactions);
+  const [transactions, setTransactions] = useState<TransactionType[]>([]);
 
   const value = useMemo(() => ({
     setTransactions,
@@ -41,7 +41,7 @@ function Transactions ({ children }: Props): React.ReactElement<Props> | null {
       {children}
       { transactions.length > 0 && (
         <TransactionModal
-          transactions={defaultTransactions}
+          transactions={transactions}
         />
       )}
     </TransactionContext.Provider>

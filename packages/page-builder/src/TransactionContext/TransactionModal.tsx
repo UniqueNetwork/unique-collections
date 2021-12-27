@@ -10,7 +10,7 @@ import check from '../images/check.svg';
 
 export type TransactionType = {
   state: 'not-active' | 'active' | 'finished' | 'error';
-  step: number;
+  step?: number;
   text: string;
 }
 
@@ -35,7 +35,7 @@ function TransactionModal ({ className = '', transactions }: Props): React.React
             return (
               <div
                 className='transition-modal-row with-icon'
-                key={transaction.step}
+                key={`${transaction.text}`}
               >
                 <img
                   alt='check'
@@ -43,7 +43,9 @@ function TransactionModal ({ className = '', transactions }: Props): React.React
                 />
                 <div>
                   {transaction.text}
-                  <p>Step {transaction.step}</p>
+                  { transaction.step && (
+                    <p>Step {transaction.step}</p>
+                  )}
                 </div>
               </div>
             );
@@ -53,14 +55,16 @@ function TransactionModal ({ className = '', transactions }: Props): React.React
             return (
               <div
                 className='transition-modal-row'
-                key={transaction.step}
+                key={`${transaction.text}`}
               >
                 <Loader
                   active
                   className='load-transaction'
                 >
                   {transaction.text}
-                  <p>Step {transaction.step}</p>
+                  { transaction.step && (
+                    <p>Step {transaction.step}</p>
+                  )}
                 </Loader>
               </div>
             );
@@ -69,12 +73,14 @@ function TransactionModal ({ className = '', transactions }: Props): React.React
           return (
             <div
               className='transition-modal-row with-icon'
-              key={transaction.step}
+              key={transaction.text}
             >
               <div />
               <div>
                 {transaction.text}
-                <p>Step {transaction.step}</p>
+                { transaction.step && (
+                  <p>Step {transaction.step}</p>
+                )}
               </div>
             </div>
           );
