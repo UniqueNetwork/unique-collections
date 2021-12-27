@@ -194,8 +194,9 @@ export default (_theme: ThemeDef): string => `
 
   /* modals aligned to top, not center */
   .ui.dimmer {
-    background-color: rgba(0,0,0,0.5);
-    justify-content: flex-start;
+    background-color: rgba(0,0,0,70%);
+    align-items: center;
+    justify-content: center;
   }
 
   /* remove the default white background, settings app has it as part of Tab */
