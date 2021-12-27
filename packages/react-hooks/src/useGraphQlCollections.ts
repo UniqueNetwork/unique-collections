@@ -33,6 +33,11 @@ const USER_COLLECTIONS = gql`
       token_limit
       mode
     }
+    collections_aggregate( where: { owner: { _eq: $owner }, name: { _ilike: $name } }) {
+      aggregate {
+        count
+      }
+    }
   }
 `;
 
