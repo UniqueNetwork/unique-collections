@@ -194,7 +194,7 @@ export default (_theme: ThemeDef): string => `
 
   /* modals aligned to top, not center */
   .ui.dimmer {
-    background-color: rgba(0,0,0,70%);
+    background-color: rgba(0,0,0,0.7) !important;
     align-items: center;
     justify-content: center;
   }

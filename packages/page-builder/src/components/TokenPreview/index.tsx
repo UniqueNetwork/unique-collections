@@ -51,8 +51,6 @@ function TokenPreview ({ collectionInfo, collectionName, constAttributes, tokenC
     fillAttributesValues();
   }, [fillAttributesValues]);
 
-  console.log('tokenConstAttributes!!!', tokenConstAttributes, 'values', values, 'constAttributes', constAttributes);
-
   return (
     <div className='token-preview'>
       <div className='token-preview-header'>Token preview</div>

@@ -48,6 +48,8 @@ interface IValueType {
   values?: number[] | undefined
 }
 
+const transactionText = 'Creating token and saving it to blockchain';
+
 function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, constOnChainSchema, isOwner, resetAttributes, setTokenConstAttributes, setTokenImg, tokenConstAttributes, tokenImg }: CreateNFTProps): React.ReactElement {
   const { calculateCreateItemFee, createNft, getDetailedTokenInfo } = useToken();
   const [createFees, setCreateFees] = useState<BN | null>(null);
@@ -144,7 +146,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
     setTransactions([
       {
         state: 'finished',
-        text: 'Creating token and saving it to blockchain'
+        text: transactionText
       }
     ]);
     setTimeout(() => {
@@ -196,7 +198,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
       setTransactions([
         {
           state: 'active',
-          text: 'Creating nft'
+          text: transactionText
         }
       ]);
 

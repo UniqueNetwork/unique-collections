@@ -746,6 +746,10 @@ button.ui.button, .button-link, .ui--Button {
   }
 }
 
+.ui.dimmer {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
 @media (max-width: 1024px) {
   h1.ui.header {
     margin-top: calc(var(--gap) * 1.5) !important;
