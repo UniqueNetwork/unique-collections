@@ -13,6 +13,7 @@ import Cover from '@polkadot/app-builder/components/Cover';
 import MainInformation from '@polkadot/app-builder/components/MainInformation';
 import Stepper from '@polkadot/app-builder/components/Stepper';
 import TokenAttributes from '@polkadot/app-builder/components/TokenAttributes';
+import { ArtificialAttributeItemType } from '@polkadot/app-builder/components/TokenAttributes/AttributesRowEditable';
 import TokenPreview from '@polkadot/app-builder/components/TokenPreview';
 import NftPage from '@polkadot/app-builder/containers/NftPage';
 import { UnqButton } from '@polkadot/react-components';
@@ -35,6 +36,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
   const [avatarImg, setAvatarImg] = useState<File | null>(null);
   const [tokenImg, setTokenImg] = useState<File | null>(null);
   const [collectionDescription, setCollectionDescription] = useState<string>('');
+  const [attributes, setAttributes] = useState<ArtificialAttributeItemType[]>([]);
   const [tokenPrefix, setTokenPrefix] = useState<string>('');
   const history = useHistory();
   const location = useLocation();
@@ -129,8 +131,10 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
                 <Route path={`${basePath}/collections/${collectionId}/token-attributes`}>
                   <TokenAttributes
                     account={account}
+                    attributes={attributes}
                     collectionId={collectionId}
                     collectionInfo={collectionInfo}
+                    setAttributes={setAttributes}
                   />
                 </Route>
                 <Route path={`${basePath}/collections/${collectionId}/new-nft`}>
@@ -159,6 +163,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
             collectionName={collectionName}
           />
           <TokenPreview
+            attributes={attributes}
             collectionInfo={collectionInfo}
             collectionName={collectionName}
             constAttributes={constAttributes}
