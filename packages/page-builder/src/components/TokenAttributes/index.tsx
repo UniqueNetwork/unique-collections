@@ -12,7 +12,7 @@ import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 
 import TransactionContext from '@polkadot/app-builder/TransactionContext/TransactionContext';
 import { HelpTooltip, StatusContext, UnqButton } from '@polkadot/react-components';
-import { fillAttributes, fillProtobufJson } from '@polkadot/react-components/util/protobufUtils';
+import {FieldType, fillAttributes, fillProtobufJson} from '@polkadot/react-components/util/protobufUtils';
 import { useCollection } from '@polkadot/react-hooks';
 import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
@@ -140,6 +140,10 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
        */
       if (attr.rule === 'repeated') {
         return { ...attr, fieldType: 'repeated', rule: 'optional' };
+      }
+
+      if (attr.fieldType === 'enum') {
+        return { ...attr, rule: 'required' };
       }
 
       return attr as ArtificialAttributeItemType;
