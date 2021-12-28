@@ -23,8 +23,10 @@ import AttributesRow from './AttributesRow';
 
 interface TokenAttributes {
   account: string;
+  attributes: ArtificialAttributeItemType[];
   collectionId: string;
   collectionInfo?: NftCollectionInterface;
+  setAttributes: (param: any) => void
 }
 
 const defaultAttributesWithTokenIpfs: ArtificialAttributeItemType[] = [
@@ -42,9 +44,8 @@ const stepTexts = [
   'Setting image location'
 ];
 
-function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttributes): ReactElement {
+function TokenAttributes ({ account, attributes, collectionId, collectionInfo, setAttributes }: TokenAttributes): ReactElement {
   const { calculateSetConstOnChainSchemaFees, getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
-  const [attributes, setAttributes] = useState<ArtificialAttributeItemType[]>([]);
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<number[]>([]);
   const [fees, setFees] = useState<BN | null>(null);
@@ -65,7 +66,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     });
 
     setAttributes(newAttributes);
-  }, [attributes]);
+  }, [attributes, setAttributes]);
 
   const closeSaveConfirmation = useCallback(() => {
     setIsSaveConfirmationOpen(false);
@@ -197,7 +198,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
 
   const deleteAttribute = useCallback((index) => {
     setAttributes(attributes.filter((attribute: ArtificialAttributeItemType) => attribute.id !== index));
-  }, [attributes]);
+  }, [attributes, setAttributes]);
 
   const onSaveAll = useCallback(() => {
     // user didn't fill attributes, we have only default ipfsJson attribute
@@ -210,7 +211,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
 
   const setAttributeCountType = useCallback((countType: ArtificialFieldRuleType, id: number) => {
     setAttributes((prevAttributes: ArtificialAttributeItemType[]) => prevAttributes.map((item) => item.id === id ? { ...item, rule: countType } : item));
-  }, []);
+  }, [setAttributes]);
 
   const setAttributeName = useCallback((name: string, index: number) => {
     setAttributes((prevAttributes: ArtificialAttributeItemType[]) => {
@@ -220,15 +221,15 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
 
       return newAttributes;
     });
-  }, []);
+  }, [setAttributes]);
 
   const setAttributeType = useCallback((type: ArtificialFieldType, id: number) => {
     setAttributes((prevAttributes: ArtificialAttributeItemType[]) => prevAttributes.map((item) => item.id === id ? { ...item, fieldType: type } : item));
-  }, []);
+  }, [setAttributes]);
 
   const setAttributeValues = useCallback((values: string[], id: number) => {
     setAttributes((prevAttributes: ArtificialAttributeItemType[]) => prevAttributes.map((item) => item.id === id ? { ...item, values: values } : item));
-  }, []);
+  }, [setAttributes]);
 
   const fillCollectionAttributes = useCallback(() => {
     if (collectionInfo?.constOnChainSchema) {
@@ -251,7 +252,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
         setAttributes([...converted, ...defaultAttributesWithTokenIpfs]);
       }
     }
-  }, [collectionInfo, convertProtobufToArtificialAttributes, getCollectionOnChainSchema]);
+  }, [collectionInfo, convertProtobufToArtificialAttributes, getCollectionOnChainSchema, setAttributes]);
 
   useEffect(() => {
     fillCollectionAttributes();

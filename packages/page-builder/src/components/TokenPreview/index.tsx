@@ -11,8 +11,10 @@ import { useDecoder } from '@polkadot/react-hooks';
 import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
 import defaultIcon from '../../images/defaultIcon.svg';
+import { ArtificialAttributeItemType } from '../TokenAttributes/AttributesRowEditable';
 
 interface TokenPreviewProps {
+  attributes: ArtificialAttributeItemType[];
   collectionInfo?: NftCollectionInterface;
   collectionName: string;
   constAttributes: AttributeItemType[];
@@ -21,7 +23,7 @@ interface TokenPreviewProps {
   tokenPrefix?: string;
 }
 
-function TokenPreview ({ collectionInfo, collectionName, constAttributes, tokenConstAttributes, tokenImg, tokenPrefix }: TokenPreviewProps): React.ReactElement {
+function TokenPreview ({ attributes, collectionInfo, collectionName, constAttributes, tokenConstAttributes, tokenImg, tokenPrefix }: TokenPreviewProps): React.ReactElement {
   const { collectionName16Decoder, hex2a } = useDecoder();
   const [values, setValues] = useState<{ [key: string]: string | string[] | undefined }>({});
 
@@ -47,6 +49,7 @@ function TokenPreview ({ collectionInfo, collectionName, constAttributes, tokenC
   }, [constAttributes, tokenConstAttributes]);
 
   const checkAttributes = useMemo(() => constAttributes.filter((elem: {name: string}) => elem.name !== 'ipfsJson'), [constAttributes]);
+  const checkAttributesTokenPreview = useMemo(() => attributes.filter((elem: {name: string}) => elem.name !== 'ipfsJson'), [attributes]);
 
   useEffect(() => {
     fillAttributesValues();
@@ -83,26 +86,29 @@ function TokenPreview ({ collectionInfo, collectionName, constAttributes, tokenC
                   )}
                 </div>
               )}
-              { !Object.keys(values).length && (
-                <div className='const-attributes--block'>
-                  { constAttributes?.map((collectionAttribute: AttributeItemType) => {
-                    if (collectionAttribute.name !== 'ipfsJson') {
-                      return (
-                        <p
-                          className='content-text'
-                          key={collectionAttribute.name}
-                        >
-                          {collectionAttribute.name}
-                        </p>
-                      );
-                    }
 
-                    return null;
-                  })}
-                </div>
-              )}
             </div>
           )}
+          { checkAttributesTokenPreview?.length > 0 &&
+                (
+                  <div className='const-attributes'>
+                    <h4>Token attributes</h4>
+                    { checkAttributesTokenPreview.map((collectionAttribute) => {
+                      if (collectionAttribute.name !== 'ipfsJson') {
+                        return (
+                          <p
+                            className='content-text'
+                            key={collectionAttribute.name}
+                          >
+                            {collectionAttribute.name}:
+                          </p>
+                        );
+                      }
+
+                      return null;
+                    })}
+                  </div>
+                )}
         </div>
       </div>
     </div>
