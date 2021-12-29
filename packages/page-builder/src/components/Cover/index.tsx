@@ -54,15 +54,28 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
     }
   }, [account, calculateSetSchemaVersionFee, calculateSetVariableOnChainSchemaFee, collectionId, imgAddress]);
 
+  const clearTokenImg = useCallback(() => {
+    setAvatarImg(null);
+
+    if (inputFileRef.current) {
+      inputFileRef.current.value = '';
+    }
+  }, [setAvatarImg]);
+
   const uploadImage = useCallback(async (file: File): Promise<void> => {
     if (file) {
       setImageUploading(true);
       const address = await uploadImg(file);
 
-      setImgAddress(address);
+      if (address) {
+        setImgAddress(address);
+      } else {
+        clearTokenImg();
+      }
+
       setImageUploading(false);
     }
-  }, [uploadImg]);
+  }, [clearTokenImg, uploadImg]);
 
   const uploadAvatar = useCallback((event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
@@ -71,14 +84,6 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
     setAvatarImg(file);
     void uploadImage(file);
   }, [setAvatarImg, uploadImage]);
-
-  const clearTokenImg = useCallback(() => {
-    setAvatarImg(null);
-
-    if (inputFileRef.current) {
-      inputFileRef.current.value = '';
-    }
-  }, [setAvatarImg]);
 
   const onSuccess = useCallback(() => {
     setTransactions([
