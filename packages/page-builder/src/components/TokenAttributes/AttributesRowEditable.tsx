@@ -130,10 +130,6 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
     if (type === 'repeated') {
       setAttributeCountType('optional', id);
     }
-
-    if (type === 'enum') {
-      setAttributeCountType('required', id);
-    }
   }, [id, setAttributeType, setAttributeCountType]);
 
   const onSetAttributeCountType = useCallback((countType: ArtificialFieldRuleType) => {
@@ -194,7 +190,7 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
         </div>
         <div className='dropdown-container'>
           <Dropdown
-            isDisabled={attributeType === 'repeated' || attributeType === 'enum'}
+            isDisabled={attributeType === 'repeated'}
             onChange={onSetAttributeCountType}
             options={CountOptions}
             placeholder='Rule'
