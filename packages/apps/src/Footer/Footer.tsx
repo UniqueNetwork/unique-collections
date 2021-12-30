@@ -18,7 +18,7 @@ import twitter from '../../public/logos/twitter.svg';
 
 interface IFooterProps{
   isPreviewOpen: boolean;
-  showPreview: (ev: boolean) => void;
+  togglePreview: (ev: boolean) => void;
   className: string;
 }
 
@@ -37,7 +37,7 @@ function Footer (props: IFooterProps): ReactElement {
   }, [location.pathname]);
 
   const handleOnBtnClick = useCallback(() => {
-    props.showPreview(isPreviewBtnShown);
+    props.togglePreview(isPreviewBtnShown);
   }, [isPreviewBtnShown, props]);
 
   return (

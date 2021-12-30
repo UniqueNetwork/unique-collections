@@ -57,7 +57,7 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
 
   const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
 
-  const showPreview = useCallback(() => {
+  const togglePreview = useCallback(() => {
     setIsPreviewOpen((prev) => !prev);
   }, []);
 
@@ -200,7 +200,7 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
       <Footer
         className=''
         isPreviewOpen={isPreviewOpen}
-        showPreview={showPreview}
+        togglePreview={togglePreview}
       />
     </>
   );
