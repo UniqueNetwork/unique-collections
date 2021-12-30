@@ -6,7 +6,7 @@ import './apps.scss';
 import type { OpenPanelType, Route } from '@polkadot/apps-routing/types';
 import type { BareProps as Props, ThemeDef } from '@polkadot/react-components/types';
 
-import React, { Suspense, useContext, useMemo, useState } from 'react';
+import React, { Suspense, useCallback, useContext, useMemo, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu';
 import { ThemeContext } from 'styled-components';
@@ -54,6 +54,12 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
   const [account, setAccount] = useState<string>();
   const [openPanel, setOpenPanel] = useState<OpenPanelType>('tokens');
   const [isPageFound, setIsPageFound] = useState<boolean>(true);
+
+  const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
+
+  const showPreview = useCallback(() => {
+    setIsPreviewOpen((prev) => !prev);
+  }, []);
 
   const uiHighlight = useMemo(
     () => getSystemChainColor(systemChain, systemName),
@@ -170,6 +176,7 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
                                 <Component
                                   account={account}
                                   basePath={`/${name}`}
+                                  isPreviewOpen={isPreviewOpen}
                                   location={location}
                                   onStatusChange={queueAction}
                                   openPanel={openPanel}
@@ -190,7 +197,11 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
         </Signer>
       </div>
       <WarmUp />
-      <Footer />
+      <Footer
+        className=''
+        isPreviewOpen={isPreviewOpen}
+        showPreview={showPreview}
+      />
     </>
   );
 }

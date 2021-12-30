@@ -16,13 +16,13 @@ import TokenAttributes from '@polkadot/app-builder/components/TokenAttributes';
 import { ArtificialAttributeItemType } from '@polkadot/app-builder/components/TokenAttributes/AttributesRowEditable';
 import TokenPreview from '@polkadot/app-builder/components/TokenPreview';
 import NftPage from '@polkadot/app-builder/containers/NftPage';
-import { UnqButton } from '@polkadot/react-components';
 import { useTokenAttributes } from '@polkadot/react-hooks';
 import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/useCollection';
 
 interface CollectionPageProps {
   account: string;
   basePath: string;
+  isPreviewOpen: boolean;
 }
 
 /* @todo
@@ -30,8 +30,7 @@ interface CollectionPageProps {
  and open the same page, where user interrupted the action.
  */
 
-function CollectionPage ({ account, basePath }: CollectionPageProps): ReactElement {
-  const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
+function CollectionPage ({ account, basePath, isPreviewOpen }: CollectionPageProps): ReactElement {
   const [collectionName, setCollectionName] = useState<string>('');
   const [avatarImg, setAvatarImg] = useState<File | null>(null);
   const [tokenImg, setTokenImg] = useState<File | null>(null);
@@ -44,10 +43,6 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
   const { getDetailedCollectionInfo } = useCollection();
   const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
   const { constAttributes, constOnChainSchema, resetAttributes, setTokenConstAttributes, tokenConstAttributes } = useTokenAttributes(collectionInfo);
-
-  const handleOnBtnClick = useCallback(() => {
-    setIsPreviewOpen((prev) => !prev);
-  }, []);
 
   const fetchCollectionInfo = useCallback(async () => {
     if (collectionId) {
@@ -170,13 +165,6 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
             tokenConstAttributes={tokenConstAttributes}
             tokenImg={tokenImg}
             tokenPrefix={tokenPrefix}
-          />
-        </div>
-        <div className='preview-btn'>
-          <UnqButton
-            content={isPreviewOpen ? 'Back' : 'Preview'}
-            onClick={handleOnBtnClick}
-            size='large'
           />
         </div>
       </div>
