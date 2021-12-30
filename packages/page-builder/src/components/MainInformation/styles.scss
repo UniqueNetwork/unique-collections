@@ -37,5 +37,13 @@
 @media (max-width: 768px) {
   .main-information{
     box-shadow: none;
+    padding: 24px;
+  }
+}
+
+@media (max-width: 320px) {
+  .main-information{
+    box-shadow: none;
+    padding: var(--gap);
   }
 }
