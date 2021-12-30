@@ -55,9 +55,21 @@
       justify-content: flex-start;
       align-items: center;
       width: 100%;
-      padding: 10px 16px;
+      padding: 10px 24px;
       box-shadow: 0 -8px 12px rgba(0, 0, 0, 0.06);
     }
   }
 }
 
+@media (max-width: 320px) {
+  .collection-page{
+    .preview-btn{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        padding: 10px 16px;
+        box-shadow: 0 -8px 12px rgba(0, 0, 0, 0.06);
+    }
+  }
+}

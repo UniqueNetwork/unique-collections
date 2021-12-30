@@ -124,4 +124,26 @@ export default memo(styled(Footer)`
       grid-row-gap: calc(var(--gap)/2);
     }
   }
+
+  @media (max-width: 768px) {
+    border-top: 1px solid var(--enum-input-border-disabled-color);
+    padding: 24px;
+
+    .app-footer--container {
+      align-items: flex-start;
+      flex-direction: column;
+      grid-row-gap: calc(var(--gap)/2);
+    }
+  }
+
+  @media (max-width: 320px) {
+    border-top: 1px solid var(--enum-input-border-disabled-color);
+    padding: var(--gap);
+
+    .app-footer--container {
+      align-items: flex-start;
+      flex-direction: column;
+      grid-row-gap: calc(var(--gap)/2);
+    }
+  }
 `);
