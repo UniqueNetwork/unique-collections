@@ -144,7 +144,6 @@ export default memo(styled(Footer)`
       align-items: flex-start;
       flex-direction: column;
       grid-row-gap: calc(var(--gap)/2);
-    }   
+    }
   }
-
 `);
