@@ -8,6 +8,7 @@
 
   padding: calc(var(--gap) * 2);
   margin-bottom: calc((var(--gap) / 2) * 3);
+
   &:last-child {
     margin-bottom: 0;
   }
@@ -23,7 +24,7 @@
       object-fit: cover;
       border-radius: 50%;
       width: 64px;
-      height: 64px;  
+      height: 64px;
     }
   }
 
