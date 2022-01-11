@@ -3,61 +3,54 @@
 
 import './styles.scss';
 
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import React, { useEffect } from 'react';
-import { Route, Switch, useHistory } from 'react-router';
-import { useLocation } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
 
-import envConfig from '@polkadot/apps-config/envConfig';
 import { AppProps as Props } from '@polkadot/react-components/types';
 
-import CollectionPage from './containers/CollectionPage';
-import CollectionsList from './containers/CollectionsList';
+import Disclaimer from './components/Disclaimer';
+import Builder from './Builder';
+import Transactions from './TransactionContext';
 
-const { graphQlAdminSecret, graphQlApi } = envConfig;
+function CollectionBuilder (props: Props): React.ReactElement {
+  // const { allAccounts } = useAccounts();
+  // account selector on the top of the window must select an account if the user has at least one
+  const { account } = props;
+  /*
+   - user has account
+   - user is on builder page
+   - user has not yet agreed with the disclaimer
+   */
+  const [showDisclaimer, toggleDisclaimer] = useState<boolean>(false);
 
-const graphQlUrl = process.env.NODE_ENV === 'production' ? graphQlApi : '/v1/graphql/';
+  const checkDisclaimer = useCallback(() => {
+    const builderDisclaimer = localStorage.getItem('BUILDER_DISCLAIMER');
 
-const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  headers: {
-    'content-type': 'application/json',
-    'x-hasura-admin-secret': graphQlAdminSecret
-  },
-  uri: graphQlUrl
-});
-
-function Builder (props: Props): React.ReactElement {
-  const { account, basePath } = props;
-  const location = useLocation();
-  const history = useHistory();
+    toggleDisclaimer(!account || builderDisclaimer !== 'accepted');
+  }, [account]);
 
   useEffect(() => {
-    if (location.pathname === '/builder' || location.pathname === '/builder/') {
-      history.push('/builder/collections');
-    }
-  }, [history, location]);
+    checkDisclaimer();
+  }, [checkDisclaimer]);
+
+  if (showDisclaimer) {
+    return (
+      <main className='builder-page'>
+        <Disclaimer
+          checkDisclaimer={checkDisclaimer}
+        />
+      </main>
+    );
+  }
 
   return (
     <main className='builder-page'>
-      <Switch>
-        <Route path={`${basePath}/collections`}>
-          <ApolloProvider client={client}>
-            <CollectionsList
-              account={account}
-              basePath={basePath}
-            />
-          </ApolloProvider>
-        </Route>
-        <Route path={`${basePath}/new-collection`}>
-          <CollectionPage
-            account={account}
-            basePath={basePath}
-          />
-        </Route>
-      </Switch>
+      <Transactions>
+        <Builder
+          {...props}
+        />
+      </Transactions>
     </main>
   );
 }
 
-export default React.memo(Builder);
+export default React.memo(CollectionBuilder);

@@ -4,9 +4,10 @@
 import './styles.scss';
 
 import BN from 'bn.js';
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 
+import TransactionContext from '@polkadot/app-builder/TransactionContext/TransactionContext';
 import { Input, TextArea, UnqButton } from '@polkadot/react-components';
 import { useCollection } from '@polkadot/react-hooks';
 
@@ -22,11 +23,14 @@ interface MainInformationProps {
   tokenPrefix: string;
 }
 
+const stepText = 'Creating collection and saving it to blockchain';
+
 function MainInformation (props: MainInformationProps): React.ReactElement {
   const { account, description, name, setDescription, setName, setTokenPrefix, tokenPrefix } = props;
   const { calculateCreateCollectionFee, createCollection, getCreatedCollectionCount } = useCollection();
   const [createFees, setCreateFees] = useState<BN | null>(null);
   const history = useHistory();
+  const { setTransactions } = useContext(TransactionContext);
 
   const calculateFee = useCallback(async () => {
     if (account) {
@@ -37,50 +41,84 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
   }, [account, calculateCreateCollectionFee, description, name, tokenPrefix]);
 
   // @todo - get latest index if account is owner
-  /*
-    export function getCreateCollectionResult(events: EventRecord[]): CreateCollectionResult {
-     let success = false;
-     let collectionId = 0;
-     events.forEach(({event: {data, method, section}}) => {
-      // console.log(`  ${phase}: ${section}.${method}:: ${data}`);
-      if (method == 'ExtrinsicSuccess') {
-       success = true;
-      } else if ((section == 'common') && (method == 'CollectionCreated')) {
-       collectionId = parseInt(data[0].toString(), 10);
-      }
-     });
-     const result: CreateCollectionResult = {
-      success,
-      collectionId,
-     };
-     return result;
-    }
-   */
   const goToNextStep = useCallback(async () => {
+    /*
+   export function getCreateCollectionResult(events: EventRecord[]): CreateCollectionResult {
+    let success = false;
+    let collectionId = 0;
+    events.forEach(({event: {data, method, section}}) => {
+     // console.log(`  ${phase}: ${section}.${method}:: ${data}`);
+     if (method == 'ExtrinsicSuccess') {
+      success = true;
+     } else if ((section == 'common') && (method == 'CollectionCreated')) {
+      collectionId = parseInt(data[0].toString(), 10);
+     }
+    });
+    const result: CreateCollectionResult = {
+     success,
+     collectionId,
+    };
+    return result;
+   }
+  */
+    setTransactions([
+      {
+        state: 'finished',
+        text: stepText
+      }
+    ]);
+    setTimeout(() => {
+      setTransactions([]);
+    }, 3000);
     const collectionCount = await getCreatedCollectionCount();
 
     history.push(`/builder/collections/${collectionCount}/cover`);
-  }, [history, getCreatedCollectionCount]);
+  }, [setTransactions, getCreatedCollectionCount, history]);
 
   const onCreateCollection = useCallback(() => {
     if (account && name && tokenPrefix) {
+      setTransactions([
+        {
+          state: 'active',
+          text: stepText
+        }
+      ]);
       createCollection(account, {
         description,
         modeprm: { nft: null },
         name,
         tokenPrefix
       }, {
+        onFailed: setTransactions.bind(null, []),
         onSuccess: goToNextStep
       });
     }
-  }, [account, createCollection, description, goToNextStep, name, tokenPrefix]);
+  }, [account, createCollection, description, goToNextStep, name, setTransactions, tokenPrefix]);
+
+  const handleTokenPrefix = useCallback((value: string) => {
+    const replaceValue = value.replace(/[^a-zA-Z0-9]+/, '');
+
+    setTokenPrefix(replaceValue);
+  }, [setTokenPrefix]);
+
+  const handleBlurName = useCallback(() => {
+    setName(name.trim());
+  }, [setName, name]);
+
+  const handleBlurDescription = useCallback(() => {
+    setDescription(description.trim());
+  }, [setDescription, description]);
+
+  const handleBlurSymbol = useCallback(() => {
+    setTokenPrefix(tokenPrefix.trim());
+  }, [setTokenPrefix, tokenPrefix]);
 
   useEffect(() => {
     void calculateFee();
   }, [calculateFee]);
 
   return (
-    <div className='main-information'>
+    <div className='main-information shadow-block'>
       <h1 className='header-text'>Main information</h1>
       <div className='info-block'>
         <h2>Name*</h2>
@@ -88,6 +126,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <Input
           className='isSmall'
           maxLength={64}
+          onBlur={handleBlurName}
           onChange={setName}
           value={name}
         />
@@ -97,6 +136,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <p>Max 256 symbols</p>
         <TextArea
           maxLength={256}
+          onBlur={handleBlurDescription}
           onChange={setDescription}
           seed={description}
         />
@@ -107,7 +147,8 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
         <Input
           className='isSmall'
           maxLength={4}
-          onChange={setTokenPrefix}
+          onBlur={handleBlurSymbol}
+          onChange={handleTokenPrefix}
           value={tokenPrefix}
         />
       </div>
@@ -116,7 +157,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
       )}
       <UnqButton
         content='Confirm'
-        isDisabled={!name || !tokenPrefix || tokenPrefix.length > 16}
+        isDisabled={!name || !tokenPrefix}
         isFilled
         onClick={onCreateCollection}
         size='medium'

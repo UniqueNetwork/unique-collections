@@ -1,10 +1,4 @@
-.token-preview{
-  background: var(--white-color);
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  padding: calc(var(--gap)*2);
+.token-preview {
 
   .token-preview-header{
     color: var(--title-color);
@@ -33,7 +27,9 @@
       width: 160px;
 
       img {
+        object-fit: cover;
         height: 100%;
+        width: 100%;
       }
     }
 
@@ -69,7 +65,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .token-preview{
     box-shadow: none;
   }

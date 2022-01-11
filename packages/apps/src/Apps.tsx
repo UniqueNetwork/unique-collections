@@ -23,6 +23,7 @@ import { useApi } from '@polkadot/react-hooks';
 import Signer from '@polkadot/react-signer';
 
 import BalancesHeader from './BalancesHeader';
+import { Footer } from './Footer';
 import ManageAccounts from './ManageAccounts';
 import MobileAccountSelector from './MobileAccountSelector';
 import MobileMenu from './MobileMenu';
@@ -189,6 +190,7 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
         </Signer>
       </div>
       <WarmUp />
+      <Footer />
     </>
   );
 }

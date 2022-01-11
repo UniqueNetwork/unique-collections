@@ -1,8 +1,5 @@
 .main-information{
   background-color: var(--white-color);
-  padding:  calc(var(--gap) * 2);
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
-  border-radius: calc(var(--gap) / 4);
   font-family: var(--font-roboto);
 
   .header-text{
@@ -34,8 +31,16 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .main-information{
     box-shadow: none;
+    padding: var(--gap);
+  }
+}
+
+@media (max-width: 320px) {
+  .main-information{
+    box-shadow: none;
+    padding: var(--gap);
   }
 }

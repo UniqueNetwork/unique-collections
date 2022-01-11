@@ -1,7 +1,4 @@
 .collection-card {
-  background: var(--white-color);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-radius: 4px;
   display: grid;
   grid-template-columns: calc(var(--gap) * 4) 1fr;
   grid-column-gap: var(--gap);
@@ -21,10 +18,10 @@
     overflow-y: hidden;
 
     img {
+      object-fit: cover;
       border-radius: 50%;
-      max-width: 100%;
-      max-height: 100%;
-      width: auto;
+      width: 64px;
+      height: 64px;
     }
   }
 
@@ -45,13 +42,15 @@
           font-weight: 600;
           font-size: 20px;
           line-height: 28px;
-          margin-bottom: 8px
+          margin-bottom: 8px;
+          overflow-wrap: anywhere;
         }
 
         .content-description-text{
           font-family: Roboto;
           line-height: 22px;
           color: var(--tabs-color);
+          overflow-wrap: anywhere;
         }
       }
 
@@ -110,10 +109,8 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .collection-card {
-    display: flex;
-    flex-direction: column;
     gap: var(--gap);
 
     .collection-card-content {

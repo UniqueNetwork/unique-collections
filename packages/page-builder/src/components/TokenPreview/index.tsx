@@ -11,8 +11,10 @@ import { useDecoder } from '@polkadot/react-hooks';
 import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
 import defaultIcon from '../../images/defaultIcon.svg';
+import { ArtificialAttributeItemType } from '../TokenAttributes/AttributesRowEditable';
 
 interface TokenPreviewProps {
+  attributes: ArtificialAttributeItemType[];
   collectionInfo?: NftCollectionInterface;
   collectionName: string;
   constAttributes: AttributeItemType[];
@@ -21,25 +23,24 @@ interface TokenPreviewProps {
   tokenPrefix?: string;
 }
 
-function TokenPreview ({ collectionInfo, collectionName, constAttributes, tokenConstAttributes, tokenImg, tokenPrefix }: TokenPreviewProps): React.ReactElement {
+function TokenPreview ({ attributes, collectionInfo, collectionName, constAttributes, tokenConstAttributes, tokenImg, tokenPrefix }: TokenPreviewProps): React.ReactElement {
   const { collectionName16Decoder, hex2a } = useDecoder();
-  const [values, setValues] = useState<{ [key: string]: string | string[] | undefined }>({});
-
-  /*
-  setTokenConstAttributes((prevAttributes: { [key: string]: TokenAttribute }) => ({ ...prevAttributes,
-      [attribute.name]: {
-        name: prevAttributes[attribute.name].name,
-        value: attribute.rule === 'repeated' ? prevAttributes[attribute.name].value : value as string,
-        values: attribute.rule === 'repeated' ? value as number[] : prevAttributes[attribute.name].values
-      } } as { [key: string]: TokenAttribute }));
-   */
+  const [values, setValues] = useState<{ [key: string]: string | string[] | number | undefined }>({});
 
   const fillAttributesValues = useCallback(() => {
     if (constAttributes?.length) {
-      const filledValues: { [key: string]: string | string[] | undefined } = {};
+      const filledValues: { [key: string]: string | string[] | undefined | number } = {};
 
       constAttributes.forEach((item: AttributeItemType) => {
-        filledValues[item.name] = item.rule === 'repeated' ? tokenConstAttributes[item.name]?.values?.map((val: number) => item.values[val]).join(', ') : item.values[tokenConstAttributes[item.name]?.value as number];
+        if (item.fieldType === 'enum') {
+          if (item.rule === 'repeated') {
+            filledValues[item.name] = tokenConstAttributes[item.name]?.values?.map((val: number) => item.values[val]).join(', ');
+          } else {
+            filledValues[item.name] = item.values[tokenConstAttributes[item.name]?.value as number];
+          }
+        } else if (item.fieldType === 'string') {
+          filledValues[item.name] = tokenConstAttributes[item.name]?.value;
+        }
       });
 
       setValues(filledValues);
@@ -47,13 +48,14 @@ function TokenPreview ({ collectionInfo, collectionName, constAttributes, tokenC
   }, [constAttributes, tokenConstAttributes]);
 
   const checkAttributes = useMemo(() => constAttributes.filter((elem: {name: string}) => elem.name !== 'ipfsJson'), [constAttributes]);
+  const checkAttributesTokenPreview = useMemo(() => attributes.filter((elem: {name: string}) => elem.name !== 'ipfsJson'), [attributes]);
 
   useEffect(() => {
     fillAttributesValues();
   }, [fillAttributesValues]);
 
   return (
-    <div className='token-preview'>
+    <div className='token-preview shadow-block'>
       <div className='token-preview-header'>Token preview</div>
       <div className='token-preview-content'>
         <div className='token-img'>
@@ -83,26 +85,29 @@ function TokenPreview ({ collectionInfo, collectionName, constAttributes, tokenC
                   )}
                 </div>
               )}
-              { !Object.keys(values).length && (
-                <div className='const-attributes--block'>
-                  { constAttributes?.map((collectionAttribute: AttributeItemType) => {
-                    if (collectionAttribute.name !== 'ipfsJson') {
-                      return (
-                        <p
-                          className='content-text'
-                          key={collectionAttribute.name}
-                        >
-                          {collectionAttribute.name}
-                        </p>
-                      );
-                    }
 
-                    return null;
-                  })}
-                </div>
-              )}
             </div>
           )}
+          { checkAttributesTokenPreview?.length > 0 &&
+                (
+                  <div className='const-attributes'>
+                    <h4>Token attributes</h4>
+                    { checkAttributesTokenPreview.map((collectionAttribute) => {
+                      if (collectionAttribute.name !== 'ipfsJson') {
+                        return (
+                          <p
+                            className='content-text'
+                            key={collectionAttribute.name}
+                          >
+                            {collectionAttribute.name}:
+                          </p>
+                        );
+                      }
+
+                      return null;
+                    })}
+                  </div>
+                )}
         </div>
       </div>
     </div>

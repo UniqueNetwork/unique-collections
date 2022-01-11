@@ -32,6 +32,7 @@
     COMMISSION: defaults('${COMMISSION}', 10),
     CONTRACT_ADDRESS: defaults('${CONTRACT_ADDRESS}', '5GPbxrVzvjRHUSQUS9BNUFe2Q4KVfsYZtG1CTRaqe51rNSAX'),
     DECIMALS: defaults('${DECIMALS}', 6),
+    DISCORD_CHANNEL: defaults('${DISCORD_CHANNEL}', 'https://discord.com/invite/8jghD8V9PU'),
     ESCROW_ADDRESS: defaults('${ESCROW_ADDRESS}', '5DACuDR8CXXmQS3tpGyrHZXoJ6ds7bjdRb4wVqqSt2CMfAoG'),
     FAVICON_PATH: defaults('${FAVICON_PATH}', 'favicons/marketplace'),
     GRAPH_QL_ADMIN_SECRET: defaults('${GRAPH_QL_ADMIN_SECRET}', 'hepM3wfsATBoI-ix2uhsAodr1j99MThPF5LBZJI2YtHAax7W9BIP9F8IWuzcNUC4'),
@@ -46,6 +47,8 @@
     MIN_TED_COLLECTION: defaults('${MIN_TED_COLLECTION}', 1),
     QUOTE_ID: defaults('${QUOTE_ID}', 2),
     UNIQUE_SUBSTRATE_API: defaults('${UNIQUE_SUBSTRATE_API}', 'wss://ws-opal.unique.network'),
+    UNQ_TELEGRAM: defaults('${UNQ_TELEGRAM}', 'https://t.me/unique2faucetbot'),
+    UNQ_WALLET: defaults('${UNQ_WALLET}', 'https://wallet-opal.unique.network/#/myStuff/nft?collectionId='),
     VALUE: defaults('${VALUE}', 0),
     WHITE_LABEL_URL: defaults('${WHITE_LABEL_URL}', 'https://whitelabel.unique.network')
   };

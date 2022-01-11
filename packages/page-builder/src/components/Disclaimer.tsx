@@ -4,23 +4,36 @@
 import React, { useCallback, useState } from 'react';
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header';
 
+import envConfig from '@polkadot/apps-config/envConfig';
 import { UnqButton } from '@polkadot/react-components';
+import { useApi } from '@polkadot/react-hooks';
 
-function Disclaimer (): React.ReactElement {
+interface Props {
+  checkDisclaimer: () => void;
+}
+
+function Disclaimer ({ checkDisclaimer }: Props): React.ReactElement<Props> {
   const [isChecked, setIsChecked] = useState<boolean>(false);
+  const { api } = useApi();
+  const tokensName = api.registry.chainTokens?.join('');
 
   const handleOnCheck = useCallback(() => {
     setIsChecked((prev) => !prev);
   }, []);
+
+  const onAcceptDisclaimer = useCallback(() => {
+    localStorage.setItem('BUILDER_DISCLAIMER', 'accepted');
+    checkDisclaimer();
+  }, [checkDisclaimer]);
 
   return (
     <div className='disclaimer'>
       <Header as='h1'>Disclaimer</Header>
       <div className='disclaimer-content'>
         <ol>
-          <li>Make sure you have <span>120 UNQ,</span> otherwise you won&#39;t be able to create a collection.</li>
+          <li>Make sure you have <span>120 {tokensName},</span> otherwise you won`t be able to create a collection. To get some {tokensName} for free go to special Telegram bot <a href={envConfig?.uniqueTelegram || ''}>@unique2faucetbot</a></li>
           <li>Check carefully that the entered data is correct. Once confirmed, it will not be possible to return and make changes.</li>
-          <li>Collections created in TestNet will not transfer into the MainNet. If you need to transfer the collection, contact the administrator.</li>
+          <li>Collections created in Opal will not transfer into the MainNet. If you need to transfer the collection, contact the administrator in <a href={envConfig?.discordChannel || ''}>our Discord channel</a>.</li>
         </ol>
         <div className='custom-checkbox'>
           <div className='checkbox-input'>
@@ -36,7 +49,9 @@ function Disclaimer (): React.ReactElement {
           <UnqButton
             className='create-btn'
             content='Start Creating'
+            isDisabled={!isChecked}
             isFilled
+            onClick={onAcceptDisclaimer}
             size='medium'
           />
         </div>

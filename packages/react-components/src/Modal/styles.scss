@@ -68,6 +68,7 @@
   }
 
   &.unique-modal {
+    border-radius: calc(var(--gap) / 2);
 
     .header {
       padding: 1.71rem !important;
@@ -113,6 +114,7 @@
       .primary  {
         background-color: var(--card-background) !important;
         color: var(--button-color) !important;
+        font-family: var(--font-roboto) !important;
         border: 1px solid var(--button-color);
       }
     }
@@ -123,7 +125,6 @@
   .ui.modal {
 
     &.unique-modal {
-
       .actions {
         width: 100%;
         padding: 24px 16px !important;
@@ -135,7 +136,7 @@
           padding: 0px 6px !important;
         }
 
-        .primary  {
+        .primary {
           margin-left: 8px !important;
         }
       }
@@ -163,3 +164,33 @@
     }
   }
 }
+
+@media (max-width: 320px) {
+.ui.modal {
+
+    &.unique-modal {
+      .actions {
+        padding: 24px 16px !important;
+      }
+
+      button {
+          width: 100%;
+          margin: 0;
+          font-size: 15px !important;
+          padding: 0px 6px !important;
+          align-items: center;
+        }
+
+        .header {
+          font-size: 20px !important;
+          padding: 16px !important;
+          line-height: 28px !important;
+        }
+
+        .content {
+          padding: 16px !important;
+        }
+      }
+    }
+  }
+  

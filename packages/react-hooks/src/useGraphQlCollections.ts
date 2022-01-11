@@ -12,8 +12,15 @@ export type UserCollection = {
   'token_limit': number;
 }
 
+export type CollectionsAggregate = {
+  aggregate: {
+    count: number
+  }
+}
+
 export type UserCollections = {
   collections: UserCollection[];
+  collections_aggregate: CollectionsAggregate;
 }
 
 export type UseGraphQlInterface = {
@@ -32,6 +39,11 @@ const USER_COLLECTIONS = gql`
       owner
       token_limit
       mode
+    }
+    collections_aggregate( where: { owner: { _eq: $owner }, name: { _ilike: $name } }) {
+      aggregate {
+        count
+      }
     }
   }
 `;

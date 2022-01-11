@@ -526,7 +526,7 @@
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .app-wrapper {
     background-color: var(--card-background);
   }
@@ -565,7 +565,7 @@
 
 @media (max-width: 767px) {
   .app-main {
-    margin-top: 54px;
+    margin-top: 85px;
 
     &.no-accounts {
       margin-top: 67px;
@@ -597,7 +597,7 @@
   }
 
   .menu-mobile {
-    margin-top: 54px;
+    margin-top: 85px;
 
     &.no-accounts {
       margin-top: 67px;
@@ -605,7 +605,7 @@
   }
 
   .manage-accounts {
-    margin-top: 54px;
+    margin-top: 85px;
   }
 
   .welcome {
