@@ -1,0 +1,45 @@
+.collections-list {
+  &--collections {
+
+  }
+}
+
+@media (max-width: 1023px) {
+  .collections-list {
+    &--collections {
+      background: var(--bg-page);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .collections-list {
+
+    .create-and-search {
+      padding-left: var(--gap);
+      padding-right: var(--gap);
+    }
+
+    h1.ui.header {
+      padding-left: var(--gap);
+      padding-right: var(--gap);
+    }
+
+    &--collections {
+      background: var(--bg-page);
+
+      .collection-card {
+        padding-left: var(--gap);
+        padding-right: var(--gap);
+      }
+    }
+  }
+}
+
+@media (max-width: 320px) {
+  .collections-list {
+    &--collections {
+
+    }
+  }
+}

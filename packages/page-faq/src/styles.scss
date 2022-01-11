@@ -44,14 +44,15 @@
   }
 }
 
-@media (max-width: 1279px) {
+@media (max-width: 1223px) {
   .faq-page {
     overflow-y: auto;
     overflow-x: hidden;
-    background-color: var(--card-background);
 
     .faq {
       margin-top: 0;
+      padding-left: var(--gap);
+      padding-right: var(--gap);
     }
   }
 }

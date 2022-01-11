@@ -127,7 +127,7 @@ export default memo(styled(Footer)`
 
   @media (max-width: 768px) {
     border-top: 1px solid var(--enum-input-border-disabled-color);
-    padding: 24px;
+    padding: var(--gap);
 
     .app-footer--container {
       align-items: flex-start;

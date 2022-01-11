@@ -45,7 +45,7 @@
       justify-content: center;
     }
   }
- 
+
     .hidden{
       display: none !important;
     }
@@ -55,7 +55,7 @@
       justify-content: flex-start;
       align-items: center;
       width: 100%;
-      padding: 10px 24px;
+      padding: 10px var(--gap);
       box-shadow: 0 -8px 12px rgba(0, 0, 0, 0.06);
     }
   }
@@ -68,7 +68,7 @@
         justify-content: flex-start;
         align-items: center;
         width: 100%;
-        padding: 10px 16px;
+        padding: 10px var(--gap);
         box-shadow: 0 -8px 12px rgba(0, 0, 0, 0.06);
     }
   }

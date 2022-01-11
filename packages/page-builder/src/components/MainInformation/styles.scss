@@ -37,7 +37,7 @@
 @media (max-width: 768px) {
   .main-information{
     box-shadow: none;
-    padding: 24px;
+    padding: var(--gap);
   }
 }
 

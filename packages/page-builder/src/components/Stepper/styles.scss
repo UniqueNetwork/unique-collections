@@ -52,6 +52,8 @@
 
 @media (max-width: 768px) {
   .stepper-main {
+    padding: var(--gap);
+
     .steps{
       padding: 0;
     }

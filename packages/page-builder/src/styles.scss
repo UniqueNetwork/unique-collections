@@ -131,8 +131,19 @@
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .builder-page  {
+
+    .collection-page {
+      .page-main {
+        background: var(--bg-page);
+
+        .main-information, .collection-preview, .token-preview, .stepper-main, .cover, .token-attributes {
+          padding-left: var(--gap);
+          padding-right: var(--gap);
+        }
+      }
+    }
 
     .collection-card{
       box-shadow: none;
