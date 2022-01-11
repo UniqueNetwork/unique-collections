@@ -2,10 +2,6 @@
   font-family: var(--font-inter);
 
   .faq {
-    background: var(--white-color);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    border-radius: 4px 4px 0 0;
-    padding: calc(var(--gap) * 2);
     margin-top: calc(var(--gap) * 2);
 
     h4.ui.header {
@@ -48,10 +44,5 @@
   .faq-page {
     overflow-y: auto;
     overflow-x: hidden;
-    background-color: var(--card-background);
-
-    .faq {
-      margin-top: 0;
-    }
   }
 }

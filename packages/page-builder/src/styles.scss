@@ -131,18 +131,24 @@
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .builder-page  {
 
-    .collection-card{
+    .collection-page {
+      .page-main {
+        background: var(--bg-page);
+      }
+    }
+
+    .collection-card {
       box-shadow: none;
     }
 
-    .no-collections{
+    .no-collections {
       box-shadow: none;
     }
 
-    .disclaimer{
+    .disclaimer {
       padding: 16px;
       box-shadow: none;
     }
@@ -155,10 +161,10 @@
 
 
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .builder-page {
     .create-and-search {
-     flex-direction: row;
+      flex-direction: row;
       gap: var(--gap);
 
       .create-btn{
@@ -169,10 +175,8 @@
   }
 }
 
-@media (max-width: 425px) {
+@media (max-width: 567px) {
   .builder-page {
-    padding: 16px 0;
-
     .content-links {
       min-width: 50%;
 

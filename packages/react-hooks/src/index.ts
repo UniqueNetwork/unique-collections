@@ -32,7 +32,6 @@ export { useLedger } from './useLedger';
 export { useLoadingDelay } from './useLoadingDelay';
 export { useMembers } from './useMembers';
 export { useModal } from './useModal';
-export { useNftContract } from './useNftContract';
 export { useNonEmptyString } from './useNonEmptyString';
 export { useNonZeroBn } from './useNonZeroBn';
 export { useOwnEraRewards } from './useOwnEraRewards';

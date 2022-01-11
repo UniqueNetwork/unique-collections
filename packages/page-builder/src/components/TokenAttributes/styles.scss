@@ -1,11 +1,4 @@
 .token-attributes {
-  background: var(--white-color);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  padding: calc(var(--gap) * 2);
-
   .token-attributes-header {
     display: flex;
     flex-direction: column;
@@ -199,7 +192,7 @@
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .token-attributes {
     .attributes-title {
       display: grid;
@@ -208,7 +201,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .token-attributes {
     .attributes-title {
       display: grid;

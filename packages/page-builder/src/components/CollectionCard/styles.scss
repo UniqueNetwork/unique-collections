@@ -1,7 +1,4 @@
 .collection-card {
-  background: var(--white-color);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-radius: 4px;
   display: grid;
   grid-template-columns: calc(var(--gap) * 4) 1fr;
   grid-column-gap: var(--gap);
@@ -112,10 +109,8 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .collection-card {
-    display: flex;
-    flex-direction: column;
     gap: var(--gap);
 
     .collection-card-content {

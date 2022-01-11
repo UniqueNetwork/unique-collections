@@ -118,7 +118,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
   }, [calculateFee]);
 
   return (
-    <div className='main-information'>
+    <div className='main-information shadow-block'>
       <h1 className='header-text'>Main information</h1>
       <div className='info-block'>
         <h2>Name*</h2>

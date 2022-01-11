@@ -96,7 +96,6 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
 
   return (
     <div className='collections-list'>
-
       <Switch>
         <Route
           exact
@@ -108,7 +107,7 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
             searchString={searchString}
             setSearchString={setSearchString}
           />
-          <div className='collections-list'>
+          <div className='collections-list--collections'>
             { (userCollectionsLoading && Object.keys(collectionsLoaded).length === 0) && (
               <Loader
                 active
