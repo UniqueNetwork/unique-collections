@@ -1,9 +1,5 @@
 .stepper-main{
-  background-color: var(--white-color);
-  padding: 24px 32px;
   color: var(--attribute-title-color);
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
-  border-radius: calc(var(--gap) / 4);
   font-family: var(--font-roboto);
   font-weight: 500;
 
@@ -50,10 +46,8 @@
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .stepper-main {
-    padding: var(--gap);
-
     .steps{
       padding: 0;
     }
@@ -64,7 +58,7 @@
   }
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 1279px) {
   .stepper-main {
       box-shadow: none;
     }
@@ -74,3 +68,9 @@
     }
   }
 
+@media (max-width: 320px) {
+  .stepper-main {
+    padding-left: var(--gap);
+    padding-right: var(--gap);
+  }
+}

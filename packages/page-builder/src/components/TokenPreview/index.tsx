@@ -55,7 +55,7 @@ function TokenPreview ({ attributes, collectionInfo, collectionName, constAttrib
   }, [fillAttributesValues]);
 
   return (
-    <div className='token-preview'>
+    <div className='token-preview shadow-block'>
       <div className='token-preview-header'>Token preview</div>
       <div className='token-preview-content'>
         <div className='token-img'>

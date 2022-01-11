@@ -21,7 +21,7 @@ function Faq (): React.ReactElement<Props> {
   return (
     <main className='faq-page'>
       <Header as='h1'>FAQ</Header>
-      <div className='faq'>
+      <div className='faq shadow-block'>
         <Header as='h4'>Q: How can I connect my wallet?</Header>
         <p>A: You can use either <a
           href='https://polkadot.js.org/extension/'

@@ -5,6 +5,16 @@
 }
 
 @media (max-width: 1023px) {
+  .create-and-search {
+    padding-left: calc((var(--gap) / 2) * 3);
+    padding-right: calc((var(--gap) / 2) * 3);
+  }
+
+  h1.ui.header {
+    padding-left: calc((var(--gap) / 2) * 3);
+    padding-right: calc((var(--gap) / 2) * 3);
+  }
+
   .collections-list {
     &--collections {
       background: var(--bg-page);
@@ -12,26 +22,10 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .collections-list {
-
-    .create-and-search {
-      padding-left: var(--gap);
-      padding-right: var(--gap);
-    }
-
-    h1.ui.header {
-      padding-left: var(--gap);
-      padding-right: var(--gap);
-    }
-
     &--collections {
       background: var(--bg-page);
-
-      .collection-card {
-        padding-left: var(--gap);
-        padding-right: var(--gap);
-      }
     }
   }
 }

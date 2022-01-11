@@ -750,10 +750,24 @@ button.ui.button, .button-link, .ui--Button {
   background-color: rgba(0, 0, 0, 0.7) !important;
 }
 
+.shadow-block {
+  padding: calc(var(--gap) * 2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: calc(var(--gap) / 4);
+  background-color: var(--white-color);
+  display: flex;
+  flex-direction: column;
+}
+
 @media (max-width: 1023px) {
   h1.ui.header {
     margin-top: calc(var(--gap) * 1.5) !important;
     padding: 0 var(--gap);
+  }
+
+  .shadow-block {
+    padding-left: calc((var(--gap) / 2) * 3) !important;
+    padding-right: calc((var(--gap) / 2) * 3) !important;
   }
 
   .ui.page.modals {
@@ -786,5 +800,12 @@ button.ui.button, .button-link, .ui--Button {
 @media (max-width: 768px) {
   .ui.grid > .row {
     display: grid;
+  }
+}
+
+@media (max-width: 320px) {
+  .shadow-block {
+    padding-left: var(--gap) !important;
+    padding-right: var(--gap) !important;
   }
 }

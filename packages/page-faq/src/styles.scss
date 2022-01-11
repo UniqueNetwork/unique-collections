@@ -2,10 +2,6 @@
   font-family: var(--font-inter);
 
   .faq {
-    background: var(--white-color);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    border-radius: 4px 4px 0 0;
-    padding: calc(var(--gap) * 2);
     margin-top: calc(var(--gap) * 2);
 
     h4.ui.header {
@@ -44,15 +40,9 @@
   }
 }
 
-@media (max-width: 1223px) {
+@media (max-width: 1279px) {
   .faq-page {
     overflow-y: auto;
     overflow-x: hidden;
-
-    .faq {
-      margin-top: 0;
-      padding-left: var(--gap);
-      padding-right: var(--gap);
-    }
   }
 }

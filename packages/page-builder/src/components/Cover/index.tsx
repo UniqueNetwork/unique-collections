@@ -150,7 +150,7 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
   }, [calculateFee]);
 
   return (
-    <div className='cover'>
+    <div className='cover shadow-block'>
       <h1 className='header-text'>Cover</h1>
       <div className='info-block'>
         <h2>Upload image</h2>
