@@ -36,12 +36,11 @@
         background-color: transparent;
         padding: 0;
         width: auto;
+        height: 64px;
         margin-right: calc((var(--gap) / 2) * 3);
 
         img {
-          width: auto;
-          max-width: 130px;
-          height: 50px;
+          width: 100%;
         }
       }
     }
@@ -49,7 +48,7 @@
 }
 
 .user-icon {
-  display: none; 
+  display: none;
 }
 
 .mark {
@@ -86,13 +85,11 @@
           padding-right: 10.25px;
           display: flex;
           align-items: center;
-          margin-bottom: 3px;
         }
 
         &:hover {
-          .item-icon{
-
-            svg{
+          .item-icon {
+            svg {
               fill: var(--button-color);
             }
           }
@@ -121,7 +118,7 @@
   .account-selector-block {
     max-width: 500px;
 
-    .address{
+    .address {
       text-align: left;
     }
   }
@@ -149,6 +146,7 @@
     justify-content: space-between;
     align-items: center;
     max-width: var(--max-header-width);
+    height: 64px;
   }
 }
 
@@ -159,7 +157,6 @@
 }
 
 .manage-balances {
-
   &.popup {
     position: absolute;
     display: none;
@@ -216,7 +213,7 @@
     }
   }
 
-  .popup-link{
+  .popup-link {
     & a {
       cursor: pointer;
       color: var(--button-color);
@@ -315,8 +312,7 @@
     height: 16px;
     color: var(--link-color);
     display: inline-block;
-    background: url("../../react-components/src/AccountButtonGroup/images/warning-alert.svg")
-      no-repeat;
+    background: url("../../react-components/src/AccountButtonGroup/images/warning-alert.svg") no-repeat;
     background-size: contain;
   }
 }
@@ -352,6 +348,11 @@
 .menu-mobile-header {
   .menu-icon {
     cursor: pointer;
+    height: 32px;
+  }
+
+  .icon {
+    height: 100%;
   }
 }
 
@@ -362,7 +363,7 @@
 
   a.create-account-btn {
     padding: 8px 24px;
-    border:1px solid var(--button-color);
+    border: 1px solid var(--button-color);
     border-radius: 4px !important;
     color: var(--link-color);
     font-family: var(--font-roboto);
@@ -372,17 +373,17 @@
 
     &:hover {
       background-color: var(--button-background-hover);
-      color: var(--link-color)!important;
+      color: var(--link-color) !important;
     }
 
-    &.active{
+    &.active {
       pointer-events: none;
       border-color: var(--button-background-disabled-border);
-      color:var(--button-background-disabled);
+      color: var(--button-background-disabled);
       background: transparent;
     }
 
-    &:before{
+    &:before {
       display: none;
     }
   }
@@ -418,24 +419,6 @@
   }
 }
 
-@media (min-width: 1441px) {
-}
-
-@media (max-width: 1440px) {
-}
-
-/* @media (min-width: 1025px) {
-  .app-header {
-    .app-user {
-      .account-selector-block {
-        .mobile-account-selector {
-          display: none;
-        }
-      }
-    }
-  }
-} */
-
 @media (max-width: 1279px) {
   .app-header {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -449,6 +432,7 @@
       display: flex;
       align-items: center;
       grid-column-gap: var(--gap);
+      height: 100%;
     }
 
     .app-user {
@@ -494,9 +478,26 @@
       text-align: center;
       margin-bottom: var(--gap);
     }
+
+    &--link {
+      display: block;
+      width: 100%;
+      font-family: var(--font-roboto);
+      font-weight: 500;
+      font-size: 16px;
+      margin: 4px 0;
+      padding: 8px 16px;
+      color: var(--header-text-color);
+
+      &.active {
+        background-color: var(--link-color);
+        border-radius: 4px;
+        color: var(--card-background);
+      }
+    }
   }
 
-  .app-main  {
+  .app-main {
     &.menu {
       display: none;
     }
@@ -511,6 +512,8 @@
 
     .ui.tabular.header-menu.menu {
       display: inline-flex;
+      align-items: center;
+      height: 64px;
     }
 
     .app-user {
@@ -541,7 +544,7 @@
       padding: 0;
     }
 
-    &.page-no-found{
+    &.page-no-found {
       background-color: var(--bg-page);
     }
   }
@@ -550,7 +553,8 @@
     width: 25%;
   }
 
-  .menu-mobile, .manage-accounts {
+  .menu-mobile,
+  .manage-accounts {
     margin-top: 84px;
   }
 
@@ -568,6 +572,12 @@
     }
   }
 
+  .app-logo {
+    img{
+      height: 100%;
+    }
+  }
+
   .app-user {
     display: block !important;
 
@@ -575,6 +585,13 @@
       display: none;
     }
   }
+
+  .app-container {
+    &--header {
+      height: 48px;
+    }
+  }
+
   .menu-mobile-header {
     display: block;
   }
@@ -605,7 +622,7 @@
   }
 
   .user-icon {
-    display: block; 
+    display: block;
   }
 
   .menu-arrow {
@@ -617,7 +634,6 @@
       display: none;
     }
   }
-
 }
 
 .manage-accounts {
@@ -636,7 +652,7 @@
     background-color: var(--white-color);
     z-index: 999;
 
-    a{
+    a {
       border-bottom: 1px solid var(--border-color);
       display: block;
       width: 100%;
@@ -678,7 +694,7 @@
           font-family: var(--font-roboto);
           font-weight: 500;
 
-          div{
+          div {
             max-width: 300px;
             white-space: nowrap;
             overflow: hidden;
@@ -717,11 +733,11 @@
   }
 }
 
-.ui.popup.attributes{
+.ui.popup.attributes {
   left: -12px !important;
 }
 
-.ui.top.popup.help{
+.ui.top.popup.help {
   top: 10px !important;
 }
 
@@ -741,36 +757,5 @@
     margin-bottom: 6px;
     font-family: var(--font-roboto);
     border: 1px solid var(--input-background-color);
-  }
-}
-
-@media (max-width: 1279px) {
-  .menu-mobile {
-    padding: var(--gap);
-    display: flex;
-    flex-direction: column;
-    background-color: var(--card-background);
-
-    &--logo {
-      text-align: center;
-      margin-bottom: var(--gap);
-    }
-
-    &--link {
-      display: block;
-      width: 100%;
-      font-family: var(--font-roboto);
-      font-weight: 500;
-      font-size: 16px;
-      margin: 4px 0;
-      padding: 8px 16px;
-      color: var(--header-text-color);
-
-      &.active {
-        background-color: var(--link-color);
-        border-radius: 4px;
-        color: var(--card-background);
-      }
-    }
   }
 }
