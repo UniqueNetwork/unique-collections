@@ -24,7 +24,7 @@ body {
 .ui.popup {
   background: var(--bg-page) !important;
 
-  a{
+  a {
     color: unset;
     cursor: pointer;
     text-decoration: underline;
@@ -88,7 +88,7 @@ h1.ui.header {
 }
 
 h2.ui.header {
-  font: 700 28px/38px var(--font-inter);
+  font: 700 28px/42px var(--font-inter);
   color: var(--title-color);
   margin-bottom: calc(var(--gap) / 2);
 }
@@ -198,7 +198,7 @@ h4.ui.header {
     height: 48px;
 
     & .menu > .item {
-      padding: 8px calc( (var(--gap) / 2) * 5) !important;
+      padding: 8px calc((var(--gap) / 2) * 5) !important;
     }
   }
 
@@ -247,11 +247,11 @@ h4.ui.header {
   color: var(--text-color);
 
   &:after {
-    left: calc(50% - 12px);;
+    left: calc(50% - 12px);
   }
 
   &:before {
-    left: calc(50% - 12px);;
+    left: calc(50% - 12px);
   }
 
   .load-more {
@@ -412,7 +412,9 @@ form {
   padding: 1rem var(--gap);
 }
 
-button.ui.button, .button-link, .ui--Button {
+button.ui.button,
+.button-link,
+.ui--Button {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -621,10 +623,10 @@ button.ui.button, .button-link, .ui--Button {
   border-radius: 4px;
   padding: 32px;
 
-  &.empty{
+  &.empty {
     height: 100%;
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
   }
@@ -657,7 +659,6 @@ button.ui.button, .button-link, .ui--Button {
 
 .ui--Labelled {
   .ui.input.ui--Input {
-
     &.left {
       input {
         padding-right: 4rem !important;
@@ -702,15 +703,14 @@ button.ui.button, .button-link, .ui--Button {
   padding: 8px 10.25px;
   margin: 0 !important;
 
-  img{
+  img {
     margin-right: 10.25px;
   }
 
   div {
-
     p {
       margin: 0;
-      color:var(--modal-warning-text-color);
+      color: var(--modal-warning-text-color);
       font-family: var(--font-roboto);
       padding: 0.3rem 1.5rem 0 0 !important;
     }
@@ -761,6 +761,8 @@ button.ui.button, .button-link, .ui--Button {
 
 @media (max-width: 1023px) {
   h1.ui.header {
+    font-size: 28px;
+    line-height: 42px;
     margin-top: calc(var(--gap) * 1.5) !important;
     padding: 0 var(--gap);
   }
@@ -771,7 +773,6 @@ button.ui.button, .button-link, .ui--Button {
   }
 
   .ui.page.modals {
-
     .ui--Modal.modal {
       .ui--Row-address {
         font-size: 14px !important;
@@ -779,13 +780,12 @@ button.ui.button, .button-link, .ui--Button {
       }
 
       .content {
-
         .TextAreaWithDropdown {
           flex-direction: column;
 
           .ui--CopyButton.copyMoved {
             right: 13px;
-            top: 13px
+            top: 13px;
           }
 
           .ui.buttons {
