@@ -121,7 +121,7 @@ export default memo(styled(Footer)`
     .app-footer--container {
       align-items: flex-start;
       flex-direction: column;
-      grid-row-gap: calc(var(--gap)/2);
+      grid-row-gap: calc(var(--gap) / 2);
     }
   }
 
@@ -131,7 +131,7 @@ export default memo(styled(Footer)`
     .app-footer--container {
       align-items: flex-start;
       flex-direction: column;
-      grid-row-gap: calc(var(--gap)/2);
+      grid-row-gap: calc(var(--gap) / 2);
     }
   }
 
