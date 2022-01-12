@@ -6,6 +6,7 @@ import './styles.scss';
 import type { AttributeItemType, ProtobufAttributeType } from '@polkadot/react-components/util/protobufUtils';
 
 import BN from 'bn.js';
+import _maxBy from 'lodash/maxBy';
 import React, { memo, ReactElement, useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
@@ -56,10 +57,11 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
 
   const onAddItem = useCallback(() => {
     const newAttributes = [...attributes];
+    const findNextId = (_maxBy(newAttributes, 'id') as AttributeItemType).id;
 
     newAttributes.push({
       fieldType: 'string',
-      id: attributes.length,
+      id: findNextId + 1,
       name: `attribute${attributes.length}`,
       rule: 'required',
       values: []
@@ -200,8 +202,8 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
     }
   }, [convertArtificialAttributesToProtobuf, attributes, setTransactions, account, collectionId, saveConstOnChainSchema, setUniqueSchemaVersion]);
 
-  const deleteAttribute = useCallback((index) => {
-    setAttributes(attributes.filter((attribute: ArtificialAttributeItemType) => attribute.id !== index));
+  const deleteAttribute = useCallback((id: number) => {
+    setAttributes(attributes.filter((attribute: ArtificialAttributeItemType) => attribute.id !== id));
   }, [attributes, setAttributes]);
 
   const onSaveAll = useCallback(() => {
