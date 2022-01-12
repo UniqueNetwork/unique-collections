@@ -198,7 +198,6 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
       </div>
       <WarmUp />
       <Footer
-        className=''
         isPreviewOpen={isPreviewOpen}
         togglePreview={togglePreview}
       />

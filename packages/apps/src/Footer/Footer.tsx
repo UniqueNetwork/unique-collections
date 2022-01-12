@@ -33,7 +33,6 @@ function Footer (props: IFooterProps): ReactElement {
       setIsPreviewBtnShown(false);
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
   const handleOnBtnClick = useCallback(() => {
