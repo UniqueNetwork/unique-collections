@@ -149,6 +149,11 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
     setFormErrors((prevErrors) => [...prevErrors.filter((item) => nonEnumAttributes.indexOf(item) !== -1), ...errors]);
   }, [attributes, setFormErrors]);
 
+  const onSetCurrentAttributeName = useCallback((name: string) => {
+    setCurrentAttributeName(name);
+    onSetAttributeName();
+  }, [onSetAttributeName]);
+
   useEffect(() => {
     checkEmptyValues();
   }, [checkEmptyValues]);
@@ -167,8 +172,7 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
         <Input
           className='isSmall'
           isError={isAttributeNameError}
-          onBlur={onSetAttributeName}
-          onChange={setCurrentAttributeName}
+          onChange={onSetCurrentAttributeName}
           placeholder='Attribute name'
           value={currentAttributeName}
         />

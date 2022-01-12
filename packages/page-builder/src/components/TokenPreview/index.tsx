@@ -47,8 +47,8 @@ function TokenPreview ({ attributes, collectionInfo, collectionName, constAttrib
     }
   }, [constAttributes, tokenConstAttributes]);
 
-  const checkAttributes = useMemo(() => constAttributes.filter((elem: {name: string}) => elem.name !== 'ipfsJson'), [constAttributes]);
-  const checkAttributesTokenPreview = useMemo(() => attributes.filter((elem: {name: string}) => elem.name !== 'ipfsJson'), [attributes]);
+  const tokenAttributes = useMemo(() => constAttributes.filter((elem: { name: string }) => elem.name !== 'ipfsJson'), [constAttributes]);
+  const collectionAttributes = useMemo(() => attributes.filter((elem: { name: string }) => elem.name !== 'ipfsJson'), [attributes]);
 
   useEffect(() => {
     fillAttributesValues();
@@ -69,12 +69,13 @@ function TokenPreview ({ attributes, collectionInfo, collectionName, constAttrib
             {collectionInfo ? hex2a(collectionInfo.tokenPrefix) : (tokenPrefix || 'Symbol')} #1
           </h3>
           <p className='content-text'>{ collectionInfo ? collectionName16Decoder(collectionInfo.name) : (collectionName || 'Collection name')}</p>
-          { !!checkAttributes.length && (
+          {/* on the nft page when filling token data */}
+          { !!tokenAttributes.length && (
             <div className='const-attributes'>
               <h4>Token attributes</h4>
               { Object.keys(values).length > 0 && (
                 <div className='const-attributes--block'>
-                  { checkAttributes.map((collectionAttribute: AttributeItemType) => (
+                  { tokenAttributes.map((collectionAttribute: AttributeItemType) => (
                     <p
                       className='content-text'
                       key={collectionAttribute.name}
@@ -88,26 +89,26 @@ function TokenPreview ({ attributes, collectionInfo, collectionName, constAttrib
 
             </div>
           )}
-          { checkAttributesTokenPreview?.length > 0 &&
-                (
-                  <div className='const-attributes'>
-                    <h4>Token attributes</h4>
-                    { checkAttributesTokenPreview.map((collectionAttribute) => {
-                      if (collectionAttribute.name !== 'ipfsJson') {
-                        return (
-                          <p
-                            className='content-text'
-                            key={collectionAttribute.name}
-                          >
-                            {collectionAttribute.name}:
-                          </p>
-                        );
-                      }
+          {/* on the token attributes page */}
+          { collectionAttributes?.length > 0 && (
+            <div className='const-attributes'>
+              <h4>Token attributes</h4>
+              { collectionAttributes.map((collectionAttribute) => {
+                if (collectionAttribute.name !== 'ipfsJson') {
+                  return (
+                    <p
+                      className='content-text'
+                      key={collectionAttribute.name}
+                    >
+                      {collectionAttribute.name}:
+                    </p>
+                  );
+                }
 
-                      return null;
-                    })}
-                  </div>
-                )}
+                return null;
+              })}
+            </div>
+          )}
         </div>
       </div>
     </div>
