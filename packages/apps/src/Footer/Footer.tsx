@@ -102,7 +102,7 @@ export default memo(styled(Footer)`
 
   .app-footer__social-links {
     display: flex;
-    grid-column-gap: calc(var(--gap)/2);
+    grid-column-gap: var(--gap);
 
     a {
       display: flex;
@@ -116,33 +116,15 @@ export default memo(styled(Footer)`
 
   @media (max-width: 1023px) {
     border-top: 1px solid var(--enum-input-border-disabled-color);
-    padding: calc(var(--gap) / 2) calc((var(--gap) / 2) * 3);
-
-    .app-footer--container {
-      align-items: flex-start;
-      flex-direction: column;
-      grid-row-gap: calc(var(--gap) / 2);
-    }
   }
 
   @media (max-width: 767px) {
-    border-top: 1px solid var(--enum-input-border-disabled-color);
-
-    .app-footer--container {
-      align-items: flex-start;
-      flex-direction: column;
-      grid-row-gap: calc(var(--gap) / 2);
-    }
-  }
-
-  @media (max-width: 320px) {
-    border-top: 1px solid var(--enum-input-border-disabled-color);
     padding: var(--gap);
 
     .app-footer--container {
       align-items: flex-start;
       flex-direction: column;
-      grid-row-gap: calc(var(--gap)/2);
+      grid-row-gap: var(--gap);
     }
   }
 `);
