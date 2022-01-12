@@ -52,6 +52,7 @@ function Builder (props: Props): React.ReactElement {
         <CollectionPage
           account={account}
           basePath={basePath}
+          isPreviewOpen={props.isPreviewOpen}
         />
       </Route>
     </Switch>
