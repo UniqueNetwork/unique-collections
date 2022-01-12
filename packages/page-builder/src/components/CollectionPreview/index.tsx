@@ -23,7 +23,7 @@ function CollectionPreview ({ avatarImg, collectionDescription, collectionInfo, 
   const { collectionName16Decoder } = useDecoder();
 
   return (
-    <div className='collection-preview '>
+    <div className='collection-preview shadow-block'>
       <div className='collection-preview-header'>Collection preview</div>
       <div className='collection-preview-content'>
         <div className='collection-img'>

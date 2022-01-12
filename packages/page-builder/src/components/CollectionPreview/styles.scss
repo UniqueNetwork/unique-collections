@@ -1,10 +1,4 @@
 .collection-preview{
-  background: #FFFFFF;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  padding: calc(var(--gap)*2);
 
   .collection-preview-header{
     color: var(--title-color);
@@ -64,7 +58,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .collection-preview{
     box-shadow: none;
   }

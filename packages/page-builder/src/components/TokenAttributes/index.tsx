@@ -12,7 +12,7 @@ import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 
 import TransactionContext from '@polkadot/app-builder/TransactionContext/TransactionContext';
 import { HelpTooltip, StatusContext, UnqButton } from '@polkadot/react-components';
-import {FieldType, fillAttributes, fillProtobufJson} from '@polkadot/react-components/util/protobufUtils';
+import { fillAttributes, fillProtobufJson } from '@polkadot/react-components/util/protobufUtils';
 import { useCollection } from '@polkadot/react-hooks';
 import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
@@ -217,14 +217,8 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
     setAttributes((prevAttributes: ArtificialAttributeItemType[]) => prevAttributes.map((item) => item.id === id ? { ...item, rule: countType } : item));
   }, [setAttributes]);
 
-  const setAttributeName = useCallback((name: string, index: number) => {
-    setAttributes((prevAttributes: ArtificialAttributeItemType[]) => {
-      const newAttributes = [...prevAttributes];
-
-      newAttributes[index].name = name;
-
-      return newAttributes;
-    });
+  const setAttributeName = useCallback((name: string, id: number) => {
+    setAttributes((prevAttributes: ArtificialAttributeItemType[]) => prevAttributes.map((item) => item.id === id ? { ...item, name } : item));
   }, [setAttributes]);
 
   const setAttributeType = useCallback((type: ArtificialFieldType, id: number) => {
@@ -267,7 +261,7 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
   }, [calculateFees]);
 
   return (
-    <div className='token-attributes '>
+    <div className='token-attributes shadow-block'>
       <div className='token-attributes-header'>
         <p className='header-title'>Token attributes</p>
         <p className='header-text'>This functionality allows you to customize the token. You can set any traits that will help you create unique NFT: name, accessory, gender, background, face, body, tier etc.</p>
@@ -322,7 +316,7 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
           return null;
         }
       })}
-      { isOwner && attributes.map((attribute: ArtificialAttributeItemType, index: number) => {
+      { isOwner && attributes.map((attribute: ArtificialAttributeItemType) => {
         if (attribute.name !== 'ipfsJson') {
           return (
             <AttributesRowEditable
@@ -334,7 +328,7 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
               formErrors={formErrors}
               id={attribute.id}
               isOwner={isOwner}
-              key={`${attribute.name}-${index}`}
+              key={`${attribute.id}`}
               removeItem={deleteAttribute}
               setAttributeCountType={setAttributeCountType}
               setAttributeName={setAttributeName}

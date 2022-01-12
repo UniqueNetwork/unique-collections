@@ -100,10 +100,8 @@ function CollectionCard ({ account, collectionId, onReRemoveCollection }: Collec
     void fetchCollectionInfo();
   }, [fetchCollectionInfo]);
 
-  console.log('collectionInfo', collectionInfo, 'collectionTokensCount', collectionTokensCount);
-
   return (
-    <div className='collection-card'>
+    <div className='collection-card shadow-block'>
       { collectionInfoLoading && (
         <Loader
           active

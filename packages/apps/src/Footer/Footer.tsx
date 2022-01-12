@@ -177,13 +177,15 @@ export default memo(styled(Footer)`
   }
 
   @media (max-width: 1024px) {
+
+  @media (max-width: 1023px) {
     border-top: 1px solid var(--enum-input-border-disabled-color);
-    padding: calc(var(--gap)/2);
+    padding: calc(var(--gap) / 2) calc((var(--gap) / 2) * 3);
 
     .app-footer--container {
       align-items: flex-start;
       flex-direction: column;
-      grid-row-gap: calc(var(--gap)/2);
+      grid-row-gap: calc(var(--gap) / 2);
     }
   }
 
@@ -194,13 +196,14 @@ export default memo(styled(Footer)`
    }
 
   @media (max-width: 768px) {
+
+  @media (max-width: 767px) {
     border-top: 1px solid var(--enum-input-border-disabled-color);
-    padding: 24px;
 
     .app-footer--container {
       align-items: flex-start;
       flex-direction: column;
-      grid-row-gap: calc(var(--gap)/2);
+      grid-row-gap: calc(var(--gap) / 2);
     }
   }
 

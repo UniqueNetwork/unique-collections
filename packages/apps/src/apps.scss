@@ -49,7 +49,7 @@
 }
 
 .user-icon {
-  display: none; 
+  display: none;
 }
 
 .mark {
@@ -418,24 +418,6 @@
   }
 }
 
-@media (min-width: 1441px) {
-}
-
-@media (max-width: 1440px) {
-}
-
-/* @media (min-width: 1025px) {
-  .app-header {
-    .app-user {
-      .account-selector-block {
-        .mobile-account-selector {
-          display: none;
-        }
-      }
-    }
-  }
-} */
-
 @media (max-width: 1279px) {
   .app-header {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -523,7 +505,7 @@
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .app-wrapper {
     background-color: var(--card-background);
   }
@@ -561,7 +543,7 @@
 
 @media (max-width: 767px) {
   .app-main {
-    margin-top: 54px;
+    margin-top: 85px;
 
     &.no-accounts {
       margin-top: 67px;
@@ -580,7 +562,7 @@
   }
 
   .menu-mobile {
-    margin-top: 54px;
+    margin-top: 85px;
 
     &.no-accounts {
       margin-top: 67px;
@@ -588,7 +570,7 @@
   }
 
   .manage-accounts {
-    margin-top: 54px;
+    margin-top: 85px;
   }
 
   .welcome {
@@ -605,7 +587,7 @@
   }
 
   .user-icon {
-    display: block; 
+    display: block;
   }
 
   .menu-arrow {
