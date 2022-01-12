@@ -24,7 +24,7 @@ function TokenAttributesRowEditable (props: TokenAttributesRowEditableProps): Re
 
   const options = useMemo(() => {
     if (collectionAttribute.rule !== 'repeated' && collectionAttribute.rule !== 'required' && collectionAttribute.fieldType === 'enum') {
-      return [{ text: '-', value: null }, ...collectionAttribute.values.map((val: string, index: number) => ({ text: val, value: index }))];
+      return [{ text: 'None', value: null }, ...collectionAttribute.values.map((val: string, index: number) => ({ text: val, value: index }))];
     }
 
     return collectionAttribute.values.map((val: string, index: number) => ({ text: val, value: index }));
