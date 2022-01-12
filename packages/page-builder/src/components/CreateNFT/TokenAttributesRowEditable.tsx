@@ -3,7 +3,7 @@
 
 import type { TokenAttribute } from '../../types';
 
-import React, { memo, ReactElement, useCallback } from 'react';
+import React, { memo, ReactElement, useCallback, useMemo } from 'react';
 
 import { Dropdown, Input } from '@polkadot/react-components';
 import { AttributeItemType } from '@polkadot/react-components/util/protobufUtils';
@@ -21,6 +21,14 @@ function TokenAttributesRowEditable (props: TokenAttributesRowEditableProps): Re
   const onSetAttributeValue = useCallback((value: string | number[]) => {
     setAttributeValue(collectionAttribute, value);
   }, [collectionAttribute, setAttributeValue]);
+
+  const options = useMemo(() => {
+    if (collectionAttribute.rule !== 'repeated' && collectionAttribute.rule !== 'required' && collectionAttribute.fieldType === 'enum') {
+      return [{ text: 'None', value: null }, ...collectionAttribute.values.map((val: string, index: number) => ({ text: val, value: index }))];
+    }
+
+    return collectionAttribute.values.map((val: string, index: number) => ({ text: val, value: index }));
+  }, [collectionAttribute]);
 
   return (
     <div className='attributes-input'>
@@ -41,7 +49,7 @@ function TokenAttributesRowEditable (props: TokenAttributesRowEditableProps): Re
           <Dropdown
             isMultiple={collectionAttribute.rule === 'repeated'}
             onChange={onSetAttributeValue}
-            options={collectionAttribute.values.map((val: string, index: number) => ({ text: val, value: index }))}
+            options={options}
             value={collectionAttribute.rule === 'repeated' ? tokenConstAttributes[collectionAttribute.name].values : tokenConstAttributes[collectionAttribute.name].value}
           />
         </>
