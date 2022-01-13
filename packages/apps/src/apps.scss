@@ -506,9 +506,9 @@
 }
 
 @media (max-width: 1023px) {
-  .app-wrapper {
-    background-color: var(--card-background);
-  }
+  // .app-wrapper {
+  //   background-color: var(--card-background);
+  // }
   .app-header {
     position: fixed;
     top: 0;
@@ -542,6 +542,9 @@
 }
 
 @media (max-width: 767px) {
+  .app-wrapper {
+    background-color: var(--card-background);
+  }
   .app-main {
     margin-top: 85px;
 
