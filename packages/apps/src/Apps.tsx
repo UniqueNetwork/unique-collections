@@ -185,12 +185,12 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
                 )}
               </>
             </ErrorBoundary>
+            <Footer />
             <Status />
           </>
         </Signer>
       </div>
       <WarmUp />
-      <Footer />
     </>
   );
 }

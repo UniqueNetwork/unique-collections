@@ -19,6 +19,8 @@ import NftPage from '@polkadot/app-builder/containers/NftPage';
 import { UnqButton } from '@polkadot/react-components';
 import { useTokenAttributes } from '@polkadot/react-hooks';
 import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/useCollection';
+import { usePreviewMode } from './usePreviewMode';
+
 
 interface CollectionPageProps {
   account: string;
@@ -30,8 +32,9 @@ interface CollectionPageProps {
  and open the same page, where user interrupted the action.
  */
 
-function CollectionPage ({ account, basePath }: CollectionPageProps): ReactElement {
+function CollectionPage({ account, basePath }: CollectionPageProps): ReactElement {
   const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
+  const [previewMode] = usePreviewMode();
   const [collectionName, setCollectionName] = useState<string>('');
   const [avatarImg, setAvatarImg] = useState<File | null>(null);
   const [tokenImg, setTokenImg] = useState<File | null>(null);
@@ -80,7 +83,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
 
   return (
     <div className='collection-page'>
-      { location.pathname !== `/builder/collections/${collectionId}/new-nft` && (
+      {location.pathname !== `/builder/collections/${collectionId}/new-nft` && (
         <Header
           as='h1'
           className={`${isPreviewOpen ? 'hidden' : ''}`}
@@ -88,7 +91,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
           Create collection
         </Header>
       )}
-      { location.pathname === `/builder/collections/${collectionId}/new-nft` && (
+      {location.pathname === `/builder/collections/${collectionId}/new-nft` && (
         <Header
           as='h1'
           className={`${isPreviewOpen ? 'hidden' : ''}`}
@@ -98,7 +101,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
       )}
       <div className='page-main'>
         <div className={`main-section ${isPreviewOpen ? 'hidden' : ''}`}>
-          { location.pathname !== `/builder/collections/${collectionId}/new-nft` && (
+          {location.pathname !== `/builder/collections/${collectionId}/new-nft` && (
             <Stepper />
           )}
           <Switch>
@@ -172,13 +175,14 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
             tokenPrefix={tokenPrefix}
           />
         </div>
-        <div className='preview-btn'>
+        {previewMode && <div className='preview-btn'>
           <UnqButton
             content={isPreviewOpen ? 'Back' : 'Preview'}
             onClick={handleOnBtnClick}
             size='large'
           />
         </div>
+        }
       </div>
     </div>
   );
