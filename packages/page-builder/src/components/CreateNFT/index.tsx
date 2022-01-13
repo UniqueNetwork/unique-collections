@@ -63,7 +63,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
   const { uploadImg } = useImageService();
   const { setTransactions } = useContext(TransactionContext);
 
-  const checkAttributes = useMemo(() => constAttributes.filter((elem: {name: string}) => elem.name !== 'ipfsJson'), [constAttributes]);
+  const constAttributesFiltered = useMemo(() => constAttributes.filter((elem: { name: string }) => elem.name !== 'ipfsJson'), [constAttributes]);
 
   const isAllRequiredFieldsAreFilled = useCallback((reqTargetArr: any[], valTargetObj: { [x: string]: IValueType | { name: string; }; }) => {
     const filteredArray = reqTargetArr.filter((item: {rule: string}) => item.rule === 'required');
@@ -80,10 +80,10 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
   }, []);
 
   const reqFieldsFlag = useCallback(() => {
-    const flag = isAllRequiredFieldsAreFilled(checkAttributes, tokenConstAttributes);
+    const flag = isAllRequiredFieldsAreFilled(constAttributesFiltered, tokenConstAttributes);
 
     mountedRef.current && setIsDisabled(!flag);
-  }, [checkAttributes, tokenConstAttributes, mountedRef, isAllRequiredFieldsAreFilled]);
+  }, [constAttributesFiltered, tokenConstAttributes, mountedRef, isAllRequiredFieldsAreFilled]);
 
   useEffect(() => {
     const status = !!Object.keys(tokenConstAttributes).length;
@@ -136,6 +136,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
 
   const clearTokenImg = useCallback(() => {
     setTokenImg(null);
+    setTokenImageAddress(undefined);
 
     if (inputFileRef.current) {
       inputFileRef.current.value = '';
@@ -281,11 +282,11 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
           )}
         </div>
       </div>
-      {!!checkAttributes.length &&
+      {!!constAttributesFiltered.length &&
         (
           <form className='attributes'>
             <h1 className='header-text'>Attributes</h1>
-            { Object.keys(tokenConstAttributes).length > 0 && checkAttributes.map((collectionAttribute: AttributeItemType, index) => (
+            { Object.keys(tokenConstAttributes).length > 0 && constAttributesFiltered.map((collectionAttribute: AttributeItemType, index) => (
               <TokenAttributesRowEditable
                 collectionAttribute={collectionAttribute}
                 key={`${collectionAttribute.name}-${index}`}
@@ -303,7 +304,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
       <div className='footer-buttons'>
         <UnqButton
           content='Confirm'
-          isDisabled={isDisabled || imageUploading}
+          isDisabled={isDisabled || imageUploading || !tokenImageAddress}
           isFilled
           onClick={onCreateNft}
           size={'medium'}

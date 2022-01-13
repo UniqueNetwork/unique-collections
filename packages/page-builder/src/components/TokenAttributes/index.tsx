@@ -145,10 +145,6 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
         return { ...attr, fieldType: 'repeated', rule: 'optional' };
       }
 
-      if (attr.fieldType === 'enum') {
-        return { ...attr, rule: 'required' };
-      }
-
       return attr as ArtificialAttributeItemType;
     });
   }, []);
