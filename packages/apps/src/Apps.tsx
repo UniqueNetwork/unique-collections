@@ -30,6 +30,7 @@ import MobileMenu from './MobileMenu';
 import MobileMenuHeader from './MobileMenuHeader';
 import ScrollToTop from './ScrollToTop';
 import WarmUp from './WarmUp';
+import { AppCtx } from './AppContext';
 
 export const PORTAL_ID = 'portals';
 
@@ -45,7 +46,7 @@ const NOT_FOUND: Route = {
   text: 'Unknown'
 };
 
-function Apps ({ className = '' }: Props): React.ReactElement<Props> {
+function Apps({ className = '' }: Props): React.ReactElement<Props> {
   const location = useLocation();
   const { t } = useTranslation();
   const theme = useContext<ThemeDef>(ThemeContext);
@@ -54,6 +55,7 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
   const [account, setAccount] = useState<string>();
   const [openPanel, setOpenPanel] = useState<OpenPanelType>('tokens');
   const [isPageFound, setIsPageFound] = useState<boolean>(true);
+  const { previewButtonDisplayed } = useContext(AppCtx);
 
   const uiHighlight = useMemo(
     () => getSystemChainColor(systemChain, systemName),
@@ -76,7 +78,7 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
     <>
       <GlobalStyle uiHighlight={uiHighlight} />
       <ScrollToTop />
-      <div className={`app-wrapper theme--${theme.theme} ${className}`}>
+      <div className={`app-wrapper theme--${theme.theme} ${className} ${previewButtonDisplayed && openPanel !== 'menu' ? 'padding-for-button' : ''}`}>
         <Signer>
           <>
             <ErrorBoundary
@@ -96,7 +98,7 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
                       className='header-menu'
                       tabular
                     >
-                      { theme.logo && (
+                      {theme.logo && (
                         <Menu.Item
                           active={location.pathname === '/'}
                           as={NavLink}
@@ -123,7 +125,7 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
                         to='/faq'
                       />
                     </Menu>
-                    { (isApiReady && isApiConnected) && (
+                    {(isApiReady && isApiConnected) && (
                       <div className='app-user'>
                         <BalancesHeader
                           account={account}
@@ -143,14 +145,14 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
                     )}
                   </div>
                 </header>
-                { (isApiReady && isApiConnected) && openPanel === 'menu' && (
+                {(isApiReady && isApiConnected) && openPanel === 'menu' && (
                   <MobileMenu
                     account={account}
                     setOpenPanel={setOpenPanel}
                     theme={theme}
                   />
                 )}
-                { openPanel === 'accounts' && (
+                {openPanel === 'accounts' && (
                   <ManageAccounts
                     account={account}
                     setAccount={setAccount}
@@ -158,7 +160,7 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
                   />
                 )}
 
-                { (openPanel !== 'accounts') && (
+                {(openPanel !== 'accounts') && (
                   <Suspense fallback=''>
                     <main className={`app-main ${openPanel || ''} ${noAccounts ? 'no-accounts' : ''} ${!isPageFound ? 'page-no-found' : ''}`}>
                       <div className='app-container'>

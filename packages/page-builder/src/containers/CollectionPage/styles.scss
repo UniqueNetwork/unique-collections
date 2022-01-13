@@ -22,6 +22,7 @@
     .preview-btn {
       position: fixed;
       bottom: 0;
+      left: 0;
       display: flex;
       padding: calc(var(--gap) / 2) calc((var(--gap) / 2) * 3);
       background-color: var(--white-color);
@@ -60,6 +61,14 @@
   }
 }
 
+@media (min-width: 768px) and (max-width: 1023px) {
+  .app-main {
+    .app-container {
+      padding: 0 16px;
+    }
+  }
+}
+
 @media (max-width: 767px) {
   .collection-page {
     .main-section {
@@ -72,7 +81,5 @@
         width: 100%;
       }
     }
-
-    
   }
 }
