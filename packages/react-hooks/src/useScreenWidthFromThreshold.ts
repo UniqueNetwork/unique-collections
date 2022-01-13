@@ -12,6 +12,6 @@ export const useScreenWidthFromThreshold = (threshold:number): [lessThanThreshol
     media.onchange = () => {
         setLessThanThreshold(media.matches);
     }
-
+    
     return [lessThanThreshold];
 }

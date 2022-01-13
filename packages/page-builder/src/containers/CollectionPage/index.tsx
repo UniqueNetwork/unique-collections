@@ -3,7 +3,7 @@
 
 import './styles.scss';
 
-import React, { memo, ReactElement, useCallback, useEffect, useState } from 'react';
+import React, { memo, ReactElement, useCallback, useContext, useEffect, useState } from 'react';
 import { Route, Switch, useHistory } from 'react-router';
 import { useLocation, useParams } from 'react-router-dom';
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header';
@@ -19,6 +19,7 @@ import NftPage from '@polkadot/app-builder/containers/NftPage';
 import { UnqButton } from '@polkadot/react-components';
 import { useTokenAttributes, useScreenWidthFromThreshold } from '@polkadot/react-hooks';
 import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/useCollection';
+import { AppCtx } from '@polkadot/apps/AppContext';
 
 
 interface CollectionPageProps {
@@ -46,8 +47,9 @@ function CollectionPage({ account, basePath }: CollectionPageProps): ReactElemen
   const { getDetailedCollectionInfo } = useCollection();
   const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
   const { constAttributes, constOnChainSchema, resetAttributes, setTokenConstAttributes, tokenConstAttributes } = useTokenAttributes(collectionInfo);
-
+  const { setPreviewButtonDisplayed } = useContext(AppCtx);
   const previewMode = lessThanThreshold;
+
   const handleOnBtnClick = useCallback(() => {
     setIsPreviewOpen((prev) => !prev);
   }, []);
@@ -61,6 +63,13 @@ function CollectionPage({ account, basePath }: CollectionPageProps): ReactElemen
       }
     }
   }, [collectionId, getDetailedCollectionInfo]);
+
+  // set previewButtonDisplayed to AppContext
+  useEffect(() => {
+    setPreviewButtonDisplayed(previewMode);
+
+    return () => { setPreviewButtonDisplayed(false) };
+  }, [previewMode])
 
   useEffect(() => {
     if (location.pathname === '/builder/new-collection' || location.pathname === '/builder/new-collection/') {
