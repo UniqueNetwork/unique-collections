@@ -227,6 +227,12 @@
   }
 }
 
+.manage-accounts {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
 .app-balances {
   display: flex;
   position: relative;

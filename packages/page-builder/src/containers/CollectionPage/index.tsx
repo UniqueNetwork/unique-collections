@@ -17,9 +17,8 @@ import { ArtificialAttributeItemType } from '@polkadot/app-builder/components/To
 import TokenPreview from '@polkadot/app-builder/components/TokenPreview';
 import NftPage from '@polkadot/app-builder/containers/NftPage';
 import { UnqButton } from '@polkadot/react-components';
-import { useTokenAttributes } from '@polkadot/react-hooks';
+import { useTokenAttributes, useScreenWidthFromThreshold } from '@polkadot/react-hooks';
 import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/useCollection';
-import { usePreviewMode } from './usePreviewMode';
 
 
 interface CollectionPageProps {
@@ -34,7 +33,7 @@ interface CollectionPageProps {
 
 function CollectionPage({ account, basePath }: CollectionPageProps): ReactElement {
   const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
-  const [previewMode] = usePreviewMode();
+  const [lessThanThreshold] = useScreenWidthFromThreshold(1023);
   const [collectionName, setCollectionName] = useState<string>('');
   const [avatarImg, setAvatarImg] = useState<File | null>(null);
   const [tokenImg, setTokenImg] = useState<File | null>(null);
@@ -48,6 +47,7 @@ function CollectionPage({ account, basePath }: CollectionPageProps): ReactElemen
   const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
   const { constAttributes, constOnChainSchema, resetAttributes, setTokenConstAttributes, tokenConstAttributes } = useTokenAttributes(collectionInfo);
 
+  const previewMode = lessThanThreshold;
   const handleOnBtnClick = useCallback(() => {
     setIsPreviewOpen((prev) => !prev);
   }, []);
