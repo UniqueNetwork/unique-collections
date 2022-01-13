@@ -9,6 +9,7 @@ import { ProtobufAttributeType } from '@polkadot/react-components/util/protobufU
 import { useApi } from '@polkadot/react-hooks/useApi';
 import { useDecoder } from '@polkadot/react-hooks/useDecoder';
 import { strToUTF16 } from '@polkadot/react-hooks/utils';
+import { formatBalance } from '@polkadot/util';
 
 export type SchemaVersionTypes = 'ImageURL' | 'Unique';
 
@@ -86,9 +87,11 @@ export function useCollection () {
 
   const calculateCreateCollectionFee = useCallback(async ({ account, description, modeprm, name, tokenPrefix }: { account: string, name: string, description: string, tokenPrefix: string, modeprm: { nft?: null, fungible?: null, refungible?: null, invalid?: null }}): Promise<BN | null> => {
     try {
-      const fee = await api.tx.unique.createCollection(strToUTF16(name), strToUTF16(description), strToUTF16(tokenPrefix), modeprm).paymentInfo(account) as { partialFee: BN };
+      const fee = (await api.tx.unique.createCollection(strToUTF16(name), strToUTF16(description), strToUTF16(tokenPrefix), modeprm).paymentInfo(account) as { partialFee: BN }).partialFee;
+      // @todo fet from chain - api.consts.common.CollectionCreationPrice
+      const createCollectionChainFee = new BN(100).mul(new BN(10).pow(new BN(formatBalance.getDefaults().decimals)));
 
-      return fee.partialFee;
+      return fee.add(createCollectionChainFee);
     } catch (error) {
       console.error((error as Error).message);
 
