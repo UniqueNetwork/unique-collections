@@ -52,17 +52,17 @@ function defineMessage (protobufJson: ProtobufAttributeType) {
   return Root.fromJSON(protobufJson);
 }
 
-export function serializeNft (onChainSchema: ProtobufAttributeType, payload: { [key: string]: number | number[] | string }): Uint8Array {
+export function serializeNft (onChainSchema: ProtobufAttributeType, payload: { [key: string]: number | number[] | string [] | string | null }): Uint8Array {
   try {
     const root = defineMessage(onChainSchema);
     const NFTMeta = root.lookupType('onChainMetaData.NFTMeta');
 
     // Verify the payload if necessary (i.e. when possibly incomplete or invalid)
-    /* const errMsg = NFTMeta.verify(payload);
+    const errMsg = NFTMeta.verify(payload);
 
     if (errMsg) {
       throw Error(errMsg);
-    } */
+    }
 
     // Create a new message
     const message = NFTMeta.create(payload);

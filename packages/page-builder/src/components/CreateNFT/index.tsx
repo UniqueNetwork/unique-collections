@@ -163,15 +163,17 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
 
   const buildAttributes = useCallback(() => {
     if (account) {
-      const constAttributes: { [key: string]: string | number | number[] } = {};
+      const payload: { [key: string]: string | number | number[] | string[] | null } = {};
 
       let constData = '';
 
       if (constOnChainSchema) {
         Object.keys(tokenConstAttributes).forEach((key: string) => {
-          constAttributes[tokenConstAttributes[key].name] = tokenConstAttributes[key].values?.length ? (tokenConstAttributes[key].values as number[]) : (tokenConstAttributes[key].value as string);
+          const attributeValue = tokenConstAttributes[key].values?.length ? tokenConstAttributes[key].values : tokenConstAttributes[key].value;
+
+          payload[tokenConstAttributes[key].name] = attributeValue || attributeValue === 0 ? attributeValue : null;
         });
-        const cData = serializeNft(constOnChainSchema, constAttributes);
+        const cData = serializeNft(constOnChainSchema, payload);
 
         constData = '0x' + Buffer.from(cData).toString('hex');
 
