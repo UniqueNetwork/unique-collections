@@ -27,7 +27,7 @@ function WarningFeeProps ({ fee }: WarningFeeProps): ReactElement {
       />
       { fee && (
         <>
-          A fee of ~ {formatStrBalance(fee)}  <span className='unit'>{chainName}</span> can be applied to the transaction
+          {`A fee of ~ ${formatStrBalance(fee)}  ${chainName} can be applied to the transaction`}
         </>
       )}
     </div>
