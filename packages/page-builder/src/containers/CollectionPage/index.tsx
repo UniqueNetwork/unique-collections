@@ -3,7 +3,7 @@
 
 import './styles.scss';
 
-import React, { memo, ReactElement, useCallback, useEffect, useState } from 'react';
+import React, { memo, ReactElement, useCallback, useContext, useEffect, useState } from 'react';
 import { Route, Switch, useHistory } from 'react-router';
 import { useLocation, useParams } from 'react-router-dom';
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header';
@@ -16,13 +16,14 @@ import TokenAttributes from '@polkadot/app-builder/components/TokenAttributes';
 import { ArtificialAttributeItemType } from '@polkadot/app-builder/components/TokenAttributes/AttributesRowEditable';
 import TokenPreview from '@polkadot/app-builder/components/TokenPreview';
 import NftPage from '@polkadot/app-builder/containers/NftPage';
-import { useTokenAttributes } from '@polkadot/react-hooks';
+import { AppCtx } from '@polkadot/apps/AppContext';
+import { UnqButton } from '@polkadot/react-components';
+import { useScreenWidthFromThreshold, useTokenAttributes } from '@polkadot/react-hooks';
 import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/useCollection';
 
 interface CollectionPageProps {
   account: string;
   basePath: string;
-  isPreviewOpen: boolean;
 }
 
 /* @todo
@@ -30,7 +31,9 @@ interface CollectionPageProps {
  and open the same page, where user interrupted the action.
  */
 
-function CollectionPage ({ account, basePath, isPreviewOpen }: CollectionPageProps): ReactElement {
+function CollectionPage ({ account, basePath }: CollectionPageProps): ReactElement {
+  const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
+  const [lessThanThreshold] = useScreenWidthFromThreshold(1023);
   const [collectionName, setCollectionName] = useState<string>('');
   const [avatarImg, setAvatarImg] = useState<File | null>(null);
   const [tokenImg, setTokenImg] = useState<File | null>(null);
@@ -43,6 +46,12 @@ function CollectionPage ({ account, basePath, isPreviewOpen }: CollectionPagePro
   const { getDetailedCollectionInfo } = useCollection();
   const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
   const { constAttributes, constOnChainSchema, resetAttributes, setTokenConstAttributes, tokenConstAttributes } = useTokenAttributes(collectionInfo);
+  const { setPreviewButtonDisplayed } = useContext(AppCtx);
+  const previewMode = lessThanThreshold;
+
+  const handleOnBtnClick = useCallback(() => {
+    setIsPreviewOpen((prev) => !prev);
+  }, []);
 
   const fetchCollectionInfo = useCallback(async () => {
     if (collectionId) {
@@ -53,6 +62,13 @@ function CollectionPage ({ account, basePath, isPreviewOpen }: CollectionPagePro
       }
     }
   }, [collectionId, getDetailedCollectionInfo]);
+
+  // set previewButtonDisplayed to AppContext
+  useEffect(() => {
+    setPreviewButtonDisplayed(previewMode);
+
+    return () => { setPreviewButtonDisplayed(false); };
+  }, [previewMode]);
 
   useEffect(() => {
     if (location.pathname === '/builder/new-collection' || location.pathname === '/builder/new-collection/') {
@@ -75,7 +91,7 @@ function CollectionPage ({ account, basePath, isPreviewOpen }: CollectionPagePro
 
   return (
     <div className='collection-page'>
-      { location.pathname !== `/builder/collections/${collectionId}/new-nft` && (
+      {location.pathname !== `/builder/collections/${collectionId}/new-nft` && (
         <Header
           as='h1'
           className={`${isPreviewOpen ? 'hidden' : ''}`}
@@ -83,7 +99,7 @@ function CollectionPage ({ account, basePath, isPreviewOpen }: CollectionPagePro
           Create collection
         </Header>
       )}
-      { location.pathname === `/builder/collections/${collectionId}/new-nft` && (
+      {location.pathname === `/builder/collections/${collectionId}/new-nft` && (
         <Header
           as='h1'
           className={`${isPreviewOpen ? 'hidden' : ''}`}
@@ -93,7 +109,7 @@ function CollectionPage ({ account, basePath, isPreviewOpen }: CollectionPagePro
       )}
       <div className='page-main'>
         <div className={`main-section ${isPreviewOpen ? 'hidden' : ''}`}>
-          { location.pathname !== `/builder/collections/${collectionId}/new-nft` && (
+          {location.pathname !== `/builder/collections/${collectionId}/new-nft` && (
             <Stepper />
           )}
           <Switch>
@@ -167,6 +183,15 @@ function CollectionPage ({ account, basePath, isPreviewOpen }: CollectionPagePro
             tokenPrefix={tokenPrefix}
           />
         </div>
+        {previewMode && (
+        <div className='preview-btn'>
+          <UnqButton
+            content={isPreviewOpen ? 'Back' : 'Preview'}
+            onClick={handleOnBtnClick}
+            size='large'
+          />
+        </div>
+        )}
       </div>
     </div>
   );
