@@ -46,7 +46,7 @@ const stepTexts = [
 ];
 
 function TokenAttributes ({ account, attributes, collectionId, collectionInfo, setAttributes }: TokenAttributes): ReactElement {
-  const { calculateSetConstOnChainSchemaFees, getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
+  const { calculateSetConstOnChainSchemaFees, calculateSetSchemaVersionFee, getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<number[]>([]);
   const [fees, setFees] = useState<BN | null>(null);
@@ -155,14 +155,16 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
       const protobufJson: ProtobufAttributeType = fillProtobufJson(converted);
 
       if (account && collectionId) {
-        const fees = await calculateSetConstOnChainSchemaFees({ account, collectionId, schema: JSON.stringify(protobufJson) });
+        const constOnChainSchemaFees = await calculateSetConstOnChainSchemaFees({ account, collectionId, schema: JSON.stringify(protobufJson) }) || new BN(0);
+        const schemaVersionFee = await calculateSetSchemaVersionFee({ account, collectionId, schemaVersion: 'Unique' }) || new BN(0);
+        const fees = constOnChainSchemaFees.add(schemaVersionFee);
 
         setFees(fees);
       }
     } catch (e) {
       console.log('save onChain schema error', e);
     }
-  }, [account, attributes, calculateSetConstOnChainSchemaFees, collectionId, convertArtificialAttributesToProtobuf]);
+  }, [account, attributes, calculateSetConstOnChainSchemaFees, calculateSetSchemaVersionFee, collectionId, convertArtificialAttributesToProtobuf]);
 
   const onSaveForm = useCallback(() => {
     setIsSaveConfirmationOpen(false);

@@ -88,7 +88,7 @@ export function formatStrBalance (value: BN | undefined = new BN(0)): string {
   let balanceStr = '';
 
   if (decNum < 0) {
-    balanceStr = [...Array.from('0'.repeat(Math.abs(decNum))), '.', ...value.toString()].join('');
+    balanceStr = ['0', '.', ...Array.from('0'.repeat(Math.abs(decNum))), ...value.toString()].join('');
   }
 
   if (decNum > 0) {
