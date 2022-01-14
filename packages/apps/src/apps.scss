@@ -497,7 +497,7 @@
       font-weight: 500;
       font-size: 16px;
       margin: 4px 0;
-      padding: 8px 16px;
+      padding: calc(var(--gap)/2) var(--gap);
       color: var(--header-text-color);
 
       &.active {
@@ -538,9 +538,6 @@
 }
 
 @media (max-width: 1023px) {
-  // .app-wrapper {
-  //   background-color: var(--card-background);
-  // }
   .app-header {
     position: fixed;
     top: 0;

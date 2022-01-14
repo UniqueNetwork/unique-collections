@@ -198,7 +198,7 @@ h4.ui.header {
     height: 48px;
 
     & .menu > .item {
-      padding: 8px calc((var(--gap) / 2) * 5) !important;
+      padding: calc(var(--gap)/2) calc((var(--gap) / 2) * 5) !important;
     }
   }
 
@@ -689,30 +689,6 @@ button.ui.button,
     input {
       border-radius: 4px;
       height: 40px;
-    }
-  }
-}
-
-.modalDescription {
-  display: flex;
-  background-color: var(--modal-warning-background-color);
-  font-size: 14px;
-  font-family: var(--font-roboto);
-  line-height: 22px;
-  border-radius: 4px;
-  padding: 8px 10.25px;
-  margin: 0 !important;
-
-  img {
-    margin-right: 10.25px;
-  }
-
-  div {
-    p {
-      margin: 0;
-      color: var(--modal-warning-text-color);
-      font-family: var(--font-roboto);
-      padding: 0.3rem 1.5rem 0 0 !important;
     }
   }
 }
