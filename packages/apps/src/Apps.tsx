@@ -6,7 +6,7 @@ import './apps.scss';
 import type { OpenPanelType, Route } from '@polkadot/apps-routing/types';
 import type { BareProps as Props, ThemeDef } from '@polkadot/react-components/types';
 
-import React, { Suspense, useCallback, useContext, useMemo, useState } from 'react';
+import React, { Suspense, useContext, useMemo, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu';
 import { ThemeContext } from 'styled-components';
@@ -22,6 +22,7 @@ import GlobalStyle from '@polkadot/react-components/styles';
 import { useApi } from '@polkadot/react-hooks';
 import Signer from '@polkadot/react-signer';
 
+import { AppCtx } from './AppContext';
 import BalancesHeader from './BalancesHeader';
 import { Footer } from './Footer';
 import ManageAccounts from './ManageAccounts';
@@ -54,12 +55,7 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
   const [account, setAccount] = useState<string>();
   const [openPanel, setOpenPanel] = useState<OpenPanelType>('tokens');
   const [isPageFound, setIsPageFound] = useState<boolean>(true);
-
-  const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
-
-  const togglePreview = useCallback(() => {
-    setIsPreviewOpen((prev) => !prev);
-  }, []);
+  const { previewButtonDisplayed } = useContext(AppCtx);
 
   const uiHighlight = useMemo(
     () => getSystemChainColor(systemChain, systemName),
@@ -82,7 +78,7 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
     <>
       <GlobalStyle uiHighlight={uiHighlight} />
       <ScrollToTop />
-      <div className={`app-wrapper theme--${theme.theme} ${className}`}>
+      <div className={`app-wrapper theme--${theme.theme} ${className} ${previewButtonDisplayed && openPanel !== 'menu' ? 'padding-for-button' : ''}`}>
         <Signer>
           <>
             <ErrorBoundary
@@ -102,7 +98,7 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
                       className='header-menu'
                       tabular
                     >
-                      { theme.logo && (
+                      {theme.logo && (
                         <Menu.Item
                           active={location.pathname === '/'}
                           as={NavLink}
@@ -129,7 +125,7 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
                         to='/faq'
                       />
                     </Menu>
-                    { (isApiReady && isApiConnected) && (
+                    {(isApiReady && isApiConnected) && (
                       <div className='app-user'>
                         <BalancesHeader
                           account={account}
@@ -149,14 +145,14 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
                     )}
                   </div>
                 </header>
-                { (isApiReady && isApiConnected) && openPanel === 'menu' && (
+                {(isApiReady && isApiConnected) && openPanel === 'menu' && (
                   <MobileMenu
                     account={account}
                     setOpenPanel={setOpenPanel}
                     theme={theme}
                   />
                 )}
-                { openPanel === 'accounts' && (
+                {openPanel === 'accounts' && (
                   <ManageAccounts
                     account={account}
                     setAccount={setAccount}
@@ -164,7 +160,7 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
                   />
                 )}
 
-                { (openPanel !== 'accounts') && (
+                {(openPanel !== 'accounts') && (
                   <Suspense fallback=''>
                     <main className={`app-main ${openPanel || ''} ${noAccounts ? 'no-accounts' : ''} ${!isPageFound ? 'page-no-found' : ''}`}>
                       <div className='app-container'>
@@ -176,7 +172,6 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
                                 <Component
                                   account={account}
                                   basePath={`/${name}`}
-                                  isPreviewOpen={isPreviewOpen}
                                   location={location}
                                   onStatusChange={queueAction}
                                   openPanel={openPanel}
@@ -192,15 +187,12 @@ function Apps ({ className = '' }: Props): React.ReactElement<Props> {
                 )}
               </>
             </ErrorBoundary>
+            <Footer />
             <Status />
           </>
         </Signer>
       </div>
       <WarmUp />
-      <Footer
-        isPreviewOpen={isPreviewOpen}
-        togglePreview={togglePreview}
-      />
     </>
   );
 }

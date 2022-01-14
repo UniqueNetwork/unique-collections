@@ -201,12 +201,14 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
         </div>
       </div>
       { imageUploading && (
-        <Loader
-          active
-          className='simple-loader'
-        >
-          Please wait a few seconds
-        </Loader>
+        <p>
+          <Loader
+            active
+            className='simple-loader'
+          >
+            Please wait a few seconds
+          </Loader>
+        </p>
       )}
       { (imgAddress && coverFees) && (
         <WarningText fee={coverFees} />
