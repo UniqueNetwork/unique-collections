@@ -755,8 +755,6 @@ button.ui.button, .button-link, .ui--Button {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   border-radius: calc(var(--gap) / 4);
   background-color: var(--white-color);
-  display: flex;
-  flex-direction: column;
 }
 
 @media (max-width: 1023px) {

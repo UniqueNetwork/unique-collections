@@ -27,7 +27,7 @@ interface CoverProps {
 const stepText = 'Uploading collection cover to IPFS'; // ['Uploading collection cover to IPFS', 'Saving cover img url to blockchain'];
 
 function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps): React.ReactElement {
-  const { calculateSetSchemaVersionFee, calculateSetVariableOnChainSchemaFee, saveVariableOnChainSchema } = useCollection();
+  const { calculateSetVariableOnChainSchemaFee, saveVariableOnChainSchema } = useCollection();
   const [coverFees, setCoverFees] = useState<BN | null>(null);
   const [imgAddress, setImgAddress] = useState<string>();
   const [imageUploading, setImageUploading] = useState<boolean>(false);
@@ -39,7 +39,6 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
 
   const calculateFee = useCallback(async () => {
     if (account) {
-      const setSchemaVersionFee = (await calculateSetSchemaVersionFee({ account, collectionId, schemaVersion: 'Unique' })) || new BN(0);
       let setVariableOnChainSchemaFee: BN = new BN(0);
 
       if (account && collectionId && imgAddress) {
@@ -50,9 +49,9 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
         setVariableOnChainSchemaFee = (await calculateSetVariableOnChainSchemaFee({ account, collectionId, schema: JSON.stringify(varDataWithImage) })) || new BN(0);
       }
 
-      setCoverFees(setSchemaVersionFee.add(setVariableOnChainSchemaFee));
+      setCoverFees(setVariableOnChainSchemaFee);
     }
-  }, [account, calculateSetSchemaVersionFee, calculateSetVariableOnChainSchemaFee, collectionId, imgAddress]);
+  }, [account, calculateSetVariableOnChainSchemaFee, collectionId, imgAddress]);
 
   const clearTokenImg = useCallback(() => {
     setAvatarImg(null);
@@ -92,9 +91,11 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
         text: stepText
       }
     ]);
+
     setTimeout(() => {
       setTransactions([]);
     }, 3000);
+
     history.push(`/builder/collections/${collectionId}/token-attributes`);
   }, [collectionId, history, setTransactions]);
 
@@ -138,6 +139,8 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
     if (!imgAddress && inputFileRef.current) {
       inputFileRef.current.value = '';
       setAvatarImg(null);
+      setCoverFees(null);
+      setImgAddress(undefined);
     }
   }, [imgAddress, setAvatarImg]);
 
@@ -205,7 +208,7 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
           Please wait a few seconds
         </Loader>
       )}
-      { coverFees && (
+      { (imgAddress && coverFees) && (
         <WarningText fee={coverFees} />
       )}
       <Confirm

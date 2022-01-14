@@ -140,6 +140,24 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
     setAttributeValues(values, id);
   }, [id, setAttributeValues]);
 
+  const checkEmptyValues = useCallback(() => {
+    const nonEnumAttributes = attributes.filter((attribute) => (attribute.fieldType === 'string' && attribute.name !== 'ipfsJson')).map((item) => item.id);
+    const errors = attributes
+      .filter((attribute) => (attribute.fieldType === 'enum' || attribute.fieldType === 'repeated') && !attribute.values.length && attribute.name !== 'ipfsJson')
+      .map((item) => item.id);
+
+    setFormErrors((prevErrors) => [...prevErrors.filter((item) => nonEnumAttributes.indexOf(item) !== -1), ...errors]);
+  }, [attributes, setFormErrors]);
+
+  const onSetCurrentAttributeName = useCallback((name: string) => {
+    setCurrentAttributeName(name);
+    onSetAttributeName();
+  }, [onSetAttributeName]);
+
+  useEffect(() => {
+    checkEmptyValues();
+  }, [checkEmptyValues]);
+
   return (
     <div className='create-attributes'>
       <div className='row-section'>
@@ -154,8 +172,7 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
         <Input
           className='isSmall'
           isError={isAttributeNameError}
-          onBlur={onSetAttributeName}
-          onChange={setCurrentAttributeName}
+          onChange={onSetCurrentAttributeName}
           placeholder='Attribute name'
           value={currentAttributeName}
         />
