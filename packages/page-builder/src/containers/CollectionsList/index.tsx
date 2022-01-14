@@ -33,24 +33,31 @@ const limit = 10;
 function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const [searchString, setSearchString] = useState<string>('');
   const [page, setPage] = useState<number>(1);
-  const { userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString);
+  const { collectionsCount, userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString);
   const [collectionsLoaded, setCollectionsLoaded] = useState<CollectionsListType>({});
-  const isHasMore = Object.keys(collectionsLoaded).length < userCollections?.collections_aggregate.aggregate.count;
+  const hasMore = Object.keys(collectionsLoaded).length < collectionsCount;
   const mountedRef = useIsMountedRef();
   const client = useApolloClient();
   const currentAccount = useRef<string>();
 
-  const fetchScrolledData = useCallback(() => {
-    !userCollectionsLoading && setPage((prevPage: number) => prevPage + 1);
+  console.log('userCollections', userCollections, 'collectionsCount', collectionsCount, 'loaded', Object.keys(collectionsLoaded).length, 'isHasMore', hasMore);
+
+  const fetchScrolledData = useCallback((page: number) => {
+    console.log('fetchScrolledData', page);
+
+    if (!userCollectionsLoading) {
+      setPage(page);
+    }
   }, [userCollectionsLoading]);
 
   const initializeCollections = useCallback(() => {
-    if (account && !userCollectionsLoading && userCollections?.collections) {
+    console.log('initializeCollections');
+    if (account && !userCollectionsLoading && userCollections?.length) {
       mountedRef.current && setCollectionsLoaded((prevState: CollectionsListType) => {
         const collectionsList: CollectionsListType = { ...prevState };
 
-        for (let j = 0; j < userCollections.collections.length; j++) {
-          collectionsList[`${userCollections.collections[j].collection_id}`] = userCollections.collections[j];
+        for (let j = 0; j < userCollections.length; j++) {
+          collectionsList[`${userCollections[j].collection_id}`] = userCollections[j];
         }
 
         return collectionsList;
@@ -74,6 +81,8 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const hasCollections = !!(Object.keys(collectionsLoaded).length || searchString.length || userCollectionsLoading);
 
   const refillCollections = useCallback(() => {
+    console.log('refillCollections', refillCollections);
+
     if (currentAccount.current !== account) {
       setPage(1);
       setCollectionsLoaded({});
@@ -83,12 +92,18 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
     initializeCollections();
   }, [account, initializeCollections]);
 
-  useEffect(() => {
+  const resetBySearchString = useCallback(() => {
+    console.log('resetBySearchString');
+
     if (searchString) {
       setPage(1);
       setCollectionsLoaded({});
     }
   }, [searchString]);
+
+  useEffect(() => {
+    resetBySearchString();
+  }, [resetBySearchString]);
 
   useEffect(() => {
     refillCollections();
@@ -117,14 +132,14 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
                 Loading collections...
               </Loader>
             )}
-            { (!userCollections?.collections?.length && !Object.values(collectionsLoaded)?.length && !userCollectionsLoading && !searchString) && (
+            { (!userCollections?.length && !Object.values(collectionsLoaded)?.length && !userCollectionsLoading && !searchString) && (
               <NoCollections />
             )}
-            { (!userCollections?.collections?.length && !Object.values(collectionsLoaded)?.length && !userCollectionsLoading && searchString) && (
+            { (!userCollections?.length && !Object.values(collectionsLoaded)?.length && !userCollectionsLoading && searchString) && (
               <NoCollectionsFound />
             )}
             <InfiniteScroll
-              hasMore={isHasMore}
+              hasMore={hasMore}
               initialLoad={false}
               loadMore={fetchScrolledData}
               loader={(

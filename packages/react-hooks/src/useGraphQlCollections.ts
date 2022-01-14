@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { gql, useQuery } from '@apollo/client';
+import { useCallback, useState, useEffect } from 'react';
 
 export type UserCollection = {
   'collection_id': string;
@@ -24,7 +25,8 @@ export type UserCollections = {
 }
 
 export type UseGraphQlInterface = {
-  userCollections: UserCollections;
+  collectionsCount: number;
+  userCollections: UserCollection[];
   userCollectionsError: any;
   userCollectionsLoading: boolean;
 };
@@ -50,13 +52,30 @@ const USER_COLLECTIONS = gql`
 
 export const useGraphQlCollections = (account: string, limit: number, offset: number, name: string): UseGraphQlInterface => {
   // can be useLazyQuery
-  const { data: userCollections, error: userCollectionsError, loading: userCollectionsLoading } = useQuery(USER_COLLECTIONS, {
+  const { data, error: userCollectionsError, loading: userCollectionsLoading } = useQuery(USER_COLLECTIONS, {
     fetchPolicy: 'network-only', // Used for first execution
     nextFetchPolicy: 'cache-first',
     variables: { limit, name: name.length === 0 ? '%' : `%${name}%`, offset, owner: account }
   }) as unknown as { data: UserCollections, error: string, loading: boolean };
+  const [userCollections, setUserCollections] = useState<UserCollection[]>([]);
+  const [collectionsCount, setCollectionsCount] = useState<number>(0);
+
+  const collectionsToLocal = useCallback(() => {
+    if (data?.collections) {
+      setUserCollections(data.collections);
+    }
+
+    if (data?.collections_aggregate?.aggregate?.count) {
+      setCollectionsCount(data.collections_aggregate.aggregate.count);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    collectionsToLocal();
+  }, [collectionsToLocal]);
 
   return {
+    collectionsCount,
     userCollections,
     userCollectionsError,
     userCollectionsLoading

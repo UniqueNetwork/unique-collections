@@ -22,7 +22,7 @@ import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/use
 interface CollectionPageProps {
   account: string;
   basePath: string;
-  isPreviewOpen: boolean;
+  isPreviewOpen?: boolean;
 }
 
 /* @todo
