@@ -183,14 +183,15 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
             tokenPrefix={tokenPrefix}
           />
         </div>
-        {previewMode && <div className='preview-btn'>
+        {previewMode && (
+        <div className='preview-btn'>
           <UnqButton
             content={isPreviewOpen ? 'Back' : 'Preview'}
             onClick={handleOnBtnClick}
             size='large'
           />
         </div>
-        }
+        )}
       </div>
     </div>
   );
