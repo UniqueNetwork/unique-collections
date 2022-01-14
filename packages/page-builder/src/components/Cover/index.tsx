@@ -138,6 +138,8 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
     if (!imgAddress && inputFileRef.current) {
       inputFileRef.current.value = '';
       setAvatarImg(null);
+      setCoverFees(null);
+      setImgAddress(undefined);
     }
   }, [imgAddress, setAvatarImg]);
 
