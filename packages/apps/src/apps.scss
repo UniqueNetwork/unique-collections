@@ -517,9 +517,6 @@
 }
 
 @media (max-width: 1023px) {
-  // .app-wrapper {
-  //   background-color: var(--card-background);
-  // }
   .app-header {
     position: fixed;
     top: 0;
@@ -556,18 +553,12 @@
   .app-wrapper {
     background-color: var(--card-background);
   }
-  
+
   .app-main {
     margin-top: 85px;
 
     &.no-accounts {
       margin-top: 67px;
-    }
-  }
-
-  .app-logo {
-    img {
-      height: 100%;
     }
   }
 
