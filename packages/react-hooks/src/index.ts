@@ -42,6 +42,7 @@ export { useParaEndpoints } from './useParaEndpoints';
 export { usePassword } from './usePassword';
 export { useRegistrars } from './useRegistrars';
 export { useSavedFlags } from './useSavedFlags';
+export { useScreenWidthFromThreshold } from './useScreenWidthFromThreshold';
 export { useStepper } from './useStepper';
 export { useSudo } from './useSudo';
 export { useToken } from './useToken';
