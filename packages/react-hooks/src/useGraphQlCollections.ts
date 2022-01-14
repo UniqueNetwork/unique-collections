@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { gql, useQuery } from '@apollo/client';
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useEffect, useRef,useState } from 'react';
 
 export type UserCollection = {
   'collection_id': string;
@@ -59,20 +59,33 @@ export const useGraphQlCollections = (account: string, limit: number, offset: nu
   }) as unknown as { data: UserCollections, error: string, loading: boolean };
   const [userCollections, setUserCollections] = useState<UserCollection[]>([]);
   const [collectionsCount, setCollectionsCount] = useState<number>(0);
+  const searchRef = useRef<string>();
 
   const collectionsToLocal = useCallback(() => {
     if (data?.collections) {
-      setUserCollections(data.collections);
+      setUserCollections((prevCollections) => [...prevCollections, ...data.collections]);
     }
 
-    if (data?.collections_aggregate?.aggregate?.count) {
+    if (data?.collections_aggregate?.aggregate) {
       setCollectionsCount(data.collections_aggregate.aggregate.count);
     }
   }, [data]);
 
+  const resetCollections = useCallback(() => {
+    if (searchRef.current !== name) {
+      setUserCollections([]);
+    }
+
+    searchRef.current = name;
+  }, [name]);
+
   useEffect(() => {
     collectionsToLocal();
   }, [collectionsToLocal]);
+
+  useEffect(() => {
+    resetCollections();
+  }, [resetCollections]);
 
   return {
     collectionsCount,
