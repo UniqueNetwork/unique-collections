@@ -22,6 +22,7 @@ import GlobalStyle from '@polkadot/react-components/styles';
 import { useApi } from '@polkadot/react-hooks';
 import Signer from '@polkadot/react-signer';
 
+import { AppCtx } from './AppContext';
 import BalancesHeader from './BalancesHeader';
 import { Footer } from './Footer';
 import ManageAccounts from './ManageAccounts';
@@ -30,7 +31,6 @@ import MobileMenu from './MobileMenu';
 import MobileMenuHeader from './MobileMenuHeader';
 import ScrollToTop from './ScrollToTop';
 import WarmUp from './WarmUp';
-import { AppCtx } from './AppContext';
 
 export const PORTAL_ID = 'portals';
 
@@ -46,7 +46,7 @@ const NOT_FOUND: Route = {
   text: 'Unknown'
 };
 
-function Apps({ className = '' }: Props): React.ReactElement<Props> {
+function Apps ({ className = '' }: Props): React.ReactElement<Props> {
   const location = useLocation();
   const { t } = useTranslation();
   const theme = useContext<ThemeDef>(ThemeContext);

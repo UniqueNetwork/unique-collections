@@ -8,16 +8,16 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { HashRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
+import envConfig from '@polkadot/apps-config/envConfig';
 import { Api } from '@polkadot/react-api';
 import Queue from '@polkadot/react-components/Status/Queue';
 import { BlockAuthors, Events } from '@polkadot/react-query';
 import { settings } from '@polkadot/ui-settings';
-import envConfig from '@polkadot/apps-config/envConfig';
 
+import AppProvider from './AppContext';
 import Apps from './Apps';
 import { Themes, uniqueTheme } from './themes';
 import WindowDimensions from './WindowDimensions';
-import AppProvider from './AppContext';
 
 const { uniqueSubstrateApi } = envConfig;
 
@@ -25,7 +25,7 @@ interface Props {
   store?: KeyringStore;
 }
 
-function createTheme({ uiTheme }: { uiTheme: string }): ThemeDef {
+function createTheme ({ uiTheme }: { uiTheme: string }): ThemeDef {
   const validTheme = Themes.find((themeElem) => {
     return (themeElem.domain && window.location.href.includes(themeElem.domain)) || (themeElem.ip && window.location.href.includes(themeElem.ip));
   });
@@ -36,7 +36,7 @@ function createTheme({ uiTheme }: { uiTheme: string }): ThemeDef {
   return validTheme || uniqueTheme;
 }
 
-function Root({ store }: Props): React.ReactElement<Props> {
+function Root ({ store }: Props): React.ReactElement<Props> {
   const [theme, setTheme] = useState(() => createTheme(settings));
 
   useEffect((): void => {
