@@ -6,7 +6,8 @@ import './styles.scss';
 import BN from 'bn.js';
 import React, { memo, ReactElement } from 'react';
 
-import { formatBalance } from '@polkadot/util';
+import { useApi } from '@polkadot/react-hooks';
+import { formatStrBalance } from '@polkadot/react-hooks/utils';
 
 import infoIcon from '../../images/infoIcon.svg';
 
@@ -15,6 +16,9 @@ interface WarningFeeProps {
 }
 
 function WarningFeeProps ({ fee }: WarningFeeProps): ReactElement {
+  const { api } = useApi();
+  const chainName = api?.registry.chainTokens[0];
+
   return (
     <div className='warning-text'>
       <img
@@ -22,7 +26,9 @@ function WarningFeeProps ({ fee }: WarningFeeProps): ReactElement {
         src={infoIcon as string}
       />
       { fee && (
-        <p>A fee of ~ {formatBalance(fee)} can be applied to the transaction</p>
+        <>
+          {`A fee of ~ ${formatStrBalance(fee)}  ${chainName} can be applied to the transaction`}
+        </>
       )}
     </div>
   );

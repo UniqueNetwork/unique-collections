@@ -14,9 +14,8 @@ interface Props {
 
 const AppCtx = React.createContext<IAppContext>({ previewButtonDisplayed: false, setPreviewButtonDisplayed: () => { } });
 
-function AppProvider({ children }: Props): React.ReactElement<Props> {
+function AppProvider ({ children }: Props): React.ReactElement<Props> {
   const [previewButtonDisplayed, setPreviewButtonDisplayed] = useState(false);
-
 
   return (
     <AppCtx.Provider value={{ previewButtonDisplayed, setPreviewButtonDisplayed }}>

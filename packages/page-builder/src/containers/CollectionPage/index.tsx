@@ -16,15 +16,16 @@ import TokenAttributes from '@polkadot/app-builder/components/TokenAttributes';
 import { ArtificialAttributeItemType } from '@polkadot/app-builder/components/TokenAttributes/AttributesRowEditable';
 import TokenPreview from '@polkadot/app-builder/components/TokenPreview';
 import NftPage from '@polkadot/app-builder/containers/NftPage';
-import { UnqButton } from '@polkadot/react-components';
-import { useTokenAttributes, useScreenWidthFromThreshold } from '@polkadot/react-hooks';
-import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/useCollection';
 import { AppCtx } from '@polkadot/apps/AppContext';
+import { UnqButton } from '@polkadot/react-components';
+import { useScreenWidthFromThreshold, useTokenAttributes } from '@polkadot/react-hooks';
+import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/useCollection';
 
 
 interface CollectionPageProps {
   account: string;
   basePath: string;
+  isPreviewOpen?: boolean;
 }
 
 /* @todo
@@ -68,8 +69,8 @@ function CollectionPage({ account, basePath }: CollectionPageProps): ReactElemen
   useEffect(() => {
     setPreviewButtonDisplayed(previewMode);
 
-    return () => { setPreviewButtonDisplayed(false) };
-  }, [previewMode])
+    return () => { setPreviewButtonDisplayed(false); };
+  }, [previewMode]);
 
   useEffect(() => {
     if (location.pathname === '/builder/new-collection' || location.pathname === '/builder/new-collection/') {
@@ -184,14 +185,15 @@ function CollectionPage({ account, basePath }: CollectionPageProps): ReactElemen
             tokenPrefix={tokenPrefix}
           />
         </div>
-        {previewMode && <div className='preview-btn'>
+        {previewMode && (
+        <div className='preview-btn'>
           <UnqButton
             content={isPreviewOpen ? 'Back' : 'Preview'}
             onClick={handleOnBtnClick}
             size='large'
           />
         </div>
-        }
+        )}
       </div>
     </div>
   );

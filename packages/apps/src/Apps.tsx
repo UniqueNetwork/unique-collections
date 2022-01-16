@@ -22,6 +22,7 @@ import GlobalStyle from '@polkadot/react-components/styles';
 import { useApi } from '@polkadot/react-hooks';
 import Signer from '@polkadot/react-signer';
 
+import { AppCtx } from './AppContext';
 import BalancesHeader from './BalancesHeader';
 import { Footer } from './Footer';
 import ManageAccounts from './ManageAccounts';
@@ -30,7 +31,6 @@ import MobileMenu from './MobileMenu';
 import MobileMenuHeader from './MobileMenuHeader';
 import ScrollToTop from './ScrollToTop';
 import WarmUp from './WarmUp';
-import { AppCtx } from './AppContext';
 
 export const PORTAL_ID = 'portals';
 

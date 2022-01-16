@@ -6,6 +6,7 @@ import './styles.scss';
 import type { AttributeItemType, ProtobufAttributeType } from '@polkadot/react-components/util/protobufUtils';
 
 import BN from 'bn.js';
+import _maxBy from 'lodash/maxBy';
 import React, { memo, ReactElement, useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
@@ -45,7 +46,7 @@ const stepTexts = [
 ];
 
 function TokenAttributes ({ account, attributes, collectionId, collectionInfo, setAttributes }: TokenAttributes): ReactElement {
-  const { calculateSetConstOnChainSchemaFees, getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
+  const { calculateSetConstOnChainSchemaFees, calculateSetSchemaVersionFee, getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<number[]>([]);
   const [fees, setFees] = useState<BN | null>(null);
@@ -56,10 +57,11 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
 
   const onAddItem = useCallback(() => {
     const newAttributes = [...attributes];
+    const findNextId = (_maxBy(newAttributes, 'id') as AttributeItemType).id;
 
     newAttributes.push({
       fieldType: 'string',
-      id: attributes.length,
+      id: findNextId + 1,
       name: `attribute${attributes.length}`,
       rule: 'required',
       values: []
@@ -143,10 +145,6 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
         return { ...attr, fieldType: 'repeated', rule: 'optional' };
       }
 
-      if (attr.fieldType === 'enum') {
-        return { ...attr, rule: 'required' };
-      }
-
       return attr as ArtificialAttributeItemType;
     });
   }, []);
@@ -157,14 +155,16 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
       const protobufJson: ProtobufAttributeType = fillProtobufJson(converted);
 
       if (account && collectionId) {
-        const fees = await calculateSetConstOnChainSchemaFees({ account, collectionId, schema: JSON.stringify(protobufJson) });
+        const constOnChainSchemaFees = await calculateSetConstOnChainSchemaFees({ account, collectionId, schema: JSON.stringify(protobufJson) }) || new BN(0);
+        const schemaVersionFee = await calculateSetSchemaVersionFee({ account, collectionId, schemaVersion: 'Unique' }) || new BN(0);
+        const fees = constOnChainSchemaFees.add(schemaVersionFee);
 
         setFees(fees);
       }
     } catch (e) {
       console.log('save onChain schema error', e);
     }
-  }, [account, attributes, calculateSetConstOnChainSchemaFees, collectionId, convertArtificialAttributesToProtobuf]);
+  }, [account, attributes, calculateSetConstOnChainSchemaFees, calculateSetSchemaVersionFee, collectionId, convertArtificialAttributesToProtobuf]);
 
   const onSaveForm = useCallback(() => {
     setIsSaveConfirmationOpen(false);
@@ -200,8 +200,8 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
     }
   }, [convertArtificialAttributesToProtobuf, attributes, setTransactions, account, collectionId, saveConstOnChainSchema, setUniqueSchemaVersion]);
 
-  const deleteAttribute = useCallback((index) => {
-    setAttributes(attributes.filter((attribute: ArtificialAttributeItemType) => attribute.id !== index));
+  const deleteAttribute = useCallback((id: number) => {
+    setAttributes(attributes.filter((attribute: ArtificialAttributeItemType) => attribute.id !== id));
   }, [attributes, setAttributes]);
 
   const onSaveAll = useCallback(() => {
@@ -217,14 +217,8 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
     setAttributes((prevAttributes: ArtificialAttributeItemType[]) => prevAttributes.map((item) => item.id === id ? { ...item, rule: countType } : item));
   }, [setAttributes]);
 
-  const setAttributeName = useCallback((name: string, index: number) => {
-    setAttributes((prevAttributes: ArtificialAttributeItemType[]) => {
-      const newAttributes = [...prevAttributes];
-
-      newAttributes[index].name = name;
-
-      return newAttributes;
-    });
+  const setAttributeName = useCallback((name: string, id: number) => {
+    setAttributes((prevAttributes: ArtificialAttributeItemType[]) => prevAttributes.map((item) => item.id === id ? { ...item, name } : item));
   }, [setAttributes]);
 
   const setAttributeType = useCallback((type: ArtificialFieldType, id: number) => {
@@ -322,7 +316,7 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
           return null;
         }
       })}
-      { isOwner && attributes.map((attribute: ArtificialAttributeItemType, index: number) => {
+      { isOwner && attributes.map((attribute: ArtificialAttributeItemType) => {
         if (attribute.name !== 'ipfsJson') {
           return (
             <AttributesRowEditable
@@ -334,7 +328,7 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
               formErrors={formErrors}
               id={attribute.id}
               isOwner={isOwner}
-              key={`${attribute.name}-${index}`}
+              key={`${attribute.id}`}
               removeItem={deleteAttribute}
               setAttributeCountType={setAttributeCountType}
               setAttributeName={setAttributeName}

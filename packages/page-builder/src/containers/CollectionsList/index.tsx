@@ -17,7 +17,7 @@ import CreateCollectionOrSearch from '@polkadot/app-builder/components/CreateCol
 import NoCollections from '@polkadot/app-builder/components/NoCollections';
 import NoCollectionsFound from '@polkadot/app-builder/components/NoCollectionsFound';
 import CollectionPage from '@polkadot/app-builder/containers/CollectionPage';
-import { useGraphQlCollections, useIsMountedRef } from '@polkadot/react-hooks';
+import { useGraphQlCollections } from '@polkadot/react-hooks';
 
 interface Props {
   account: string;
@@ -33,66 +33,55 @@ const limit = 10;
 function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const [searchString, setSearchString] = useState<string>('');
   const [page, setPage] = useState<number>(1);
-  const { userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString);
-  const [collectionsLoaded, setCollectionsLoaded] = useState<CollectionsListType>({});
-  const isHasMore = Object.keys(collectionsLoaded).length < userCollections?.collections_aggregate.aggregate.count;
-  const mountedRef = useIsMountedRef();
+  const { collectionsCount, userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString);
+  const hasMore = userCollections.length < collectionsCount;
   const client = useApolloClient();
   const currentAccount = useRef<string>();
+  const countRef = useRef<number>();
 
   const fetchScrolledData = useCallback(() => {
-    !userCollectionsLoading && setPage((prevPage: number) => prevPage + 1);
-  }, [userCollectionsLoading]);
-
-  const initializeCollections = useCallback(() => {
-    if (account && !userCollectionsLoading && userCollections?.collections) {
-      mountedRef.current && setCollectionsLoaded((prevState: CollectionsListType) => {
-        const collectionsList: CollectionsListType = { ...prevState };
-
-        for (let j = 0; j < userCollections.collections.length; j++) {
-          collectionsList[`${userCollections.collections[j].collection_id}`] = userCollections.collections[j];
-        }
-
-        return collectionsList;
-      });
+    if (!userCollectionsLoading && hasMore) {
+      setPage((prevPage: number) => prevPage + 1);
     }
-  }, [account, mountedRef, userCollections, userCollectionsLoading]);
+  }, [hasMore, userCollectionsLoading]);
 
-  const onReRemoveCollection = useCallback(async (collectionId: string) => {
+  const reFetchCollections = useCallback(async () => {
     await client.refetchQueries({
       include: ['Collections']
     });
-    setCollectionsLoaded((prevCollections) => {
-      const newCollections = { ...prevCollections };
-
-      delete newCollections[collectionId];
-
-      return newCollections;
-    });
   }, [client]);
 
-  const hasCollections = !!(Object.keys(collectionsLoaded).length || searchString.length || userCollectionsLoading);
-
   const refillCollections = useCallback(() => {
-    if (currentAccount.current !== account) {
+    if (currentAccount.current && currentAccount.current !== account) {
       setPage(1);
-      setCollectionsLoaded({});
       currentAccount.current = account;
+      void reFetchCollections();
     }
+  }, [account, reFetchCollections]);
 
-    initializeCollections();
-  }, [account, initializeCollections]);
-
-  useEffect(() => {
+  const resetBySearchString = useCallback(() => {
     if (searchString) {
       setPage(1);
-      setCollectionsLoaded({});
+
+      void reFetchCollections();
     }
-  }, [searchString]);
+  }, [searchString, reFetchCollections]);
+
+  useEffect(() => {
+    resetBySearchString();
+  }, [resetBySearchString]);
 
   useEffect(() => {
     refillCollections();
   }, [refillCollections]);
+
+  useEffect(() => {
+    if (!countRef.current && collectionsCount && !searchString) {
+      countRef.current = collectionsCount;
+    }
+  }, [collectionsCount, searchString]);
+
+  // console.log('countRef.current', countRef.current, 'collectionsCount', collectionsCount, 'searchString', searchString);
 
   return (
     <div className='collections-list'>
@@ -103,12 +92,37 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
         >
           <Header as='h1'>My collections</Header>
           <CreateCollectionOrSearch
-            hasCollections={hasCollections}
+            hasCollections={true}
             searchString={searchString}
             setSearchString={setSearchString}
           />
           <div className='collections-list--collections'>
-            { (userCollectionsLoading && Object.keys(collectionsLoaded).length === 0) && (
+            { (!countRef.current && !collectionsCount && !userCollectionsLoading && !searchString) && (
+              <NoCollections />
+            )}
+            { (!collectionsCount && countRef.current && !userCollectionsLoading && searchString) && (
+              <NoCollectionsFound />
+            )}
+            <InfiniteScroll
+              hasMore={hasMore}
+              initialLoad={false}
+              loadMore={fetchScrolledData}
+              pageStart={1}
+              threshold={200}
+              useWindow={true}
+            >
+              <div className='market-pallet__item'>
+                { userCollections?.map((collection: UserCollection) => (
+                  <CollectionCard
+                    account={account}
+                    collectionId={collection.collection_id}
+                    key={collection.collection_id}
+                    onReRemoveCollection={reFetchCollections}
+                  />
+                ))}
+              </div>
+            </InfiniteScroll>
+            { userCollectionsLoading && (
               <Loader
                 active
                 className='load-info'
@@ -117,39 +131,6 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
                 Loading collections...
               </Loader>
             )}
-            { (!userCollections?.collections?.length && !Object.values(collectionsLoaded)?.length && !userCollectionsLoading && !searchString) && (
-              <NoCollections />
-            )}
-            { (!userCollections?.collections?.length && !Object.values(collectionsLoaded)?.length && !userCollectionsLoading && searchString) && (
-              <NoCollectionsFound />
-            )}
-            <InfiniteScroll
-              hasMore={isHasMore}
-              initialLoad={false}
-              loadMore={fetchScrolledData}
-              loader={(
-                <Loader
-                  active
-                  className='load-more'
-                  inline='centered'
-                  key={'nft-collections'}
-                />
-              )}
-              pageStart={1}
-              threshold={200}
-              useWindow={true}
-            >
-              <div className='market-pallet__item'>
-                {Object.values(collectionsLoaded).length > 0 && Object.values(collectionsLoaded).map((collection: UserCollection) => (
-                  <CollectionCard
-                    account={account}
-                    collectionId={collection.collection_id}
-                    key={collection.collection_id}
-                    onReRemoveCollection={onReRemoveCollection}
-                  />
-                ))}
-              </div>
-            </InfiniteScroll>
           </div>
         </Route>
         <Route path={`${basePath}/collections/:collectionId`}>
