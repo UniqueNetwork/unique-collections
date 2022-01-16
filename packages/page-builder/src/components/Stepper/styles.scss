@@ -1,15 +1,15 @@
-.stepper-main{
+.stepper-main {
   color: var(--attribute-title-color);
   font-family: var(--font-roboto);
   font-weight: 500;
 
-  .steps{
+  .steps {
     display: flex;
     align-items: center;
     padding: 0 38px;
     font-size: 18px;
 
-    .step{
+    .step {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -19,58 +19,49 @@
       background-color: var(--attribute-background-color);
     }
 
-    .step-line{
+    .step-line {
       height: 2px;
       width: 100%;
       background-color: var(--attribute-background-color);
     }
   }
 
-  .steps-text{
+  .steps-text {
     display: flex;
     justify-content: space-between;
-    padding-top:calc(var(--gap) / 2);
+    padding-top: calc(var(--gap) / 2);
     margin-right: 3px;
     font-size: 16px;
     line-height: 24px;
   }
 
-  .active-step{
+  .active-step {
     background-color: var(--button-color) !important;
     color: var(--white-color);
   }
 
-  .active-line{
+  .active-line {
     color: var(--button-color);
-  }
-}
-
-
-@media (max-width: 767px) {
-  .stepper-main {
-    .steps{
-      padding: 0;
-    }
-
-    .steps-text {
-      display: none;
-    }
   }
 }
 
 @media (max-width: 1279px) {
   .stepper-main {
-      box-shadow: none;
-    }
+    margin-bottom: var(--gap);
 
     .steps-text {
       display: none;
     }
   }
+}
 
-@media (max-width: 320px) {
+@media (max-width: 1023px) {
   .stepper-main {
-    padding-left: var(--gap);
-    padding-right: var(--gap);
+    .steps {
+      padding: 0;
+    }
+    .steps-text {
+      display: none;
+    }
   }
 }

@@ -233,14 +233,14 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
 
   if (collectionInfo && !isOwner) {
     return (
-      <div className='create-nft'>
+      <div className='create-nft shadow-block'>
         <h2 className='header-text'>You are not the owner of this collection, you cannot create nft.</h2>
       </div>
     );
   }
 
   return (
-    <div className='create-nft'>
+    <div className='create-nft shadow-block'>
       <h1 className='header-text'>Image</h1>
       <h2>Upload image*</h2>
       <p>Choose JPG, PNG, GIF (max 10 Mb)</p>

@@ -16,6 +16,11 @@
   background: var(--header-background);
   margin-bottom: 0;
   padding: calc(var(--gap) / 2) 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  z-index: 1000;
 
   .ui.tabular.menu {
     display: inline-flex;
@@ -135,14 +140,14 @@
 }
 
 .app-main {
-  padding: calc(var(--gap) * 2) 0;
+  margin-top: 80px;
+  padding: calc(var(--gap) * 2) calc(var(--gap) / 2 * 3) calc(var(--gap) / 4 * 10);
   flex: 1 1 auto;
 }
 
 .app-container {
   width: 100%;
   max-width: var(--max-width);
-  padding: 0 var(--gap);
   margin: 0 auto;
 
   &--header {
@@ -151,6 +156,7 @@
     align-items: center;
     max-width: var(--max-header-width);
     height: 64px;
+    padding: 0 var(--gap);
   }
 }
 
@@ -431,9 +437,6 @@
 
 @media (max-width: 1279px) {
   .app-header {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    z-index: 1000;
-
     .ui.tabular.header-menu.menu {
       display: none;
     }
@@ -497,7 +500,7 @@
       font-weight: 500;
       font-size: 16px;
       margin: 4px 0;
-      padding: calc(var(--gap)/2) var(--gap);
+      padding: calc(var(--gap) / 2) var(--gap);
       color: var(--header-text-color);
 
       &.active {
@@ -537,21 +540,14 @@
   }
 }
 
-@media (max-width: 1023px) {
-  .app-header {
-    position: fixed;
-    top: 0;
-    width: 100%;
+@media (max-width: 1279px) {
+  .app-wrapper {
+    background-color: var(--card-background);
   }
+}
 
+@media (max-width: 1023px) {
   .app-main {
-    margin-top: 84px;
-    padding: 0;
-
-    .app-container {
-      padding: 0;
-    }
-
     &.page-no-found {
       background-color: var(--bg-page);
     }
@@ -563,7 +559,7 @@
 
   .menu-mobile,
   .manage-accounts {
-    margin-top: 84px;
+    margin-top: 64px;
   }
 
   .welcome {
@@ -572,11 +568,9 @@
 }
 
 @media (max-width: 767px) {
-  .app-wrapper {
-    background-color: var(--card-background);
-  }
   .app-main {
-    margin-top: 85px;
+    padding: calc(var(--gap) / 2 * 3) var(--gap) calc(var(--gap) * 2);
+    margin-top: 64px;
 
     &.no-accounts {
       margin-top: 67px;
@@ -613,10 +607,6 @@
     &.no-accounts {
       margin-top: 67px;
     }
-  }
-
-  .manage-accounts {
-    margin-top: 85px;
   }
 
   .welcome {

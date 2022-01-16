@@ -2,7 +2,7 @@
   font-family: var(--font-inter);
 
   .faq {
-    margin-top: calc(var(--gap) * 2);
+    margin-top: calc(var(--gap) / 2 * 3);
 
     h4.ui.header {
       font-family: var(--font-inter);
@@ -10,7 +10,7 @@
       font-size: 18px;
       line-height: 26px;
       margin-top: calc(var(--gap) * 2);
-      margin-bottom: 12px;
+      margin-bottom: calc(var(--gap) / 2);
       min-height: 0;
       letter-spacing: normal;
 
@@ -19,7 +19,8 @@
       }
     }
 
-    p, ol li {
+    p,
+    ol li {
       font-size: var(--gap);
       line-height: 24px;
       font-family: var(--font-roboto);

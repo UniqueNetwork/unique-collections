@@ -44,13 +44,5 @@
 @media (max-width: 767px) {
   .main-information {
     box-shadow: none;
-    padding: var(--gap);
-  }
-}
-
-@media (max-width: 320px) {
-  .main-information {
-    box-shadow: none;
-    padding: var(--gap);
   }
 }

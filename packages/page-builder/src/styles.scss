@@ -25,7 +25,7 @@
       font-family: var(--font-roboto);
       font-size: 18px;
       line-height: 26px;
-      margin-top:24px ;
+      margin-top: calc(var(--gap) / 2 * 3);
       color: var(--tabs-color);
     }
   }
@@ -42,7 +42,6 @@
     padding: 178px 238px;
 
     .disclaimer-content {
-
       a {
         color: var(--link-color);
       }
@@ -121,7 +120,7 @@
           font-size: var(--gap);
           line-height: calc((var(--gap) * 1.5));
         }
-    }
+      }
 
       .disclaimer-btn{
         text-align: center;
@@ -132,13 +131,7 @@
 }
 
 @media (max-width: 1023px) {
-  .builder-page  {
-
-    .collection-page {
-      .page-main {
-        background: var(--bg-page);
-      }
-    }
+  .builder-page {
 
     .collection-card {
       box-shadow: none;
@@ -154,23 +147,23 @@
     }
 
     h1.ui.header {
-    font-size: 28px;
-}
+      font-size: 28px;
+    }
   }
 }
 
-
-
 @media (max-width: 767px) {
-  .builder-page {
-    .create-and-search {
-      flex-direction: row;
-      gap: var(--gap);
+  .collection-page {
+    .builder-page {
+      .create-and-search {
+        flex-direction: row;
+        gap: var(--gap);
 
       .create-btn{
-       width: 40%;
-       margin: 0;
-     }
+          width: 40%;
+          margin: 0;
+        }
+      }
     }
   }
 }
@@ -179,19 +172,15 @@
   .builder-page {
     .content-links {
       min-width: 50%;
-
     }
 
     .create-and-search {
-     flex-direction: column;
-      padding: 0 16px;
+      flex-direction: column;
 
       .create-btn{
-       width: 100%;
-       margin: 0;
-     }
+        width: 100%;
+        margin: 0;
+      }
     }
   }
 }
-
-
