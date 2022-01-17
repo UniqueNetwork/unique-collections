@@ -70,7 +70,7 @@ function CollectionPage({ account, basePath }: CollectionPageProps): ReactElemen
     setPreviewButtonDisplayed(previewMode);
 
     return () => { setPreviewButtonDisplayed(false); };
-  }, [previewMode]);
+  }, [previewMode, setPreviewButtonDisplayed]);
 
   useEffect(() => {
     if (location.pathname === '/builder/new-collection' || location.pathname === '/builder/new-collection/') {
@@ -186,13 +186,13 @@ function CollectionPage({ account, basePath }: CollectionPageProps): ReactElemen
           />
         </div>
         {previewMode && (
-        <div className='preview-btn'>
-          <UnqButton
-            content={isPreviewOpen ? 'Back' : 'Preview'}
-            onClick={handleOnBtnClick}
-            size='large'
-          />
-        </div>
+          <div className='preview-btn'>
+            <UnqButton
+              content={isPreviewOpen ? 'Back' : 'Preview'}
+              onClick={handleOnBtnClick}
+              size='large'
+            />
+          </div>
         )}
       </div>
     </div>

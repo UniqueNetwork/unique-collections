@@ -18,7 +18,7 @@
   }
 
   .actions {
-    .close-btn{
+    .close-btn {
       position: absolute;
       top: 37.5px;
       right: 28.5px;
@@ -29,7 +29,7 @@
   .footer {
     padding: 32px 24px 24px 24px;
 
-    .btn-container{
+    .btn-container {
       display: flex;
     }
   }
@@ -48,8 +48,8 @@
     }
   }
   .ui--Password {
-    .ui--Labelled-content{
-      .ui--Input{
+    .ui--Labelled-content {
+      .ui--Input {
         position: relative;
 
         .see-password-button {
@@ -58,7 +58,7 @@
           right: 16.25px;
           top: 7px;
 
-          img{
+          img {
             position: static;
           }
         }
@@ -76,7 +76,7 @@
       line-height: 42px !important;
       font-weight: 700 !important;
 
-      h2{
+      h2 {
         margin: 0 !important;
       }
 
@@ -124,6 +124,12 @@
         border: 1px solid var(--button-color);
       }
     }
+
+    &.authorize-transaction {
+      .actions {
+        padding: 0 !important;
+      }
+    }
   }
 }
 
@@ -146,7 +152,7 @@
         width: 100%;
         padding: calc(var(--gap) * 2) 0 0 !important;
 
-        button{
+        button {
           width: 100%;
           margin: 0;
           font-size: 15px !important;
@@ -155,6 +161,13 @@
 
         .primary {
           margin-left: 8px !important;
+        }
+      }
+      &.authorize-transaction {
+        .actions {
+          > div:last-of-type {
+            width: 100%;
+          }
         }
       }
     }
@@ -166,15 +179,15 @@
       .actions {
         width: 100%;
 
-        .ui--Button-Group{
+        .ui--Button-Group {
           width: 100%;
         }
       }
-      .btn-container{
+      .btn-container {
         margin-top: 24px;
         width: 100%;
 
-        button{
+        button {
           width: 100%;
         }
       }

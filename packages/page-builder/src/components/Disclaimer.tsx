@@ -31,9 +31,13 @@ function Disclaimer ({ checkDisclaimer }: Props): React.ReactElement<Props> {
       <Header as='h1'>Disclaimer</Header>
       <div className='disclaimer-content'>
         <ol>
-          <li>Make sure you have <span>120 {tokensName},</span> otherwise you won`t be able to create a collection. To get some {tokensName} for free go to special Telegram bot <a href={envConfig?.uniqueTelegram || ''}>@unique2faucetbot</a></li>
+          <li>Make sure you have <span>105 {tokensName}.</span> Otherwise you won`t be able to create a collection. To get some {tokensName} for free go to special Telegram bot <a
+            href={envConfig?.uniqueTelegram || ''}
+            rel='noopener noreferrer'
+            target='_blank'
+          >@unique2faucet_opal_bot</a></li>
           <li>Check carefully that the entered data is correct. Once confirmed, it will not be possible to return and make changes.</li>
-          <li>Collections created in Opal will not transfer into the MainNet. If you need to transfer the collection, contact the administrator in <a href={envConfig?.discordChannel || ''}>our Discord channel</a>.</li>
+          <li>3. Collections created in Opal will not be transferred into the Quartz. If you need to transfer the collection, contact the administrator in <a href={envConfig?.discordChannel || ''}>our Discord channel</a>.</li>
         </ol>
         <div className='custom-checkbox'>
           <div className='checkbox-input'>
@@ -48,7 +52,7 @@ function Disclaimer ({ checkDisclaimer }: Props): React.ReactElement<Props> {
         <div className='disclaimer-btn'>
           <UnqButton
             className='create-btn'
-            content='Start Creating'
+            content='Start creating'
             isDisabled={!isChecked}
             isFilled
             onClick={onAcceptDisclaimer}

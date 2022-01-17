@@ -4,6 +4,7 @@
 import './styles.scss';
 
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { TokenAttribute } from '@polkadot/app-builder/types';
 import { AttributeItemType } from '@polkadot/react-components/util/protobufUtils';
@@ -26,6 +27,7 @@ interface TokenPreviewProps {
 function TokenPreview ({ attributes, collectionInfo, collectionName, constAttributes, tokenConstAttributes, tokenImg, tokenPrefix }: TokenPreviewProps): React.ReactElement {
   const { collectionName16Decoder, hex2a } = useDecoder();
   const [values, setValues] = useState<{ [key: string]: string | string[] | number | undefined }>({});
+  const location = useLocation();
 
   const fillAttributesValues = useCallback(() => {
     if (constAttributes?.length) {
@@ -47,8 +49,16 @@ function TokenPreview ({ attributes, collectionInfo, collectionName, constAttrib
     }
   }, [constAttributes, tokenConstAttributes]);
 
-  const tokenAttributes = useMemo(() => constAttributes.filter((elem: { name: string }) => elem.name !== 'ipfsJson'), [constAttributes]);
-  const collectionAttributes = useMemo(() => attributes.filter((elem: { name: string }) => elem.name !== 'ipfsJson'), [attributes]);
+  const tokenAttributes = useMemo(() => {
+    const isCollectionPage = location.pathname.includes('/token-attributes');
+    let arrToFilter: AttributeItemType[] | ArtificialAttributeItemType[] = constAttributes;
+
+    if (isCollectionPage) {
+      arrToFilter = attributes;
+    }
+
+    return (arrToFilter as []).filter((elem: { name: string }) => elem.name !== 'ipfsJson');
+  }, [attributes, constAttributes, location]);
 
   useEffect(() => {
     fillAttributesValues();
@@ -69,13 +79,12 @@ function TokenPreview ({ attributes, collectionInfo, collectionName, constAttrib
             {collectionInfo ? hex2a(collectionInfo.tokenPrefix) : (tokenPrefix || 'Symbol')} #1
           </h3>
           <p className='content-text'>{ collectionInfo ? collectionName16Decoder(collectionInfo.name) : (collectionName || 'Collection name')}</p>
-          {/* on the nft page when filling token data */}
           { !!tokenAttributes.length && (
             <div className='const-attributes'>
               <h4>Token attributes</h4>
               { Object.keys(values).length > 0 && (
                 <div className='const-attributes--block'>
-                  { tokenAttributes.map((collectionAttribute: AttributeItemType) => (
+                  { tokenAttributes.map((collectionAttribute: AttributeItemType | ArtificialAttributeItemType) => (
                     <p
                       className='content-text'
                       key={collectionAttribute.name}
@@ -87,26 +96,6 @@ function TokenPreview ({ attributes, collectionInfo, collectionName, constAttrib
                 </div>
               )}
 
-            </div>
-          )}
-          {/* on the token attributes page */}
-          { collectionAttributes?.length > 0 && (
-            <div className='const-attributes'>
-              <h4>Token attributes</h4>
-              { collectionAttributes.map((collectionAttribute) => {
-                if (collectionAttribute.name !== 'ipfsJson') {
-                  return (
-                    <p
-                      className='content-text'
-                      key={collectionAttribute.name}
-                    >
-                      {collectionAttribute.name}:
-                    </p>
-                  );
-                }
-
-                return null;
-              })}
             </div>
           )}
         </div>
