@@ -25,7 +25,7 @@ interface Props {
   store?: KeyringStore;
 }
 
-function createTheme({ uiTheme }: { uiTheme: string }): ThemeDef {
+function createTheme ({ uiTheme }: { uiTheme: string }): ThemeDef {
   const validTheme = Themes.find((themeElem) => {
     return (themeElem.domain && window.location.href.includes(themeElem.domain)) || (themeElem.ip && window.location.href.includes(themeElem.ip));
   });
@@ -36,7 +36,7 @@ function createTheme({ uiTheme }: { uiTheme: string }): ThemeDef {
   return validTheme || uniqueTheme;
 }
 
-function Root({ store }: Props): React.ReactElement<Props> {
+function Root ({ store }: Props): React.ReactElement<Props> {
   const [theme, setTheme] = useState(() => createTheme(settings));
 
   useEffect((): void => {

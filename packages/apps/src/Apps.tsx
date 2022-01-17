@@ -46,7 +46,7 @@ const NOT_FOUND: Route = {
   text: 'Unknown'
 };
 
-function Apps({ className = '' }: Props): React.ReactElement<Props> {
+function Apps ({ className = '' }: Props): React.ReactElement<Props> {
   const location = useLocation();
   const { t } = useTranslation();
   const theme = useContext<ThemeDef>(ThemeContext);

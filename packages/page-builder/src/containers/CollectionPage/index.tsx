@@ -21,7 +21,6 @@ import { UnqButton } from '@polkadot/react-components';
 import { useScreenWidthFromThreshold, useTokenAttributes } from '@polkadot/react-hooks';
 import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/useCollection';
 
-
 interface CollectionPageProps {
   account: string;
   basePath: string;
@@ -33,7 +32,7 @@ interface CollectionPageProps {
  and open the same page, where user interrupted the action.
  */
 
-function CollectionPage({ account, basePath }: CollectionPageProps): ReactElement {
+function CollectionPage ({ account, basePath }: CollectionPageProps): ReactElement {
   const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
   const [lessThanThreshold] = useScreenWidthFromThreshold(1023);
   const [collectionName, setCollectionName] = useState<string>('');
