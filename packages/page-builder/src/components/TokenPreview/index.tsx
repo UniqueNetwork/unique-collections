@@ -98,26 +98,6 @@ function TokenPreview ({ attributes, collectionInfo, collectionName, constAttrib
 
             </div>
           )}
-          {/* on the token attributes page */}
-          {/* { collectionAttributes?.length > 0 && (
-            <div className='const-attributes'>
-              <h4>Token attributes</h4>
-              { collectionAttributes.map((collectionAttribute) => {
-                if (collectionAttribute.name !== 'ipfsJson') {
-                  return (
-                    <p
-                      className='content-text'
-                      key={collectionAttribute.name}
-                    >
-                      {collectionAttribute.name}:
-                    </p>
-                  );
-                }
-
-                return null;
-              })}
-            </div>
-          )} */}
         </div>
       </div>
     </div>
