@@ -37,7 +37,7 @@ function Disclaimer ({ checkDisclaimer }: Props): React.ReactElement<Props> {
             target='_blank'
           >@unique2faucet_opal_bot</a></li>
           <li>Check carefully that the entered data is correct. Once confirmed, it will not be possible to return and make changes.</li>
-          <li>3. Collections created in Opal will not be transferred into the Quartz. If you need to transfer the collection, contact the administrator in <a href={envConfig?.discordChannel || ''}>our Discord channel</a>.</li>
+          <li>Collections created in Opal will not be transferred into the Quartz. If you need to transfer the collection, contact the administrator in <a href={envConfig?.discordChannel || ''}>our Discord channel</a>.</li>
         </ol>
         <div className='custom-checkbox'>
           <div className='checkbox-input'>
