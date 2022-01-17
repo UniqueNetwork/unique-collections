@@ -8,6 +8,7 @@ import React, { useCallback } from 'react';
 import { useHistory } from 'react-router';
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header';
 
+import envConfig from '@polkadot/apps-config/envConfig';
 // local imports and components
 import { AppProps as Props } from '@polkadot/react-components/types';
 
@@ -39,10 +40,10 @@ function Faq (): React.ReactElement<Props> {
         <p>Keep your wallet seed phrase safe! Write it down on paper or export the JSON key with a password you would never forget.</p>
         <Header as='h4'>Q: How can I get testUNQ to my account?</Header>
         <p>A: You can get testUNQ from the Unique Faucet Telegram Bot: <a
-          href='https://web.telegram.org/'
+          href={envConfig?.uniqueTelegram || 'https://web.telegram.org/'}
           rel='noreferrer'
           target='_blank'
-        >@unique2faucetbot.</a></p>
+        >@unique2faucet_opal_bot@.</a></p>
         <Header as='h4'>Q: How much does it cost to create a collection?</Header>
         <p>A: You need 120 testUNQ to create and customize the collection: </p>
         <ol>
@@ -50,10 +51,10 @@ function Faq (): React.ReactElement<Props> {
           <li>20 testUNQ to create token attributes and set a collection cover.</li>
         </ol>
         <p>To get some testUNQ for free, go to the Unique Faucet Telegram Bot: <a
-          href='https://web.telegram.org/'
+          href={envConfig?.uniqueTelegram || 'https://web.telegram.org/'}
           rel='noreferrer'
           target='_blank'
-        >@unique2faucetbot.</a></p>
+        >@unique2faucet_opal_bot.</a></p>
         <Header as='h4'>Q: How many tokens can I create?</Header>
         <p>A: You can create an unlimited number of collections and tokens. The current functionality does not allow you to create collections with a limited number of tokens, but we will add this feature later.</p>
       </div>
