@@ -33,7 +33,7 @@ function Disclaimer ({ checkDisclaimer }: Props): React.ReactElement<Props> {
         <ol>
           <li>Make sure you have <span>120 {tokensName},</span> otherwise you won`t be able to create a collection. To get some {tokensName} for free go to special Telegram bot <a
             href={envConfig?.uniqueTelegram || ''}
-            rel='noreferrer'
+            rel='noopener noreferrer'
             target='_blank'
           >@unique2faucet_opal_bot</a></li>
           <li>Check carefully that the entered data is correct. Once confirmed, it will not be possible to return and make changes.</li>
