@@ -83,34 +83,22 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
   const [isAttributeNameError, setIsAttributeNameError] = useState<boolean>(false);
   const attrName = useRef<string>();
 
-  const removeError = useCallback(() => {
-    if (isAttributeNameError && formErrors.includes(id)) {
-      setFormErrors((prev) => {
-        prev.splice(prev.indexOf(id), 1);
-
-        return prev;
-      });
-    }
-  }, [formErrors, id, isAttributeNameError, setFormErrors]);
-
-  useEffect(() => {
-    removeError();
-  }, [removeError]);
-
   const onRemoveItem = useCallback(() => {
     removeItem(id);
   }, [id, removeItem]);
 
   const onSetAttributeName = useCallback(() => {
-    const newAttributes = [...attributes];
+    setAttributeName(currentAttributeName, id);
+  }, [currentAttributeName, id, setAttributeName]);
 
-    for (let i = 0; i < newAttributes.length; i++) {
+  const checkFieldsOnErrors = useCallback(() => {
+    for (let i = 0; i < attributes.length; i++) {
       // check if name of the attribute does not exist
-      const isNameUniq: boolean = newAttributes[i].id !== id && newAttributes[i].name === currentAttributeName;
+      const isNameNotUniq: boolean = attributes[i].id !== id && attributes[i].name === currentAttributeName;
       // check if name of the attribute is not empty
       const isNameEmpty = !currentAttributeName.trim().length;
 
-      if (isNameUniq || isNameEmpty) {
+      if (isNameNotUniq || isNameEmpty) {
         setIsAttributeNameError(true);
 
         // check if we already have current error
@@ -119,11 +107,13 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
         }
 
         return;
+        // remove from errors if everything is ok
+      } else if (formErrors.includes(id)) {
+        setFormErrors((prevErrors) => prevErrors.filter((item) => item !== id));
+        setIsAttributeNameError(false);
       }
     }
-
-    setAttributeName(currentAttributeName, id);
-  }, [attributes, currentAttributeName, formErrors, id, setAttributeName, setFormErrors]);
+  }, [attributes, currentAttributeName, formErrors, id, setFormErrors]);
 
   const onSetAttributeType = useCallback((type: ArtificialFieldType) => {
     setAttributeType(type, id);
@@ -140,23 +130,6 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
   const onSetAttributeValues = useCallback((values: string[]) => {
     setAttributeValues(values, id);
   }, [id, setAttributeValues]);
-
-  const checkEmptyValues = useCallback(() => {
-    const nonEnumAttributes = attributes.filter((attribute) => (attribute.fieldType === 'string' && attribute.name !== 'ipfsJson')).map((item) => item.id);
-    const errors = attributes
-      .filter((attribute) => (attribute.fieldType === 'enum' || attribute.fieldType === 'repeated') && !attribute.values.length && attribute.name !== 'ipfsJson')
-      .map((item) => item.id);
-
-    setFormErrors((prevErrors) => [...prevErrors.filter((item) => nonEnumAttributes.indexOf(item) !== -1), ...errors]);
-  }, [attributes, setFormErrors]);
-
-  const onSetCurrentAttributeName = useCallback((name: string) => {
-    setCurrentAttributeName(name);
-  }, []);
-
-  useEffect(() => {
-    checkEmptyValues();
-  }, [checkEmptyValues]);
 
   useEffect(() => {
     if (attrName.current !== currentAttributeName) {
@@ -180,11 +153,12 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
         <Input
           className='isSmall'
           isError={isAttributeNameError}
-          onChange={onSetCurrentAttributeName}
+          onBlur={checkFieldsOnErrors}
+          onChange={setCurrentAttributeName}
           placeholder='Attribute name'
           value={currentAttributeName}
         />
-        { isAttributeNameError && <p className='input-error'>Type the unique name !</p> }
+        { isAttributeNameError && <p className='input-error'>Type the unique name!</p> }
       </div>
       <div className='row-section type'>
         <div className='attribute-label'>
