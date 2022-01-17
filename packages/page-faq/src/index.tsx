@@ -8,8 +8,8 @@ import React, { useCallback } from 'react';
 import { useHistory } from 'react-router';
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header';
 
-import envConfig from '@polkadot/apps-config/envConfig';
 // local imports and components
+import envConfig from '@polkadot/apps-config/envConfig';
 import { AppProps as Props } from '@polkadot/react-components/types';
 
 function Faq (): React.ReactElement<Props> {
