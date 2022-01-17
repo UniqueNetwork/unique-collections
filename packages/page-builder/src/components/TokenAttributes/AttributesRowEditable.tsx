@@ -209,6 +209,7 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
         <div className='last-section'>
           <EnumsInput
             isDisabled={attributeType === 'string'}
+            maxSymbols={40}
             setValues={onSetAttributeValues}
             values={attributeValues}
           />
