@@ -3,7 +3,7 @@
 
 import type { FieldRuleType } from '@polkadot/react-components/util/protobufUtils';
 
-import React, { memo, ReactElement, useCallback, useEffect, useState } from 'react';
+import React, { memo, ReactElement, useCallback, useEffect, useRef, useState } from 'react';
 
 import { Dropdown, HelpTooltip, Input } from '@polkadot/react-components';
 import EnumsInput from '@polkadot/react-components/EnumsInput';
@@ -81,6 +81,7 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
   const { attributeCountType, attributeName, attributeType, attributeValues, attributes, formErrors, id, isOwner, removeItem, setAttributeCountType, setAttributeName, setAttributeType, setAttributeValues, setFormErrors } = props;
   const [currentAttributeName, setCurrentAttributeName] = useState<string>(attributeName);
   const [isAttributeNameError, setIsAttributeNameError] = useState<boolean>(false);
+  const attrName = useRef<string>();
 
   const removeError = useCallback(() => {
     if (isAttributeNameError && formErrors.includes(id)) {
@@ -151,12 +152,19 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
 
   const onSetCurrentAttributeName = useCallback((name: string) => {
     setCurrentAttributeName(name);
-    onSetAttributeName();
-  }, [onSetAttributeName]);
+  }, []);
 
   useEffect(() => {
     checkEmptyValues();
   }, [checkEmptyValues]);
+
+  useEffect(() => {
+    if (attrName.current !== currentAttributeName) {
+      onSetAttributeName();
+    }
+
+    attrName.current = currentAttributeName;
+  }, [currentAttributeName, onSetAttributeName]);
 
   return (
     <div className='create-attributes'>
