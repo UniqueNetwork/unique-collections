@@ -47,7 +47,7 @@
     MIN_TED_COLLECTION: defaults('${MIN_TED_COLLECTION}', 1),
     QUOTE_ID: defaults('${QUOTE_ID}', 2),
     UNIQUE_SUBSTRATE_API: defaults('${UNIQUE_SUBSTRATE_API}', 'wss://ws-opal.unique.network'),
-    UNQ_TELEGRAM: defaults('${UNQ_TELEGRAM}', 'https://t.me/unique2faucetbot'),
+    UNQ_TELEGRAM: defaults('${UNQ_TELEGRAM}', 'https://t.me/unique2faucet_opal_bot'),
     UNQ_WALLET: defaults('${UNQ_WALLET}', 'https://wallet-opal.unique.network/#/myStuff/nft?collectionId='),
     VALUE: defaults('${VALUE}', 0),
     WHITE_LABEL_URL: defaults('${WHITE_LABEL_URL}', 'https://whitelabel.unique.network')

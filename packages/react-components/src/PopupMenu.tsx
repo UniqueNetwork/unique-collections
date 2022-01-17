@@ -13,7 +13,7 @@ const PopupMenu = (props: Props) => {
   const { isPopupActive, setIsPopupActive } = props;
 
   const goToWallet = useCallback(() => {
-    window.open('https://wallet.unique.network/', '_blank', 'noopener,noreferrer');
+    window.open('https://wallet-opal.unique.network/', '_blank', 'noopener,noreferrer');
     setIsPopupActive(false);
   }, [setIsPopupActive]);
 
