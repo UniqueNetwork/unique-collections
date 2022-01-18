@@ -23,7 +23,7 @@ const { uniqueWallet } = envConfig;
 interface CollectionCardProps {
   account: string;
   collectionId: string;
-  resetCollections: () => Promise<void>;
+  resetCollections: (collectionId: string) => Promise<void>;
 }
 
 const stepText = 'Burning collection';
@@ -63,8 +63,8 @@ function CollectionCard ({ account, collectionId, resetCollections }: Collection
       setTransactions([]);
     }, 3000);
 
-    await resetCollections();
-  }, [resetCollections, setTransactions]);
+    await resetCollections(collectionId);
+  }, [collectionId, resetCollections, setTransactions]);
 
   const onCreateNft = useCallback(() => {
     history.push(`/builder/collections/${collectionId}/new-nft`);
