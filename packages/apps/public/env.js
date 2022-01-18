@@ -31,7 +31,6 @@
   window.ENV = window.ENV || {
     DECIMALS: defaults('${DECIMALS}', 6),
     DISCORD_CHANNEL: defaults('${DISCORD_CHANNEL}', 'https://discord.com/invite/8jghD8V9PU'),
-    ESCROW_ADDRESS: defaults('${ESCROW_ADDRESS}', '5DACuDR8CXXmQS3tpGyrHZXoJ6ds7bjdRb4wVqqSt2CMfAoG'),
     FAVICON_PATH: defaults('${FAVICON_PATH}', 'favicons/marketplace'),
     GRAPH_QL_ADMIN_SECRET: defaults('${GRAPH_QL_ADMIN_SECRET}', 'hepM3wfsATBoI-ix2uhsAodr1j99MThPF5LBZJI2YtHAax7W9BIP9F8IWuzcNUC4'),
     GRAPH_QL_API: defaults('${GRAPH_QL_API}', 'https://dev-api-explorer.unique.network/v1/graphql'),
