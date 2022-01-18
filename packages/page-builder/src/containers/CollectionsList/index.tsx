@@ -55,6 +55,8 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
     console.log('collectionToRemove', collectionId);
 
     await resetCollections();
+
+    window.scrollTo(0, 0);
   }, [resetCollections]);
 
   useEffect(() => {
