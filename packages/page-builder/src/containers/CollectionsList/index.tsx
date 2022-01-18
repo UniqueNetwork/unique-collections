@@ -32,16 +32,16 @@ const limit = 10;
 function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const [searchString, setSearchString] = useState<string>('');
   const [page, setPage] = useState<number>(1);
-  const { collectionsCount, resetCollections, userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString);
-  const hasMore = userCollections.length < collectionsCount;
+  const { collectionsCount, removeCollection, userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString);
+  const hasMore = userCollections.length < collectionsCount && userCollections.length === limit * page;
   const currentAccount = useRef<string>();
   const countRef = useRef<number>();
 
   const fetchScrolledData = useCallback(() => {
-    if (!userCollectionsLoading && hasMore && userCollections.length) {
+    if (!userCollectionsLoading && hasMore) {
       setPage((prevPage: number) => prevPage + 1);
     }
-  }, [hasMore, userCollections.length, userCollectionsLoading]);
+  }, [hasMore, userCollectionsLoading]);
 
   const resetBySearchString = useCallback(() => {
     if (searchString) {
@@ -49,12 +49,10 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
     }
   }, [searchString]);
 
-  const reFetchCollections = useCallback(async () => {
-    countRef.current = 0;
-    setPage(1);
-
-    await resetCollections();
-  }, [resetCollections]);
+  const reFetchCollections = useCallback((collectionId: string) => {
+    countRef.current = collectionsCount - 1;
+    removeCollection(collectionId);
+  }, [collectionsCount, removeCollection]);
 
   useEffect(() => {
     resetBySearchString();

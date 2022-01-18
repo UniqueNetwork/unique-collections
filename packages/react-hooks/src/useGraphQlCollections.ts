@@ -26,6 +26,7 @@ export type UserCollections = {
 
 export type UseGraphQlInterface = {
   collectionsCount: number;
+  removeCollection: (collectionId: string) => void;
   resetCollections: () => Promise<void>;
   userCollections: UserCollection[];
   userCollectionsError: any;
@@ -82,6 +83,11 @@ export const useGraphQlCollections = (account: string, limit: number, offset: nu
     });
   }, [client]);
 
+  const removeCollection = useCallback((collectionId: string) => {
+    setUserCollections((prevCollections) => prevCollections.filter((collection) => collection.collection_id !== collectionId));
+    setCollectionsCount((prevCount) => prevCount > 0 ? prevCount - 1 : 0);
+  }, []);
+
   useEffect(() => {
     collectionsToLocal();
   }, [collectionsToLocal]);
@@ -104,6 +110,7 @@ export const useGraphQlCollections = (account: string, limit: number, offset: nu
 
   return {
     collectionsCount,
+    removeCollection,
     resetCollections,
     userCollections,
     userCollectionsError,
