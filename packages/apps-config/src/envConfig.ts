@@ -47,7 +47,7 @@ const envConfig: EnvConfigType = {
   imageServerUrl: window.ENV?.IMAGE_SERVER_URL || process.env.IMAGE_SERVER_URL,
   ipfsGateway: window.ENV?.IPFS_GATEWAY || process.env.IPFS_GATEWAY,
   minPrice: Number(window.ENV?.MIN_PRICE || process.env.MIN_PRICE),
-  uniqueSubstrateApi: window.ENV?.UNIQUE_SUBSTRATE_API || process.env.DECIUNIQUE_SUBSTRATE_APIMALS,
+  uniqueSubstrateApi: window.ENV?.UNIQUE_SUBSTRATE_API || process.env.UNIQUE_SUBSTRATE_API,
   uniqueTelegram: window.ENV?.UNQ_TELEGRAM || process.env.UNQ_TELEGRAM,
   uniqueWallet: window.ENV?.UNQ_WALLET || process.env.UNQ_WALLET,
   whiteLabelUrl: window.ENV?.WHITE_LABEL_URL || process.env.WHITE_LABEL_URL
