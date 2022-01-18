@@ -241,6 +241,8 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  margin-top: 80px;
+  padding: calc(var(--gap) / 2 * 3);
 }
 
 .app-balances {
@@ -483,6 +485,7 @@
 
   .menu-mobile {
     padding: var(--gap);
+    margin-top: 80px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -557,10 +560,10 @@
     width: 25%;
   }
 
-  .menu-mobile,
-  .manage-accounts {
-    margin-top: 64px;
-  }
+  // .menu-mobile,
+  // .manage-accounts {
+  //   margin-top: 80px;
+  // }
 
   .welcome {
     height: 100vh;
@@ -602,7 +605,7 @@
   }
 
   .menu-mobile {
-    margin-top: 85px;
+    margin-top: 64px;
 
     &.no-accounts {
       margin-top: 67px;
@@ -634,6 +637,10 @@
     svg {
       display: none;
     }
+  }
+  .manage-accounts {
+    margin-top: 64px;
+    padding: var(--gap);
   }
 }
 
