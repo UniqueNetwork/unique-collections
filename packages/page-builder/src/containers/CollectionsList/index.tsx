@@ -38,16 +38,23 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const countRef = useRef<number>();
 
   const fetchScrolledData = useCallback(() => {
-    if (!userCollectionsLoading && hasMore) {
+    if (!userCollectionsLoading && hasMore && userCollections.length) {
       setPage((prevPage: number) => prevPage + 1);
     }
-  }, [hasMore, userCollectionsLoading]);
+  }, [hasMore, userCollections.length, userCollectionsLoading]);
 
   const resetBySearchString = useCallback(() => {
     if (searchString) {
       setPage(1);
     }
   }, [searchString]);
+
+  const reFetchCollections = useCallback(async () => {
+    countRef.current = 0;
+    setPage(1);
+
+    await resetCollections();
+  }, [resetCollections]);
 
   useEffect(() => {
     resetBySearchString();
@@ -62,6 +69,7 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   useEffect(() => {
     if (currentAccount.current && currentAccount.current !== account) {
       countRef.current = 0;
+      setPage(1);
     }
 
     currentAccount.current = account;
@@ -101,7 +109,7 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
                     account={account}
                     collectionId={collection.collection_id}
                     key={collection.collection_id}
-                    resetCollections={resetCollections}
+                    resetCollections={reFetchCollections}
                   />
                 ))}
               </div>

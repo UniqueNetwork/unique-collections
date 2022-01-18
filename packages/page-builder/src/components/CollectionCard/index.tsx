@@ -51,7 +51,7 @@ function CollectionCard ({ account, collectionId, resetCollections }: Collection
     }
   }, [collectionId, getDetailedCollectionInfo, getCollectionTokensCount]);
 
-  const fetchCollectionList = useCallback(() => {
+  const fetchCollectionList = useCallback(async () => {
     setTransactions([
       {
         state: 'finished',
@@ -63,7 +63,7 @@ function CollectionCard ({ account, collectionId, resetCollections }: Collection
       setTransactions([]);
     }, 3000);
 
-    void resetCollections();
+    await resetCollections();
   }, [resetCollections, setTransactions]);
 
   const onCreateNft = useCallback(() => {
