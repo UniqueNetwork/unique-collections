@@ -51,7 +51,7 @@ function CollectionCard ({ account, collectionId, resetCollections }: Collection
     }
   }, [collectionId, getDetailedCollectionInfo, getCollectionTokensCount]);
 
-  const fetchCollectionList = useCallback(async () => {
+  const fetchCollectionList = useCallback(() => {
     setTransactions([
       {
         state: 'finished',
@@ -63,7 +63,7 @@ function CollectionCard ({ account, collectionId, resetCollections }: Collection
       setTransactions([]);
     }, 3000);
 
-    await resetCollections(collectionId);
+    resetCollections(collectionId);
   }, [collectionId, resetCollections, setTransactions]);
 
   const onCreateNft = useCallback(() => {
@@ -144,7 +144,8 @@ function CollectionCard ({ account, collectionId, resetCollections }: Collection
                   cancelButton='No, return'
                   className='unique-modal'
                   confirmButton='Yes, I am sure'
-                  header='Are you sure that you want to burn the collection? You will not be able to undo this action.'
+                  content={'You will not be able to undo this action'}
+                  header='Are you sure?'
                   onCancel={closeBurnModal}
                   onConfirm={onBurnCollection}
                   open={isBurnCollectionOpen}
