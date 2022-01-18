@@ -36,7 +36,6 @@
     GRAPH_QL_API: defaults('${GRAPH_QL_API}', 'https://dev-api-explorer.unique.network/v1/graphql'),
     IMAGE_SERVER_URL: defaults('${IMAGE_SERVER_URL}', 'https://dev-offchain-api.unique.network'),
     MIN_PRICE: defaults('${MIN_PRICE}', 0.000001),
-    MIN_TED_COLLECTION: defaults('${MIN_TED_COLLECTION}', 1),
     UNIQUE_SUBSTRATE_API: defaults('${UNIQUE_SUBSTRATE_API}', 'wss://ws-opal.unique.network'),
     UNQ_TELEGRAM: defaults('${UNQ_TELEGRAM}', 'https://t.me/unique2faucet_opal_bot'),
     UNQ_WALLET: defaults('${UNQ_WALLET}', 'https://wallet-opal.unique.network/#/myStuff/nft?collectionId='),
