@@ -1,7 +1,7 @@
 // Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { gql, useQuery } from '@apollo/client';
+import {gql, useApolloClient, useQuery} from '@apollo/client';
 import { useCallback, useEffect, useRef,useState } from 'react';
 
 export type UserCollection = {
@@ -26,6 +26,7 @@ export type UserCollections = {
 
 export type UseGraphQlInterface = {
   collectionsCount: number;
+  resetCollections: () => Promise<void>;
   userCollections: UserCollection[];
   userCollectionsError: any;
   userCollectionsLoading: boolean;
@@ -59,7 +60,9 @@ export const useGraphQlCollections = (account: string, limit: number, offset: nu
   }) as unknown as { data: UserCollections, error: string, loading: boolean };
   const [userCollections, setUserCollections] = useState<UserCollection[]>([]);
   const [collectionsCount, setCollectionsCount] = useState<number>(0);
+  const client = useApolloClient();
   const searchRef = useRef<string>();
+  const currentAccount = useRef<string>();
 
   const collectionsToLocal = useCallback(() => {
     if (data?.collections) {
@@ -71,24 +74,37 @@ export const useGraphQlCollections = (account: string, limit: number, offset: nu
     }
   }, [data]);
 
-  const resetCollections = useCallback(() => {
-    if (searchRef.current !== name) {
-      setUserCollections([]);
-    }
+  const resetCollections = useCallback(async () => {
+    setUserCollections([]);
 
-    searchRef.current = name;
-  }, [name]);
+    await client.refetchQueries({
+      include: ['Collections']
+    });
+  }, [client]);
 
   useEffect(() => {
     collectionsToLocal();
   }, [collectionsToLocal]);
 
   useEffect(() => {
-    resetCollections();
-  }, [resetCollections]);
+    if (searchRef.current !== name) {
+      void resetCollections();
+    }
+
+    searchRef.current = name;
+  }, [name, resetCollections]);
+
+  useEffect(() => {
+    if (currentAccount.current && currentAccount.current !== account) {
+      void resetCollections();
+    }
+
+    currentAccount.current = account;
+  }, [account, resetCollections]);
 
   return {
     collectionsCount,
+    resetCollections,
     userCollections,
     userCollectionsError,
     userCollectionsLoading
