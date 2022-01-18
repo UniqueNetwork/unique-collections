@@ -49,6 +49,7 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
   const { calculateSetConstOnChainSchemaFees, calculateSetSchemaVersionFee, getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<number[]>([]);
+  const [emptyEnums, setEmptyEnums] = useState<number[]>([]);
   const [fees, setFees] = useState<BN | null>(null);
   const history = useHistory();
   const { queueAction } = useContext(StatusContext);
@@ -334,6 +335,7 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
               setAttributeName={setAttributeName}
               setAttributeType={setAttributeType}
               setAttributeValues={setAttributeValues}
+              setEmptyEnums={setEmptyEnums}
               setFormErrors={setFormErrors}
             />
           );
@@ -368,7 +370,7 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
         />
         <UnqButton
           content='Confirm'
-          isDisabled={formErrors?.length > 0}
+          isDisabled={formErrors?.length > 0 || emptyEnums?.length > 0}
           isFilled
           onClick={onSaveAll}
           size='medium'

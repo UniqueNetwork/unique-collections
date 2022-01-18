@@ -82,19 +82,17 @@ function TokenPreview ({ attributes, collectionInfo, collectionName, constAttrib
           { !!tokenAttributes.length && (
             <div className='const-attributes'>
               <h4>Token attributes</h4>
-              { Object.keys(values).length > 0 && (
-                <div className='const-attributes--block'>
-                  { tokenAttributes.map((collectionAttribute: AttributeItemType | ArtificialAttributeItemType) => (
-                    <p
-                      className='content-text'
-                      key={collectionAttribute.name}
-                    >
-                      {collectionAttribute.name}: {values[collectionAttribute.name] || ''}
-                    </p>
-                  )
-                  )}
-                </div>
-              )}
+              <div className='const-attributes--block'>
+                { tokenAttributes.map((collectionAttribute: AttributeItemType | ArtificialAttributeItemType) => (
+                  <p
+                    className='content-text'
+                    key={collectionAttribute.name}
+                  >
+                    {collectionAttribute.name}: {values[collectionAttribute.name] || ''}
+                  </p>
+                )
+                )}
+              </div>
 
             </div>
           )}

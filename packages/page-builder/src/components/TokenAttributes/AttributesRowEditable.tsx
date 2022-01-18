@@ -68,6 +68,7 @@ interface AttributesRowEditableProps {
   id: number;
   isOwner: boolean;
   removeItem: (index: number) => void;
+  setEmptyEnums: (prevErrors: number[]) => void;
   setFormErrors: (arr: (prevErrors: number[]) => number[]) => void;
   setAttributeCountType: (attributeCountType: ArtificialFieldRuleType, index: number) => void;
   setAttributeName: (attributeName: string, index: number) => void;
@@ -78,7 +79,7 @@ interface AttributesRowEditableProps {
 }
 
 function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement {
-  const { attributeCountType, attributeName, attributeType, attributeValues, attributes, formErrors, id, isOwner, removeItem, setAttributeCountType, setAttributeName, setAttributeType, setAttributeValues, setFormErrors } = props;
+  const { attributeCountType, attributeName, attributeType, attributeValues, attributes, formErrors, id, isOwner, removeItem, setAttributeCountType, setAttributeName, setAttributeType, setAttributeValues, setEmptyEnums, setFormErrors } = props;
   const [currentAttributeName, setCurrentAttributeName] = useState<string>(attributeName);
   const [isAttributeNameError, setIsAttributeNameError] = useState<boolean>(false);
   const attrName = useRef<string>();
@@ -130,6 +131,18 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
   const onSetAttributeValues = useCallback((values: string[]) => {
     setAttributeValues(values, id);
   }, [id, setAttributeValues]);
+
+  const checkEmptyValues = useCallback(() => {
+    const enumAttributesErrors = attributes
+      .filter((attribute) => (attribute.fieldType === 'enum' || attribute.fieldType === 'repeated') && !attribute.values.length && attribute.name !== 'ipfsJson')
+      .map((item) => item.id);
+
+    setEmptyEnums(enumAttributesErrors);
+  }, [attributes]);
+
+  useEffect(() => {
+    checkEmptyValues();
+  }, [checkEmptyValues]);
 
   useEffect(() => {
     if (attrName.current !== currentAttributeName) {
