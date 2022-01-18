@@ -114,19 +114,18 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
       setImageUploading(true);
       const address: string = await uploadImg(tokenImg);
 
-      setTokenImageAddress(address);
-
       setAttributeValue({
         fieldType: 'string',
         id: 1,
         name: 'ipfsJson',
         rule: 'required',
         values: []
-      }, JSON.stringify({ ipfs: tokenImageAddress, type: 'image' }));
+      }, JSON.stringify({ ipfs: address, type: 'image' }));
 
+      setTokenImageAddress(address);
       setImageUploading(false);
     }
-  }, [setAttributeValue, tokenImageAddress, tokenImg, uploadImg]);
+  }, [setAttributeValue, tokenImg, uploadImg]);
 
   const resetData = useCallback(() => {
     resetAttributes();
