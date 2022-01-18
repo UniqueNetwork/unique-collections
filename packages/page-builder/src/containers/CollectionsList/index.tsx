@@ -32,7 +32,7 @@ const limit = 10;
 function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const [searchString, setSearchString] = useState<string>('');
   const [page, setPage] = useState<number>(1);
-  const { collectionsCount, resetCollections, userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString);
+  const { collectionsCount, removeCollection, userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString);
   const hasMore = userCollections.length < collectionsCount && userCollections.length === limit * page;
   const currentAccount = useRef<string>();
   const countRef = useRef<number>();
@@ -49,15 +49,10 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
     }
   }, [searchString]);
 
-  const reFetchCollections = useCallback(async (collectionId: string) => {
-    countRef.current = 0;
-    setPage(1);
-    console.log('collectionToRemove', collectionId);
-
-    await resetCollections();
-
-    window.scrollTo(0, 0);
-  }, [resetCollections]);
+  const reFetchCollections = useCallback((collectionId: string) => {
+    countRef.current = collectionsCount - 1;
+    removeCollection(collectionId);
+  }, [collectionsCount, removeCollection]);
 
   useEffect(() => {
     resetBySearchString();

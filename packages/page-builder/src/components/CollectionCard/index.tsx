@@ -23,7 +23,7 @@ const { uniqueWallet } = envConfig;
 interface CollectionCardProps {
   account: string;
   collectionId: string;
-  resetCollections: (collectionId: string) => Promise<void>;
+  resetCollections: (collectionId: string) => void;
 }
 
 const stepText = 'Burning collection';
