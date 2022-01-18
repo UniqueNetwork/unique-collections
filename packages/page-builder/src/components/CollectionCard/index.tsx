@@ -23,12 +23,12 @@ const { uniqueWallet } = envConfig;
 interface CollectionCardProps {
   account: string;
   collectionId: string;
-  onReRemoveCollection: (collectionId: string) => void;
+  resetCollections: () => Promise<void>;
 }
 
 const stepText = 'Burning collection';
 
-function CollectionCard ({ account, collectionId, onReRemoveCollection }: CollectionCardProps): React.ReactElement {
+function CollectionCard ({ account, collectionId, resetCollections }: CollectionCardProps): React.ReactElement {
   const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface | null>(null);
   const [collectionTokensCount, setCollectionTokensCount] = useState<number>(0);
   const [collectionInfoLoading, setCollectionInfoLoading] = useState<boolean>(false);
@@ -51,18 +51,20 @@ function CollectionCard ({ account, collectionId, onReRemoveCollection }: Collec
     }
   }, [collectionId, getDetailedCollectionInfo, getCollectionTokensCount]);
 
-  const fetchCollectionList = useCallback(() => {
+  const fetchCollectionList = useCallback(async () => {
     setTransactions([
       {
         state: 'finished',
         text: stepText
       }
     ]);
+
     setTimeout(() => {
       setTransactions([]);
     }, 3000);
-    onReRemoveCollection(collectionId);
-  }, [collectionId, onReRemoveCollection, setTransactions]);
+
+    await resetCollections();
+  }, [resetCollections, setTransactions]);
 
   const onCreateNft = useCallback(() => {
     history.push(`/builder/collections/${collectionId}/new-nft`);
@@ -84,6 +86,7 @@ function CollectionCard ({ account, collectionId, onReRemoveCollection }: Collec
         text: stepText
       }
     ]);
+
     destroyCollection({
       account,
       collectionId,

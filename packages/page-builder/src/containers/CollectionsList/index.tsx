@@ -5,7 +5,6 @@ import './styles.scss';
 
 import type { UserCollection } from '@polkadot/react-hooks/useGraphQlCollections';
 
-import { useApolloClient } from '@apollo/client';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { Route, Switch } from 'react-router';
@@ -33,47 +32,33 @@ const limit = 10;
 function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const [searchString, setSearchString] = useState<string>('');
   const [page, setPage] = useState<number>(1);
-  const { collectionsCount, userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString);
+  const { collectionsCount, resetCollections, userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString);
   const hasMore = userCollections.length < collectionsCount;
-  const client = useApolloClient();
   const currentAccount = useRef<string>();
   const countRef = useRef<number>();
 
   const fetchScrolledData = useCallback(() => {
-    if (!userCollectionsLoading && hasMore) {
+    if (!userCollectionsLoading && hasMore && userCollections.length) {
       setPage((prevPage: number) => prevPage + 1);
     }
-  }, [hasMore, userCollectionsLoading]);
-
-  const reFetchCollections = useCallback(async () => {
-    await client.refetchQueries({
-      include: ['Collections']
-    });
-  }, [client]);
-
-  const refillCollections = useCallback(() => {
-    if (currentAccount.current && currentAccount.current !== account) {
-      setPage(1);
-      currentAccount.current = account;
-      void reFetchCollections();
-    }
-  }, [account, reFetchCollections]);
+  }, [hasMore, userCollections.length, userCollectionsLoading]);
 
   const resetBySearchString = useCallback(() => {
     if (searchString) {
       setPage(1);
-
-      void reFetchCollections();
     }
-  }, [searchString, reFetchCollections]);
+  }, [searchString]);
+
+  const reFetchCollections = useCallback(async () => {
+    countRef.current = 0;
+    setPage(1);
+
+    await resetCollections();
+  }, [resetCollections]);
 
   useEffect(() => {
     resetBySearchString();
   }, [resetBySearchString]);
-
-  useEffect(() => {
-    refillCollections();
-  }, [refillCollections]);
 
   useEffect(() => {
     if (!countRef.current && collectionsCount && !searchString) {
@@ -81,7 +66,14 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
     }
   }, [collectionsCount, searchString]);
 
-  // console.log('countRef.current', countRef.current, 'collectionsCount', collectionsCount, 'searchString', searchString);
+  useEffect(() => {
+    if (currentAccount.current && currentAccount.current !== account) {
+      countRef.current = 0;
+      setPage(1);
+    }
+
+    currentAccount.current = account;
+  }, [account]);
 
   return (
     <div className='collections-list'>
@@ -100,7 +92,7 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
             { (!countRef.current && !collectionsCount && !userCollectionsLoading && !searchString) && (
               <NoCollections />
             )}
-            { (!collectionsCount && countRef.current && !userCollectionsLoading && searchString) && (
+            { !!(!collectionsCount && countRef.current && !userCollectionsLoading && searchString) && (
               <NoCollectionsFound />
             )}
             <InfiniteScroll
@@ -117,7 +109,7 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
                     account={account}
                     collectionId={collection.collection_id}
                     key={collection.collection_id}
-                    onReRemoveCollection={reFetchCollections}
+                    resetCollections={reFetchCollections}
                   />
                 ))}
               </div>
