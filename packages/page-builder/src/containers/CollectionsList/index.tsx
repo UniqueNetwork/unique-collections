@@ -61,7 +61,6 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   useEffect(() => {
     if (!countRef.current && collectionsCount && !searchString) {
       countRef.current = collectionsCount;
-      console.log('countRef', countRef);
     }
   }, [collectionsCount, searchString]);
 
