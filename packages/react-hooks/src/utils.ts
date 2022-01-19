@@ -8,8 +8,8 @@ import type { AccountId } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
 
 import envConfig from '@polkadot/apps-config/envConfig';
-import { formatBalance } from '@polkadot/util';
 import { IKeyringPair } from '@polkadot/types/types';
+import { formatBalance } from '@polkadot/util';
 
 const { decimals, minPrice } = envConfig;
 
@@ -73,8 +73,8 @@ export function normalizeAccountId (input: string | AccountId | CrossAccountId |
 }
 
 export function formatStrBalance (value: BN | undefined = new BN(0)): string {
-  if (!value) {
-    return '';
+  if (!value || value.toString() === '0') {
+    return '0';
   }
 
   const tokenDecimals = formatBalance.getDefaults().decimals;
