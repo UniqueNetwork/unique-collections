@@ -34,7 +34,7 @@ export type UseGraphQlInterface = {
 
 const USER_COLLECTIONS = gql`
   query Collections($limit: Int!, $offset: Int!, $owner: String!, $name: String!) {
-    collections(limit: $limit, offset: $offset, where: { owner: { _eq: $owner }, name: { _ilike: $name } }) {
+    collections(limit: $limit, offset: $offset, order_by: {collection_id: desc}, where: { owner: { _eq: $owner }, name: { _ilike: $name } }) {
       collection_id
       description
       name
