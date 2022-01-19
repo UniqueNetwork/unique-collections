@@ -33,7 +33,7 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const [searchString, setSearchString] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [removedIds, setRemovedIds] = useState<string[]>([]);
-  const { collectionsCount, userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString);
+  const { collectionsCount, userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString.trim());
   const hasMore = userCollections.length < collectionsCount;
   const currentAccount = useRef<string>();
   const countRef = useRef<number>();
