@@ -46,7 +46,7 @@
 
   .create-attributes {
     display: grid;
-    grid-template-columns: 2fr 120px 105px 2fr 40px;
+    grid-template-columns: 236px 120px 105px 2fr 40px;
     padding: calc(var(--gap) / 4) 16px 4px 0;
     border-bottom: 1px solid var(--border-color);
     column-gap:calc(var(--gap) / 2);
