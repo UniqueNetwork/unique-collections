@@ -21,6 +21,10 @@ function CreateCollectionOrSearch ({ hasCollections, searchString, setSearchStri
     setSearchString('');
   }, [setSearchString]);
 
+  const onSetSearchString = useCallback((searchStr: string) => {
+    setSearchString(searchStr.trim());
+  }, [setSearchString]);
+
   const onCreateCollection = useCallback(() => {
     history.push('/builder/new-collection');
   }, [history]);
@@ -44,7 +48,7 @@ function CreateCollectionOrSearch ({ hasCollections, searchString, setSearchStri
               src={searchIcon as string}
             />
           }
-          onChange={setSearchString}
+          onChange={onSetSearchString}
           placeholder='Search'
           value={searchString}
           withLabel
