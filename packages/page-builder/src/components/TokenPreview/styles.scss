@@ -11,8 +11,8 @@
   }
 
   .token-preview-content{
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 160px 1fr;
     gap: calc((var(--gap) / 2) * 3);;
     padding-top: calc((var(--gap) / 2) * 3);
     font-family: var(--font-roboto);
