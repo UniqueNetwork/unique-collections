@@ -138,7 +138,7 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
       .map((item) => item.id);
 
     setEmptyEnums(enumAttributesErrors);
-  }, [attributes]);
+  }, [attributes, setEmptyEnums]);
 
   useEffect(() => {
     checkEmptyValues();
@@ -166,6 +166,7 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
         <Input
           className='isSmall'
           isError={isAttributeNameError}
+          maxLength={40}
           onBlur={checkFieldsOnErrors}
           onChange={setCurrentAttributeName}
           placeholder='Attribute name'

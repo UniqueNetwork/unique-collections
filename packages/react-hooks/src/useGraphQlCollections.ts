@@ -1,8 +1,8 @@
 // Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import {gql, useApolloClient, useQuery} from '@apollo/client';
-import { useCallback, useEffect, useRef,useState } from 'react';
+import { gql, useApolloClient, useQuery } from '@apollo/client';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 export type UserCollection = {
   'collection_id': string;
@@ -26,7 +26,6 @@ export type UserCollections = {
 
 export type UseGraphQlInterface = {
   collectionsCount: number;
-  removeCollection: (collectionId: string) => void;
   resetCollections: () => Promise<void>;
   userCollections: UserCollection[];
   userCollectionsError: any;
@@ -35,7 +34,7 @@ export type UseGraphQlInterface = {
 
 const USER_COLLECTIONS = gql`
   query Collections($limit: Int!, $offset: Int!, $owner: String!, $name: String!) {
-    collections(limit: $limit, offset: $offset, where: { owner: { _eq: $owner }, name: { _ilike: $name } }) {
+    collections(limit: $limit, offset: $offset, order_by: {collection_id: desc}, where: { owner: { _eq: $owner }, name: { _ilike: $name } }) {
       collection_id
       description
       name
@@ -83,11 +82,6 @@ export const useGraphQlCollections = (account: string, limit: number, offset: nu
     });
   }, [client]);
 
-  const removeCollection = useCallback((collectionId: string) => {
-    setUserCollections((prevCollections) => prevCollections.filter((collection) => collection.collection_id !== collectionId));
-    setCollectionsCount((prevCount) => prevCount > 0 ? prevCount - 1 : 0);
-  }, []);
-
   useEffect(() => {
     collectionsToLocal();
   }, [collectionsToLocal]);
@@ -110,7 +104,6 @@ export const useGraphQlCollections = (account: string, limit: number, offset: nu
 
   return {
     collectionsCount,
-    removeCollection,
     resetCollections,
     userCollections,
     userCollectionsError,

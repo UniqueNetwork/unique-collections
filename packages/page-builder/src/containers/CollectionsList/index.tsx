@@ -32,7 +32,8 @@ const limit = 10;
 function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   const [searchString, setSearchString] = useState<string>('');
   const [page, setPage] = useState<number>(1);
-  const { collectionsCount, removeCollection, userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString);
+  const [removedIds, setRemovedIds] = useState<string[]>([]);
+  const { collectionsCount, userCollections, userCollectionsLoading } = useGraphQlCollections(account, limit, (page - 1) * limit, searchString.trim());
   const hasMore = userCollections.length < collectionsCount;
   const currentAccount = useRef<string>();
   const countRef = useRef<number>();
@@ -50,9 +51,15 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
   }, [searchString]);
 
   const reFetchCollections = useCallback((collectionId: string) => {
-    countRef.current = collectionsCount - 1;
-    removeCollection(collectionId);
-  }, [collectionsCount, removeCollection]);
+    if (!removedIds.includes(collectionId)) {
+      countRef.current = collectionsCount - 1;
+      setRemovedIds((prev) => [...prev, collectionId]);
+    }
+  }, [collectionsCount, removedIds]);
+
+  const actualizeRemoved = useCallback(() => {
+    setRemovedIds((prevRemoved) => prevRemoved.filter((id) => userCollections.find((collection) => collection.collection_id === id)));
+  }, [userCollections]);
 
   useEffect(() => {
     resetBySearchString();
@@ -73,6 +80,10 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
     currentAccount.current = account;
   }, [account]);
 
+  useEffect(() => {
+    actualizeRemoved();
+  }, [actualizeRemoved]);
+
   return (
     <div className='collections-list'>
       <Switch>
@@ -87,10 +98,10 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
             setSearchString={setSearchString}
           />
           <div className='collections-list--collections'>
-            { (!countRef.current && !collectionsCount && !userCollectionsLoading && !searchString) && (
+            { (!countRef.current && !(collectionsCount - removedIds.length) && !userCollectionsLoading && !searchString) && (
               <NoCollections />
             )}
-            { !!(!collectionsCount && countRef.current && !userCollectionsLoading && searchString) && (
+            { !!(!(collectionsCount - removedIds.length) && countRef.current && !userCollectionsLoading && searchString) && (
               <NoCollectionsFound />
             )}
             <InfiniteScroll
@@ -102,7 +113,7 @@ function CollectionsList ({ account, basePath }: Props): React.ReactElement {
               useWindow={true}
             >
               <div className='market-pallet__item'>
-                { userCollections?.map((collection: UserCollection) => (
+                { userCollections?.filter((collection) => !removedIds.includes(collection.collection_id)).map((collection: UserCollection) => (
                   <CollectionCard
                     account={account}
                     collectionId={collection.collection_id}
