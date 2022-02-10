@@ -128,6 +128,14 @@
     &.authorize-transaction {
       .actions {
         padding: 0 !important;
+        .close-btn {
+          top: 35px;
+          right: 16px;
+        }
+      }
+      .ui--Modal-Column {
+        padding: 0;
+        margin: 0;
       }
     }
   }
@@ -164,6 +172,9 @@
         }
       }
       &.authorize-transaction {
+        .header {
+          margin-right: 48px !important;
+        }
         .actions {
           > div:last-of-type {
             width: 100%;
@@ -218,6 +229,20 @@
 
       .content {
         padding: 16px !important;
+      }
+
+      &.authorize-transaction {
+        .header {
+          font-size: 24px !important;
+          line-height: 36px !important;
+          font-weight: 700 !important;
+          padding: 0 !important;
+        }
+        .content {
+          padding: 0 !important;
+          margin-top: calc(var(--gap) / 2 * 3);
+          margin-bottom: calc(var(--gap) * 2);
+        }
       }
     }
   }

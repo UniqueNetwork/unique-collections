@@ -346,10 +346,9 @@ function TxSigned ({ className, currentItem, requestAddress }: Props): React.Rea
       </Modal.Content>
       <Modal.Actions onCancel={_onCancel}>
         <Button
-          icon={
-            flags.isQr
-              ? 'qrcode'
-              : 'sign-in-alt'
+          icon={flags.isQr
+            ? 'qrcode'
+            : undefined
           }
           isBusy={isBusy}
           isDisabled={!senderInfo.signAddress || isRenderError}
