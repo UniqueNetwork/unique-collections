@@ -24,7 +24,7 @@ body {
 .ui.popup {
   background: var(--bg-page) !important;
 
-  a{
+  a {
     color: unset;
     cursor: pointer;
     text-decoration: underline;
@@ -88,7 +88,7 @@ h1.ui.header {
 }
 
 h2.ui.header {
-  font: 700 28px/38px var(--font-inter);
+  font: 700 28px/42px var(--font-inter);
   color: var(--title-color);
   margin-bottom: calc(var(--gap) / 2);
 }
@@ -198,7 +198,7 @@ h4.ui.header {
     height: 48px;
 
     & .menu > .item {
-      padding: 8px calc( (var(--gap) / 2) * 5) !important;
+      padding: calc(var(--gap)/2) calc((var(--gap) / 2) * 5) !important;
     }
   }
 
@@ -247,11 +247,11 @@ h4.ui.header {
   color: var(--text-color);
 
   &:after {
-    left: calc(50% - 12px);;
+    left: calc(50% - 12px);
   }
 
   &:before {
-    left: calc(50% - 12px);;
+    left: calc(50% - 12px);
   }
 
   .load-more {
@@ -412,7 +412,9 @@ form {
   padding: 1rem var(--gap);
 }
 
-button.ui.button, .button-link, .ui--Button {
+button.ui.button,
+.button-link,
+.ui--Button {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -621,10 +623,10 @@ button.ui.button, .button-link, .ui--Button {
   border-radius: 4px;
   padding: 32px;
 
-  &.empty{
+  &.empty {
     height: 100%;
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
   }
@@ -657,7 +659,6 @@ button.ui.button, .button-link, .ui--Button {
 
 .ui--Labelled {
   .ui.input.ui--Input {
-
     &.left {
       input {
         padding-right: 4rem !important;
@@ -688,31 +689,6 @@ button.ui.button, .button-link, .ui--Button {
     input {
       border-radius: 4px;
       height: 40px;
-    }
-  }
-}
-
-.modalDescription {
-  display: flex;
-  background-color: var(--modal-warning-background-color);
-  font-size: 14px;
-  font-family: var(--font-roboto);
-  line-height: 22px;
-  border-radius: 4px;
-  padding: 8px 10.25px;
-  margin: 0 !important;
-
-  img{
-    margin-right: 10.25px;
-  }
-
-  div {
-
-    p {
-      margin: 0;
-      color:var(--modal-warning-text-color);
-      font-family: var(--font-roboto);
-      padding: 0.3rem 1.5rem 0 0 !important;
     }
   }
 }
@@ -750,26 +726,28 @@ button.ui.button, .button-link, .ui--Button {
   background-color: rgba(0, 0, 0, 0.7) !important;
 }
 
-.shadow-block {
-  padding: calc(var(--gap) * 2);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-radius: calc(var(--gap) / 4);
-  background-color: var(--white-color);
+@media (min-width: 1280px) {
+  .shadow-block {
+    padding: calc(var(--gap) * 2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: calc(var(--gap) / 4);
+    background-color: var(--white-color);
+  }
+}
+
+@media (max-width: 1279px) {
+  h1.ui.header {
+    margin-bottom: calc(var(--gap) / 2 * 3);
+  }
 }
 
 @media (max-width: 1023px) {
   h1.ui.header {
-    margin-top: calc(var(--gap) * 1.5) !important;
-    padding: 0 var(--gap);
-  }
-
-  .shadow-block {
-    padding-left: calc((var(--gap) / 2) * 3) !important;
-    padding-right: calc((var(--gap) / 2) * 3) !important;
+    font-size: 28px;
+    line-height: 42px;
   }
 
   .ui.page.modals {
-
     .ui--Modal.modal {
       .ui--Row-address {
         font-size: 14px !important;
@@ -777,13 +755,12 @@ button.ui.button, .button-link, .ui--Button {
       }
 
       .content {
-
         .TextAreaWithDropdown {
           flex-direction: column;
 
           .ui--CopyButton.copyMoved {
             right: 13px;
-            top: 13px
+            top: 13px;
           }
 
           .ui.buttons {
@@ -796,14 +773,11 @@ button.ui.button, .button-link, .ui--Button {
 }
 
 @media (max-width: 768px) {
+  h1.ui.header {
+    margin-bottom: var(--gap);
+  }
   .ui.grid > .row {
     display: grid;
   }
 }
 
-@media (max-width: 320px) {
-  .shadow-block {
-    padding-left: var(--gap) !important;
-    padding-right: var(--gap) !important;
-  }
-}

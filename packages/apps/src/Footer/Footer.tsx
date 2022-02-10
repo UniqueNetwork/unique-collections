@@ -114,7 +114,7 @@ export default memo(styled(Footer)`
     color: var(--link-color);
   }
 
-  @media (max-width: 1023px) {
+  @media (max-width: 1279px) {
     border-top: 1px solid var(--enum-input-border-disabled-color);
   }
 

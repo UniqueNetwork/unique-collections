@@ -1,18 +1,18 @@
-.main-information{
+.main-information {
   background-color: var(--white-color);
   font-family: var(--font-roboto);
 
-  .header-text{
+  .header-text {
     font-family: var(--font-inter);
     font-weight: bold;
     font-size: 28px;
     line-height: 42px;
   }
 
-  .info-block{
+  .info-block {
     margin-top: calc(var(--gap) * 2);
 
-    h2{
+    h2 {
       color: var(--title-color);
       font-family: var(--font-roboto);
       font-weight: 500;
@@ -31,16 +31,18 @@
   }
 }
 
-@media (max-width: 767px) {
-  .main-information{
-    box-shadow: none;
-    padding: var(--gap);
+@media (max-width: 1023px) {
+  .main-information {
+    .header-text {
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 28px;
+    }
   }
 }
 
-@media (max-width: 320px) {
-  .main-information{
+@media (max-width: 767px) {
+  .main-information {
     box-shadow: none;
-    padding: var(--gap);
   }
 }

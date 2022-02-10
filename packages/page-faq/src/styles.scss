@@ -2,15 +2,15 @@
   font-family: var(--font-inter);
 
   .faq {
-    margin-top: calc(var(--gap) * 2);
+    margin-top: calc(var(--gap) / 2 * 3);
 
     h4.ui.header {
       font-family: var(--font-inter);
-      font-weight: bold;
-      font-size: 18px;
-      line-height: 26px;
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 28px;
       margin-top: calc(var(--gap) * 2);
-      margin-bottom: 12px;
+      margin-bottom: calc(var(--gap) / 2);
       min-height: 0;
       letter-spacing: normal;
 
