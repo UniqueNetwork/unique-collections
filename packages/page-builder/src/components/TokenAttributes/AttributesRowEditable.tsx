@@ -99,7 +99,9 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
       // check if name of the attribute is not empty
       const isNameEmpty = !currentAttributeName.trim().length;
 
-      if (isNameNotUniq || isNameEmpty) {
+      const isStartWithDigit = /^\d/.test(currentAttributeName.trim());
+
+      if (isNameNotUniq || isNameEmpty || isStartWithDigit) {
         setIsAttributeNameError(true);
 
         // check if we already have current error
@@ -172,7 +174,7 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
           placeholder='Attribute name'
           value={currentAttributeName}
         />
-        { isAttributeNameError && <p className='input-error'>Type the unique name!</p> }
+        { isAttributeNameError && <p className='input-error'>Type the unique name using letters only!</p> }
       </div>
       <div className='row-section type'>
         <div className='attribute-label'>
