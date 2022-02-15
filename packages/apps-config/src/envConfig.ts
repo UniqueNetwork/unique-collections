@@ -48,7 +48,7 @@ const envConfig: EnvConfigType = {
   ipfsGateway: window.ENV?.IPFS_GATEWAY || process.env.IPFS_GATEWAY,
   minPrice: Number(window.ENV?.MIN_PRICE || process.env.MIN_PRICE),
   uniqueSubstrateApi: window.ENV?.UNIQUE_SUBSTRATE_API || process.env.UNIQUE_SUBSTRATE_API,
-  uniqueTelegram: window.ENV?.UNQ_TELEGRAM || process.env.UNQ_TELEGRAM,
+  uniqueTelegram: window.ENV?.UNQ_TELEGRAM === "" ? "" : process.env.UNQ_TELEGRAM,
   uniqueWallet: window.ENV?.UNQ_WALLET || process.env.UNQ_WALLET,
   whiteLabelUrl: window.ENV?.WHITE_LABEL_URL || process.env.WHITE_LABEL_URL
 };
