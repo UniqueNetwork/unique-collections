@@ -25,11 +25,15 @@ function CollectionBuilder (props: Props): React.ReactElement {
 
   const uniqueTelegram = envConfig?.uniqueTelegram;
 
-  const checkDisclaimer = uniqueTelegram ? useCallback(() => {
+  const checkDisclaimer = useCallback(() => {
+    if (!uniqueTelegram) {
+      toggleDisclaimer(false);
+      return;
+    }
     const builderDisclaimer = localStorage.getItem('BUILDER_DISCLAIMER');
 
     toggleDisclaimer(!account || builderDisclaimer !== 'accepted');
-  }, [account]) : () => {};
+  }, [account, uniqueTelegram]);
 
   useEffect(() => {
     checkDisclaimer();
