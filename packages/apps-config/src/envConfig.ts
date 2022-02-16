@@ -42,7 +42,7 @@ const envConfig: EnvConfigType = {
   discordChannel: window.ENV?.DISCORD_CHANNEL || process.env.DISCORD_CHANNEL,
   environment: window.ENV?.ENVIRONMENT || process.env.ENVIRONMENT,
   faviconPath: window.ENV?.FAVICON_PATH || process.env.FAVICON_PATH,
-  graphQlAdminSecret: window.ENV?.GRAPH_QL_ADMIN_SECRET || process.env.GRAPH_QL_ADMIN_SECRET,
+  graphQlAdminSecret: window.ENV?.GRAPH_QL_ADMIN_SECRET === "" ? "" || process.env.GRAPH_QL_ADMIN_SECRET,
   graphQlApi: window.ENV?.GRAPH_QL_API || process.env.GRAPH_QL_API,
   imageServerUrl: window.ENV?.IMAGE_SERVER_URL || process.env.IMAGE_SERVER_URL,
   ipfsGateway: window.ENV?.IPFS_GATEWAY || process.env.IPFS_GATEWAY,
