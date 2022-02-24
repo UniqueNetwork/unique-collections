@@ -5,11 +5,12 @@ import type { ThemeDef } from '@polkadot/react-components/types';
 
 import nf4Digital from '../public/logos/nf4Digital.png';
 import UniqueLogo from '../public/logos/unique.svg';
+import MinterLogo from '../public/logos/minter.svg';
 import Vernissage from '../public/logos/vernissage.svg';
 
 export const uniqueTheme: ThemeDef = {
   domain: 'whitelabel.market',
-  logo: UniqueLogo as string,
+  logo: MinterLogo as string,
   theme: 'Unique'
 };
 

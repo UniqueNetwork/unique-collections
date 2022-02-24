@@ -42,13 +42,13 @@ const envConfig: EnvConfigType = {
   discordChannel: window.ENV?.DISCORD_CHANNEL || process.env.DISCORD_CHANNEL,
   environment: window.ENV?.ENVIRONMENT || process.env.ENVIRONMENT,
   faviconPath: window.ENV?.FAVICON_PATH || process.env.FAVICON_PATH,
-  graphQlAdminSecret: window.ENV?.GRAPH_QL_ADMIN_SECRET || process.env.GRAPH_QL_ADMIN_SECRET,
+  graphQlAdminSecret: window.ENV?.GRAPH_QL_ADMIN_SECRET === "" ? "" : process.env.GRAPH_QL_ADMIN_SECRET,
   graphQlApi: window.ENV?.GRAPH_QL_API || process.env.GRAPH_QL_API,
   imageServerUrl: window.ENV?.IMAGE_SERVER_URL || process.env.IMAGE_SERVER_URL,
   ipfsGateway: window.ENV?.IPFS_GATEWAY || process.env.IPFS_GATEWAY,
   minPrice: Number(window.ENV?.MIN_PRICE || process.env.MIN_PRICE),
   uniqueSubstrateApi: window.ENV?.UNIQUE_SUBSTRATE_API || process.env.UNIQUE_SUBSTRATE_API,
-  uniqueTelegram: window.ENV?.UNQ_TELEGRAM || process.env.UNQ_TELEGRAM,
+  uniqueTelegram: window.ENV?.UNQ_TELEGRAM === "" ? "" : process.env.UNQ_TELEGRAM,
   uniqueWallet: window.ENV?.UNQ_WALLET || process.env.UNQ_WALLET,
   whiteLabelUrl: window.ENV?.WHITE_LABEL_URL || process.env.WHITE_LABEL_URL
 };

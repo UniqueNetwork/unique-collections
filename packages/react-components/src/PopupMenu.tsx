@@ -3,6 +3,7 @@
 
 import React, { memo, useCallback } from 'react';
 import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu';
+import envConfig from '@polkadot/apps-config/envConfig';
 
 interface Props {
   isPopupActive?: boolean
@@ -13,7 +14,7 @@ const PopupMenu = (props: Props) => {
   const { isPopupActive, setIsPopupActive } = props;
 
   const goToWallet = useCallback(() => {
-    window.open('https://wallet-opal.unique.network/', '_blank', 'noopener,noreferrer');
+    window.open(envConfig.uniqueWallet, '_blank', 'noopener,noreferrer');
     setIsPopupActive(false);
   }, [setIsPopupActive]);
 

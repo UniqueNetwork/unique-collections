@@ -10,6 +10,7 @@ import { AppProps as Props } from '@polkadot/react-components/types';
 import Disclaimer from './components/Disclaimer';
 import Builder from './Builder';
 import Transactions from './TransactionContext';
+import envConfig from '@polkadot/apps-config/envConfig';
 
 function CollectionBuilder (props: Props): React.ReactElement {
   // const { allAccounts } = useAccounts();
@@ -22,11 +23,17 @@ function CollectionBuilder (props: Props): React.ReactElement {
    */
   const [showDisclaimer, toggleDisclaimer] = useState<boolean>(false);
 
+  const uniqueTelegram = envConfig?.uniqueTelegram;
+
   const checkDisclaimer = useCallback(() => {
+    if (!uniqueTelegram) {
+      toggleDisclaimer(false);
+      return;
+    }
     const builderDisclaimer = localStorage.getItem('BUILDER_DISCLAIMER');
 
     toggleDisclaimer(!account || builderDisclaimer !== 'accepted');
-  }, [account]);
+  }, [account, uniqueTelegram]);
 
   useEffect(() => {
     checkDisclaimer();
