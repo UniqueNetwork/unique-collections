@@ -25,7 +25,7 @@ function Stepper (): React.ReactElement {
   }, [collectionId, history, location]);
 
   return (
-    <div className='stepper-main'>
+    <div className='stepper-main shadow-block'>
       <div className='steps'>
         <div
           className={`${location.pathname.includes('/main-information') ? 'step active-step' : 'step'}`}

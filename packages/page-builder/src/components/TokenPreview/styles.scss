@@ -1,10 +1,4 @@
-.token-preview{
-  background: var(--white-color);
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  padding: calc(var(--gap)*2);
+.token-preview {
 
   .token-preview-header{
     color: var(--title-color);
@@ -17,8 +11,8 @@
   }
 
   .token-preview-content{
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 160px 1fr;
     gap: calc((var(--gap) / 2) * 3);;
     padding-top: calc((var(--gap) / 2) * 3);
     font-family: var(--font-roboto);
@@ -33,7 +27,9 @@
       width: 160px;
 
       img {
+        object-fit: cover;
         height: 100%;
+        width: 100%;
       }
     }
 
@@ -69,7 +65,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .token-preview{
     box-shadow: none;
   }

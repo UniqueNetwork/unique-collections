@@ -16,19 +16,7 @@
   }
 }
 
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .accounts--App {
-
-  }
-}
-
-@media (min-width: 1024px) {
-  .accounts--App {
-
-  }
-}
-
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .accounts--App {
     background-color: var(--card-background);
 
@@ -45,8 +33,3 @@
     }
   }
 }
-
-@media (max-width: 768px) {
-
-}
-

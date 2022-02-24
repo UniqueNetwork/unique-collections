@@ -5,24 +5,30 @@ import './styles.scss';
 
 import type { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader';
 
+import TransactionContext from '@polkadot/app-builder/TransactionContext/TransactionContext';
+import envConfig from '@polkadot/apps-config/envConfig';
 import { UnqButton } from '@polkadot/react-components';
 import { useCollection, useDecoder } from '@polkadot/react-hooks';
 
 import burnIcon from '../../images/burnIcon.svg';
 import CollectionCover from './CollectionCover';
 
+const { uniqueWallet } = envConfig;
+
 interface CollectionCardProps {
   account: string;
   collectionId: string;
-  onReRemoveCollection: (collectionId: string) => void;
+  resetCollections: (collectionId: string) => void;
 }
 
-function CollectionCard ({ account, collectionId, onReRemoveCollection }: CollectionCardProps): React.ReactElement {
+const stepText = 'Burning collection';
+
+function CollectionCard ({ account, collectionId, resetCollections }: CollectionCardProps): React.ReactElement {
   const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface | null>(null);
   const [collectionTokensCount, setCollectionTokensCount] = useState<number>(0);
   const [collectionInfoLoading, setCollectionInfoLoading] = useState<boolean>(false);
@@ -30,6 +36,7 @@ function CollectionCard ({ account, collectionId, onReRemoveCollection }: Collec
   const { destroyCollection, getCollectionTokensCount, getDetailedCollectionInfo } = useCollection();
   const history = useHistory();
   const { collectionName16Decoder, hex2a } = useDecoder();
+  const { setTransactions } = useContext(TransactionContext);
 
   const fetchCollectionInfo = useCallback(async () => {
     if (collectionId) {
@@ -45,8 +52,19 @@ function CollectionCard ({ account, collectionId, onReRemoveCollection }: Collec
   }, [collectionId, getDetailedCollectionInfo, getCollectionTokensCount]);
 
   const fetchCollectionList = useCallback(() => {
-    onReRemoveCollection(collectionId);
-  }, [collectionId, onReRemoveCollection]);
+    setTransactions([
+      {
+        state: 'finished',
+        text: stepText
+      }
+    ]);
+
+    setTimeout(() => {
+      setTransactions([]);
+    }, 3000);
+
+    resetCollections(collectionId);
+  }, [collectionId, resetCollections, setTransactions]);
 
   const onCreateNft = useCallback(() => {
     history.push(`/builder/collections/${collectionId}/new-nft`);
@@ -62,17 +80,31 @@ function CollectionCard ({ account, collectionId, onReRemoveCollection }: Collec
 
   const onBurnCollection = useCallback(() => {
     setIsBurnCollectionOpen(false);
-    destroyCollection({ account, collectionId, successCallback: fetchCollectionList });
-  }, [account, collectionId, destroyCollection, fetchCollectionList]);
+    setTransactions([
+      {
+        state: 'active',
+        text: stepText
+      }
+    ]);
+
+    destroyCollection({
+      account,
+      collectionId,
+      errorCallback: setTransactions.bind(null, []),
+      successCallback: fetchCollectionList
+    });
+  }, [account, collectionId, destroyCollection, fetchCollectionList, setTransactions]);
+
+  const onWallet = useCallback(() => {
+    window.open(`${uniqueWallet}${collectionId}`, '_blank', 'noopener, noreferrer');
+  }, [collectionId]);
 
   useEffect(() => {
     void fetchCollectionInfo();
   }, [fetchCollectionInfo]);
 
-  console.log('collectionInfo', collectionInfo, 'collectionTokensCount', collectionTokensCount);
-
   return (
-    <div className='collection-card'>
+    <div className='collection-card shadow-block'>
       { collectionInfoLoading && (
         <Loader
           active
@@ -112,7 +144,8 @@ function CollectionCard ({ account, collectionId, onReRemoveCollection }: Collec
                   cancelButton='No, return'
                   className='unique-modal'
                   confirmButton='Yes, I am sure'
-                  header='Are you sure that you want to burn the collection? You will not be able to undo this action.'
+                  content={'You will not be able to undo this action'}
+                  header='Are you sure?'
                   onCancel={closeBurnModal}
                   onConfirm={onBurnCollection}
                   open={isBurnCollectionOpen}
@@ -143,6 +176,7 @@ function CollectionCard ({ account, collectionId, onReRemoveCollection }: Collec
               />
               <UnqButton
                 content='Go to Wallet'
+                onClick={onWallet}
               />
             </div>
           </div>

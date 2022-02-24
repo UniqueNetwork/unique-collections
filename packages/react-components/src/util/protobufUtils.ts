@@ -52,7 +52,7 @@ function defineMessage (protobufJson: ProtobufAttributeType) {
   return Root.fromJSON(protobufJson);
 }
 
-export function serializeNft (onChainSchema: ProtobufAttributeType, payload: { [key: string]: number | number[] | string }): Uint8Array {
+export function serializeNft (onChainSchema: ProtobufAttributeType, payload: { [key: string]: number | number[] | string [] | string | null }): Uint8Array {
   try {
     const root = defineMessage(onChainSchema);
     const NFTMeta = root.lookupType('onChainMetaData.NFTMeta');
@@ -110,7 +110,7 @@ export function deserializeNft (onChainSchema: ProtobufAttributeType, buffer: Ui
     const objectItem = NFTMeta.toObject(message, {
       arrays: true, // populates empty arrays (repeated fields) even if defaults=false
       bytes: String, // bytes as base64 encoded strings
-      defaults: true, // includes default values
+      defaults: false, // includes default values
       enums: String, // enums as string names
       longs: String, // longs as strings (requires long.js)
       objects: true, // populates empty objects (map fields) even if defaults=false

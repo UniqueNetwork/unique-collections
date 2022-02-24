@@ -78,8 +78,9 @@ export const useImageService = (): UseImageServiceInterface => {
     }).then((response) => response.json())
       .then((data: UploadDataInterface) => {
         data.success && data.address ? address = data.address : showError(data.error);
-      }).catch((error) => {
+      }).catch((error: string) => {
         console.log('error ', error);
+        showError('ERR_INVALID_PAYLOAD');
       });
 
     return address;

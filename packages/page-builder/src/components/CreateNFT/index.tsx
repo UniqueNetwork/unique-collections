@@ -6,9 +6,10 @@ import './styles.scss';
 import type { TokenAttribute } from '../../types';
 
 import BN from 'bn.js';
-import React, { memo, SyntheticEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, SyntheticEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 
+import TransactionContext from '@polkadot/app-builder/TransactionContext/TransactionContext';
 import { Checkbox, UnqButton } from '@polkadot/react-components';
 import { AttributeItemType, ProtobufAttributeType, serializeNft } from '@polkadot/react-components/util/protobufUtils';
 import { useImageService, useIsMountedRef, useToken } from '@polkadot/react-hooks';
@@ -47,18 +48,22 @@ interface IValueType {
   values?: number[] | undefined
 }
 
+const transactionText = 'Creating token and saving it to blockchain';
+
 function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, constOnChainSchema, isOwner, resetAttributes, setTokenConstAttributes, setTokenImg, tokenConstAttributes, tokenImg }: CreateNFTProps): React.ReactElement {
   const { calculateCreateItemFee, createNft, getDetailedTokenInfo } = useToken();
   const [createFees, setCreateFees] = useState<BN | null>(null);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [imageUploading, setImageUploading] = useState<boolean>(false);
   const [tokenImageAddress, setTokenImageAddress] = useState<string>();
   const [createAnother, setCreateAnother] = useState<boolean>(false);
   const inputFileRef = useRef<HTMLInputElement>(null);
   const history = useHistory();
   const mountedRef = useIsMountedRef();
   const { uploadImg } = useImageService();
+  const { setTransactions } = useContext(TransactionContext);
 
-  const checkAttributes = useMemo(() => constAttributes.filter((elem: {name: string}) => elem.name !== 'ipfsJson'), [constAttributes]);
+  const constAttributesFiltered = useMemo(() => constAttributes.filter((elem: { name: string }) => elem.name !== 'ipfsJson'), [constAttributes]);
 
   const isAllRequiredFieldsAreFilled = useCallback((reqTargetArr: any[], valTargetObj: { [x: string]: IValueType | { name: string; }; }) => {
     const filteredArray = reqTargetArr.filter((item: {rule: string}) => item.rule === 'required');
@@ -75,12 +80,10 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
   }, []);
 
   const reqFieldsFlag = useCallback(() => {
-    const flag = isAllRequiredFieldsAreFilled(checkAttributes, tokenConstAttributes);
+    const flag = isAllRequiredFieldsAreFilled(constAttributesFiltered, tokenConstAttributes);
 
     mountedRef.current && setIsDisabled(!flag);
-  }, [checkAttributes, tokenConstAttributes, mountedRef, isAllRequiredFieldsAreFilled]);
-
-  console.log('createFees', createFees?.toString());
+  }, [constAttributesFiltered, tokenConstAttributes, mountedRef, isAllRequiredFieldsAreFilled]);
 
   useEffect(() => {
     const status = !!Object.keys(tokenConstAttributes).length;
@@ -97,28 +100,6 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
     setTokenImg(file);
   }, [setTokenImg]);
 
-  const uploadTokenImage = useCallback(async () => {
-    if (tokenImg) {
-      const address: string = await uploadImg(tokenImg);
-
-      setTokenImageAddress(address);
-    }
-  }, [tokenImg, uploadImg]);
-
-  const resetData = useCallback(() => {
-    resetAttributes();
-    setTokenImg(null);
-    setCreateAnother(false);
-  }, [resetAttributes, setTokenImg]);
-
-  const clearTokenImg = useCallback(() => {
-    setTokenImg(null);
-
-    if (inputFileRef.current) {
-      inputFileRef.current.value = '';
-    }
-  }, [setTokenImg]);
-
   const setAttributeValue = useCallback((attribute: AttributeItemType, value: string | number[]) => {
     setTokenConstAttributes((prevAttributes: { [key: string]: TokenAttribute }) => ({ ...prevAttributes,
       [attribute.name]: {
@@ -128,25 +109,70 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
       } } as { [key: string]: TokenAttribute }));
   }, [setTokenConstAttributes]);
 
+  const uploadTokenImage = useCallback(async () => {
+    if (tokenImg) {
+      setImageUploading(true);
+      const address: string = await uploadImg(tokenImg);
+
+      setAttributeValue({
+        fieldType: 'string',
+        id: 1,
+        name: 'ipfsJson',
+        rule: 'required',
+        values: []
+      }, JSON.stringify({ ipfs: address, type: 'image' }));
+
+      setTokenImageAddress(address);
+      setImageUploading(false);
+    }
+  }, [setAttributeValue, tokenImg, uploadImg]);
+
+  const resetData = useCallback(() => {
+    resetAttributes();
+    setTokenImg(null);
+    setCreateAnother(false);
+  }, [resetAttributes, setTokenImg]);
+
+  const clearTokenImg = useCallback(() => {
+    setTokenImg(null);
+    setTokenImageAddress(undefined);
+
+    if (inputFileRef.current) {
+      inputFileRef.current.value = '';
+    }
+  }, [setTokenImg]);
+
   const onCreateSuccess = useCallback(() => {
+    setTransactions([
+      {
+        state: 'finished',
+        text: transactionText
+      }
+    ]);
+    setTimeout(() => {
+      setTransactions([]);
+    }, 3000);
+
     if (createAnother) {
       resetData();
     } else {
       history.push('/builder');
     }
-  }, [createAnother, history, resetData]);
+  }, [createAnother, history, resetData, setTransactions]);
 
   const buildAttributes = useCallback(() => {
     if (account) {
-      const constAttributes: { [key: string]: string | number | number[] } = {};
+      const payload: { [key: string]: string | number | number[] | string[] | null } = {};
 
       let constData = '';
 
       if (constOnChainSchema) {
         Object.keys(tokenConstAttributes).forEach((key: string) => {
-          constAttributes[tokenConstAttributes[key].name] = tokenConstAttributes[key].values?.length ? (tokenConstAttributes[key].values as number[]) : (tokenConstAttributes[key].value as string);
+          const attributeValue = tokenConstAttributes[key].values?.length ? tokenConstAttributes[key].values : tokenConstAttributes[key].value;
+
+          payload[tokenConstAttributes[key].name] = attributeValue || attributeValue === 0 ? attributeValue : null;
         });
-        const cData = serializeNft(constOnChainSchema, constAttributes);
+        const cData = serializeNft(constOnChainSchema, payload);
 
         constData = '0x' + Buffer.from(cData).toString('hex');
 
@@ -171,21 +197,24 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
     if (account) {
       const constData = buildAttributes();
 
-      createNft({ account, collectionId, constData, owner: account, successCallback: onCreateSuccess, variableData: '' });
-    }
-  }, [account, buildAttributes, createNft, collectionId, onCreateSuccess]);
+      setTransactions([
+        {
+          state: 'active',
+          text: transactionText
+        }
+      ]);
 
-  useEffect(() => {
-    if (tokenImageAddress) {
-      setAttributeValue({
-        fieldType: 'string',
-        id: 1,
-        name: 'ipfsJson',
-        rule: 'required',
-        values: []
-      }, JSON.stringify({ ipfs: tokenImageAddress, type: 'image' }));
+      createNft({
+        account,
+        collectionId,
+        constData,
+        errorCallback: setTransactions.bind(null, []),
+        owner: account,
+        successCallback: onCreateSuccess,
+        variableData: ''
+      });
     }
-  }, [setAttributeValue, tokenImageAddress]);
+  }, [account, buildAttributes, setTransactions, createNft, collectionId, onCreateSuccess]);
 
   useEffect(() => {
     void uploadTokenImage();
@@ -254,11 +283,11 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
           )}
         </div>
       </div>
-      {!!checkAttributes.length &&
+      {!!constAttributesFiltered.length &&
         (
           <form className='attributes'>
             <h1 className='header-text'>Attributes</h1>
-            { Object.keys(tokenConstAttributes).length > 0 && checkAttributes.map((collectionAttribute: AttributeItemType, index) => (
+            { Object.keys(tokenConstAttributes).length > 0 && constAttributesFiltered.map((collectionAttribute: AttributeItemType, index) => (
               <TokenAttributesRowEditable
                 collectionAttribute={collectionAttribute}
                 key={`${collectionAttribute.name}-${index}`}
@@ -276,7 +305,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
       <div className='footer-buttons'>
         <UnqButton
           content='Confirm'
-          isDisabled={isDisabled}
+          isDisabled={isDisabled || imageUploading || !tokenImageAddress}
           isFilled
           onClick={onCreateNft}
           size={'medium'}

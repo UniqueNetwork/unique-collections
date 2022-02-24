@@ -18,7 +18,7 @@
   }
 
   .actions {
-    .close-btn{
+    .close-btn {
       position: absolute;
       top: 37.5px;
       right: 28.5px;
@@ -29,7 +29,7 @@
   .footer {
     padding: 32px 24px 24px 24px;
 
-    .btn-container{
+    .btn-container {
       display: flex;
     }
   }
@@ -46,11 +46,10 @@
       margin-top: 0;
       margin-bottom: 16px;
     }
-
   }
   .ui--Password {
-    .ui--Labelled-content{
-      .ui--Input{
+    .ui--Labelled-content {
+      .ui--Input {
         position: relative;
 
         .see-password-button {
@@ -59,7 +58,7 @@
           right: 16.25px;
           top: 7px;
 
-          img{
+          img {
             position: static;
           }
         }
@@ -68,11 +67,16 @@
   }
 
   &.unique-modal {
+    border-radius: calc(var(--gap) / 2);
+    padding: calc(var(--gap) / 2 * 3);
 
     .header {
-      padding: 1.71rem !important;
+      padding: 0 !important;
+      font-size: 28px !important;
+      line-height: 42px !important;
+      font-weight: 700 !important;
 
-      h2{
+      h2 {
         margin: 0 !important;
       }
 
@@ -85,7 +89,7 @@
     }
 
     .content {
-      padding: 0 1.71rem !important;
+      padding: calc(var(--gap) / 2 * 3) 0 calc(var(--gap) * 2) !important;
 
       .warning-block {
         font-size: 18px;
@@ -104,16 +108,26 @@
     }
 
     .actions {
-      padding: calc((var(--gap) / 2) * 3) !important;
       border-top: none;
       display: flex;
       justify-content: flex-end;
       background: var(--card-background);
 
-      .primary  {
+      .button {
+        letter-spacing: normal;
+      }
+
+      .primary {
         background-color: var(--card-background) !important;
         color: var(--button-color) !important;
+        font-family: var(--font-roboto) !important;
         border: 1px solid var(--button-color);
+      }
+    }
+
+    &.authorize-transaction {
+      .actions {
+        padding: 0 !important;
       }
     }
   }
@@ -121,22 +135,39 @@
 
 @media (max-width: 767px) {
   .ui.modal {
-
     &.unique-modal {
-
+      padding: calc(var(--gap) / 2 * 3) var(--gap) !important;
+      .header {
+        font-size: 24px !important;
+        line-height: 36px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        padding-top: 0 !important;
+      }
+      .content {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
       .actions {
         width: 100%;
-        padding: 24px 16px !important;
+        padding: calc(var(--gap) * 2) 0 0 !important;
 
-        button{
+        button {
           width: 100%;
           margin: 0;
           font-size: 15px !important;
           padding: 0px 6px !important;
         }
 
-        .primary  {
+        .primary {
           margin-left: 8px !important;
+        }
+      }
+      &.authorize-transaction {
+        .actions {
+          > div:last-of-type {
+            width: 100%;
+          }
         }
       }
     }
@@ -148,17 +179,45 @@
       .actions {
         width: 100%;
 
-        .ui--Button-Group{
+        .ui--Button-Group {
           width: 100%;
         }
       }
-      .btn-container{
+      .btn-container {
         margin-top: 24px;
         width: 100%;
 
-        button{
+        button {
           width: 100%;
         }
+      }
+    }
+  }
+}
+
+@media (max-width: 320px) {
+  .ui.modal {
+    &.unique-modal {
+      .actions {
+        padding: 24px 16px !important;
+      }
+
+      button {
+        width: 100%;
+        margin: 0;
+        font-size: 15px !important;
+        padding: 0px 6px !important;
+        align-items: center;
+      }
+
+      .header {
+        font-size: 20px !important;
+        padding: 16px !important;
+        line-height: 28px !important;
+      }
+
+      .content {
+        padding: 16px !important;
       }
     }
   }

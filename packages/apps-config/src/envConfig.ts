@@ -2,70 +2,55 @@
 // SPDX-License-Identifier: Apache-2.0
 
 export type EnvConfigType = {
-  commission: number;
   decimals: number;
+  discordChannel: string;
   environment: string;
   faviconPath: string;
   graphQlAdminSecret: string;
   graphQlApi: string;
   imageServerUrl: string;
   ipfsGateway: string;
-  kusamaApiUrl: string;
-  kusamaBackupApiUrl: string;
-  kusamaDecimals: number; // 12
-  maxGas: number; // 1000000000000
   minPrice: number;
-  quoteId: number; // 2
   uniqueSubstrateApi: string;
-  value: number; // 0
-  version: string;
+  uniqueTelegram: string;
+  uniqueWallet: string;
   whiteLabelUrl: string;
 };
 
 declare global {
   interface Window {
     ENV: {
-      COMMISSION: number;
       DECIMALS: number;
+      DISCORD_CHANNEL: string;
       ENVIRONMENT: string;
       FAVICON_PATH: string;
       GRAPH_QL_ADMIN_SECRET: string;
       GRAPH_QL_API: string;
       IMAGE_SERVER_URL: string;
       IPFS_GATEWAY: string;
-      KUSAMA_API: string;
-      KUSAMA_BACKUP_API: string;
-      KUSAMA_DECIMALS: number; // 12
-      MAX_GAS: number; // 1000000000000
       MIN_PRICE: number;
-      QUOTE_ID: number; // 2
       UNIQUE_SUBSTRATE_API: string;
-      VALUE: number; // 0
-      VERSION: string;
+      UNQ_TELEGRAM: string;
+      UNQ_WALLET: string;
       WHITE_LABEL_URL: string;
     }
   }
 }
 
 const envConfig: EnvConfigType = {
-  commission: +window.ENV.COMMISSION,
-  decimals: +window.ENV.DECIMALS,
-  environment: window.ENV.ENVIRONMENT,
-  faviconPath: window.ENV.FAVICON_PATH,
-  graphQlAdminSecret: window.ENV.GRAPH_QL_ADMIN_SECRET,
-  graphQlApi: window.ENV.GRAPH_QL_API,
-  imageServerUrl: window.ENV.IMAGE_SERVER_URL,
-  ipfsGateway: window.ENV.IPFS_GATEWAY,
-  kusamaApiUrl: window.ENV.KUSAMA_API,
-  kusamaBackupApiUrl: window.ENV.KUSAMA_BACKUP_API,
-  kusamaDecimals: +window.ENV.KUSAMA_DECIMALS,
-  maxGas: +window.ENV.MAX_GAS,
-  minPrice: +window.ENV.MIN_PRICE,
-  quoteId: +window.ENV.QUOTE_ID,
-  uniqueSubstrateApi: window.ENV.UNIQUE_SUBSTRATE_API,
-  value: +window.ENV.VALUE,
-  version: window.ENV.VERSION,
-  whiteLabelUrl: window.ENV.WHITE_LABEL_URL
+  decimals: Number(window.ENV?.DECIMALS || process.env.DECIMALS),
+  discordChannel: window.ENV?.DISCORD_CHANNEL || process.env.DISCORD_CHANNEL,
+  environment: window.ENV?.ENVIRONMENT || process.env.ENVIRONMENT,
+  faviconPath: window.ENV?.FAVICON_PATH || process.env.FAVICON_PATH,
+  graphQlAdminSecret: window.ENV?.GRAPH_QL_ADMIN_SECRET || process.env.GRAPH_QL_ADMIN_SECRET,
+  graphQlApi: window.ENV?.GRAPH_QL_API || process.env.GRAPH_QL_API,
+  imageServerUrl: window.ENV?.IMAGE_SERVER_URL || process.env.IMAGE_SERVER_URL,
+  ipfsGateway: window.ENV?.IPFS_GATEWAY || process.env.IPFS_GATEWAY,
+  minPrice: Number(window.ENV?.MIN_PRICE || process.env.MIN_PRICE),
+  uniqueSubstrateApi: window.ENV?.UNIQUE_SUBSTRATE_API || process.env.UNIQUE_SUBSTRATE_API,
+  uniqueTelegram: window.ENV?.UNQ_TELEGRAM || process.env.UNQ_TELEGRAM,
+  uniqueWallet: window.ENV?.UNQ_WALLET || process.env.UNQ_WALLET,
+  whiteLabelUrl: window.ENV?.WHITE_LABEL_URL || process.env.WHITE_LABEL_URL
 };
 
 export default envConfig;

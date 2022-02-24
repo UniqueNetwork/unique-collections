@@ -8,12 +8,13 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { HashRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
+import envConfig from '@polkadot/apps-config/envConfig';
 import { Api } from '@polkadot/react-api';
 import Queue from '@polkadot/react-components/Status/Queue';
 import { BlockAuthors, Events } from '@polkadot/react-query';
 import { settings } from '@polkadot/ui-settings';
-import envConfig from '@polkadot/apps-config/envConfig';
 
+import AppProvider from './AppContext';
 import Apps from './Apps';
 import { Themes, uniqueTheme } from './themes';
 import WindowDimensions from './WindowDimensions';
@@ -54,7 +55,9 @@ function Root ({ store }: Props): React.ReactElement<Props> {
               <Events>
                 <HashRouter>
                   <WindowDimensions>
-                    <Apps />
+                    <AppProvider>
+                      <Apps />
+                    </AppProvider>
                   </WindowDimensions>
                 </HashRouter>
               </Events>

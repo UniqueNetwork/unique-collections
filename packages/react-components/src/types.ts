@@ -24,7 +24,7 @@ export interface AppProps {
   openPanel?: OpenPanelType;
   setOpenPanel?: (openPanel: OpenPanelType) => void;
   setAccount?: (account?: string) => void;
-
+  isPreviewOpen: boolean;
 }
 
 export type I18nProps = BareProps & WithTranslation;

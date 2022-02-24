@@ -717,10 +717,55 @@ button.ui.button, .button-link, .ui--Button {
   }
 }
 
-@media (max-width: 1024px) {
+.ui.loader.simple-loader {
+  left: 0;
+  top: 0;
+  position: relative;
+  transform: none;
+  color: var(--title-color);
+  font-size: 16px;
+  line-height: 26px;
+
+  &:after {
+    border-color: var(--link-color) transparent transparent;
+    border-width: 2px;
+    width: 24px;
+    height: 24px;
+    left: 0;
+  }
+
+  &:before {
+    left: 0;
+    width: 24px;
+    height: 24px;
+  }
+
+  &.text {
+    padding: 0 0 0 40px;
+    text-align: left;
+  }
+}
+
+.ui.dimmer {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+.shadow-block {
+  padding: calc(var(--gap) * 2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: calc(var(--gap) / 4);
+  background-color: var(--white-color);
+}
+
+@media (max-width: 1023px) {
   h1.ui.header {
     margin-top: calc(var(--gap) * 1.5) !important;
     padding: 0 var(--gap);
+  }
+
+  .shadow-block {
+    padding-left: calc((var(--gap) / 2) * 3) !important;
+    padding-right: calc((var(--gap) / 2) * 3) !important;
   }
 
   .ui.page.modals {
@@ -753,5 +798,12 @@ button.ui.button, .button-link, .ui--Button {
 @media (max-width: 768px) {
   .ui.grid > .row {
     display: grid;
+  }
+}
+
+@media (max-width: 320px) {
+  .shadow-block {
+    padding-left: var(--gap) !important;
+    padding-right: var(--gap) !important;
   }
 }

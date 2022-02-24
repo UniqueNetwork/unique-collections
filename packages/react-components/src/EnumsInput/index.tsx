@@ -9,11 +9,12 @@ import EnumInputItem from './EnumInputItem';
 
 interface Props {
   isDisabled?: boolean;
+  maxSymbols?: number;
   setValues: (values: string[]) => void;
   values: string[];
 }
 
-function EnumInput ({ isDisabled, setValues, values }: Props): React.ReactElement {
+function EnumInput ({ isDisabled, maxSymbols, setValues, values }: Props): React.ReactElement {
   // const [allEnums, setAllEnums] = useState<string[]>(values);
   const [currentEnum, setCurrentEnum] = useState<string>('');
 
@@ -43,8 +44,14 @@ function EnumInput ({ isDisabled, setValues, values }: Props): React.ReactElemen
   }, [isDisabled, setValues, values]);
 
   const changeCurrentEnum = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+
+    if (maxSymbols && val?.length > maxSymbols) {
+      return;
+    }
+
     setCurrentEnum(e.target.value);
-  }, []);
+  }, [maxSymbols]);
 
   const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {

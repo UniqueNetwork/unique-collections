@@ -17,12 +17,13 @@ interface Props {
   label?: React.ReactNode;
   maxLength?: number;
   onChange?: (arg: string) => void;
+  onBlur?: (arg: string) => void;
   placeholder?: string;
   seed?: string;
   withLabel?: boolean;
 }
 
-function Index ({ children, className, help, isDisabled, isError, isReadOnly, label, maxLength, onChange, placeholder, seed, withLabel }: Props): React.ReactElement<Props> {
+function Index ({ children, className, help, isDisabled, isError, isReadOnly, label, maxLength, onBlur, onChange, placeholder, seed, withLabel }: Props): React.ReactElement<Props> {
   const _onChange = useCallback(
     ({ target: { value } }: React.ChangeEvent<HTMLTextAreaElement>): void => {
       if (!maxLength || value.length <= maxLength) {
@@ -30,6 +31,15 @@ function Index ({ children, className, help, isDisabled, isError, isReadOnly, la
       }
     },
     [maxLength, onChange]
+  );
+
+  const _onBlur = useCallback(
+    ({ target: { value } }: React.ChangeEvent<HTMLTextAreaElement>): void => {
+      if (value) {
+        onBlur && onBlur(value);
+      }
+    },
+    [onBlur]
   );
 
   return (
@@ -46,6 +56,7 @@ function Index ({ children, className, help, isDisabled, isError, isReadOnly, la
           autoFocus={false}
           className={isError ? 'ui-textArea-withError' : ''}
           disabled={isDisabled}
+          onBlur={_onBlur}
           onChange={_onChange}
           placeholder={placeholder}
           readOnly={isReadOnly}
