@@ -72,12 +72,12 @@ export function normalizeAccountId (input: string | AccountId | CrossAccountId |
   return { Substrate: input.toString() };
 }
 
-export function formatStrBalance (value: BN | undefined = new BN(0)): string {
+export function formatStrBalance (value: BN | undefined = new BN(0), incomeDecimals?: number): string {
   if (!value || value.toString() === '0') {
     return '0';
   }
 
-  const tokenDecimals = formatBalance.getDefaults().decimals;
+  const tokenDecimals = incomeDecimals || formatBalance.getDefaults().decimals;
 
   if (value.lte(new BN(minPrice * Math.pow(10, tokenDecimals)))) {
     return ` ${minPrice}`;
