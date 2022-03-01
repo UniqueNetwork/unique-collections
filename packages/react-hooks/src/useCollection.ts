@@ -4,6 +4,7 @@
 import BN from 'bn.js';
 import { useCallback, useContext } from 'react';
 
+import { SubmittableResult } from '@polkadot/api';
 import { StatusContext } from '@polkadot/react-components';
 import { ProtobufAttributeType } from '@polkadot/react-components/util/protobufUtils';
 import { useApi } from '@polkadot/react-hooks/useApi';
@@ -52,7 +53,7 @@ export interface NftCollectionInterface {
 interface TransactionCallBacks {
   onFailed?: () => void;
   onStart?: () => void;
-  onSuccess?: () => void;
+  onSuccess?: (result: SubmittableResult) => void;
   onUpdate?: () => void;
 }
 
@@ -108,7 +109,7 @@ export function useCollection () {
       isUnsigned: false,
       txFailedCb: () => { callBacks?.onFailed && callBacks.onFailed(); console.log('create collection failed'); },
       txStartCb: () => { callBacks?.onStart && callBacks.onStart(); console.log('create collection start'); },
-      txSuccessCb: () => { callBacks?.onSuccess && callBacks.onSuccess(); console.log('create collection success'); },
+      txSuccessCb: (result: SubmittableResult) => { callBacks?.onSuccess && callBacks.onSuccess(result); console.log('create collection success'); },
       txUpdateCb: () => { callBacks?.onUpdate && callBacks.onUpdate(); console.log('create collection update'); }
     });
   }, [api, queueExtrinsic]);

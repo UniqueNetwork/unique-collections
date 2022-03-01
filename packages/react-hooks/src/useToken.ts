@@ -126,11 +126,6 @@ export function useToken (): UseTokenInterface {
 
     if (tokenId && collectionInfo) {
       tokenDetailsData = await getDetailedTokenInfo(collectionInfo.id, tokenId);
-      /* if (Object.prototype.hasOwnProperty.call(collectionInfo.mode, 'nft')) {
-        tokenDetailsData = await getDetailedTokenInfo(collectionInfo.id, tokenId);
-      } else if (Object.prototype.hasOwnProperty.call(collectionInfo.mode, 'reFungible')) {
-        tokenDetailsData = await getDetailedReFungibleTokenInfo(collectionInfo.id, tokenId);
-      } */
     }
 
     return tokenDetailsData;

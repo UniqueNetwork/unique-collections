@@ -1,16 +1,16 @@
-// Copyright 2017-2021 @polkadot/apps , UseTech authors & contributors
+// Copyright 2017-2022 @polkadot/apps , UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import './styles.scss';
 
 import React, { useCallback, useEffect, useState } from 'react';
 
+import envConfig from '@polkadot/apps-config/envConfig';
 import { AppProps as Props } from '@polkadot/react-components/types';
 
 import Disclaimer from './components/Disclaimer';
 import Builder from './Builder';
 import Transactions from './TransactionContext';
-import envConfig from '@polkadot/apps-config/envConfig';
 
 function CollectionBuilder (props: Props): React.ReactElement {
   // const { allAccounts } = useAccounts();
@@ -28,8 +28,10 @@ function CollectionBuilder (props: Props): React.ReactElement {
   const checkDisclaimer = useCallback(() => {
     if (!uniqueTelegram) {
       toggleDisclaimer(false);
+
       return;
     }
+
     const builderDisclaimer = localStorage.getItem('BUILDER_DISCLAIMER');
 
     toggleDisclaimer(!account || builderDisclaimer !== 'accepted');
