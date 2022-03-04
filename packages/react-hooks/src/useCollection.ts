@@ -59,7 +59,7 @@ interface TransactionCallBacks {
 
 export function useCollection () {
   const { api } = useApi();
-  const { queueExtrinsic } = useContext(StatusContext);
+  const { queueAction, queueExtrinsic } = useContext(StatusContext);
   const { hex2a } = useDecoder();
 
   const getCollectionTokensCount = useCallback(async (collectionId: string): Promise<number> => {
@@ -107,12 +107,38 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { callBacks?.onFailed && callBacks.onFailed(); console.log('create collection failed'); },
-      txStartCb: () => { callBacks?.onStart && callBacks.onStart(); console.log('create collection start'); },
-      txSuccessCb: (result: SubmittableResult) => { callBacks?.onSuccess && callBacks.onSuccess(result); console.log('create collection success'); },
-      txUpdateCb: () => { callBacks?.onUpdate && callBacks.onUpdate(); console.log('create collection update'); }
+      txFailedCb: () => {
+        callBacks?.onFailed && callBacks.onFailed();
+
+        console.log('create collection failed');
+
+        queueAction({
+          action: 'Custom. Create collection',
+          message: 'Collection creation error',
+          status: 'error'
+        });
+      },
+      txStartCb: () => {
+        callBacks?.onStart && callBacks.onStart();
+      },
+      txSuccessCb: (result: SubmittableResult) => {
+        callBacks?.onSuccess && callBacks.onSuccess(result);
+
+        console.log('create collection success');
+
+        queueAction({
+          action: 'Custom. Create collection',
+          message: 'Collection successfully created',
+          status: 'success'
+        });
+      },
+      txUpdateCb: () => {
+        callBacks?.onUpdate && callBacks.onUpdate();
+
+        console.log('create collection update');
+      }
     });
-  }, [api, queueExtrinsic]);
+  }, [api, queueAction, queueExtrinsic]);
 
   const setCollectionSponsor = useCallback(({ account, collectionId, errorCallback, newSponsor, successCallback }: { account: string, collectionId: string, newSponsor: string, successCallback?: () => void, errorCallback?: () => void }) => {
     const transaction = api.tx.unique.setCollectionSponsor(collectionId, newSponsor);
