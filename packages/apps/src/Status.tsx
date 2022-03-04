@@ -12,15 +12,13 @@ import { useAccounts, useApi, useCall } from '@polkadot/react-hooks';
 import { stringToU8a } from '@polkadot/util';
 import { xxhashAsHex } from '@polkadot/util-crypto';
 
-import { useTranslation } from './translate';
-
 interface Props {
   optionsAll?: KeyringOptions;
 }
 
 let prevEventHash: string;
 
-function filterEvents (allAccounts: string[], t: <T = string> (key: string, opts?: Record<string, unknown>) => T, optionsAll?: KeyringOptions, events?: EventRecord[]): ActionStatus[] | null {
+function filterEvents (allAccounts: string[], optionsAll?: KeyringOptions, events?: EventRecord[]): ActionStatus[] | null {
   const eventHash = xxhashAsHex(stringToU8a(JSON.stringify(events)));
 
   if (!optionsAll || !events || eventHash === prevEventHash) {
@@ -38,22 +36,10 @@ function filterEvents (allAccounts: string[], t: <T = string> (key: string, opts
           return {
             account,
             action: `${section}.${method}`,
-            message: t<string>('transfer received'),
+            message: 'transfer received',
             status: 'event'
           };
         }
-      } else if (section === 'democracy') {
-        const index = data[0].toString();
-
-        return {
-          action: `${section}.${method}`,
-          message: t<string>('update on #{{index}}', {
-            replace: {
-              index
-            }
-          }),
-          status: 'event'
-        };
       }
 
       return null;
@@ -65,14 +51,13 @@ function Status ({ optionsAll }: Props): React.ReactElement<Props> {
   const { queueAction } = useContext(StatusContext);
   const { api, isApiReady } = useApi();
   const { allAccounts } = useAccounts();
-  const { t } = useTranslation();
   const events = useCall<EventRecord[]>(isApiReady && api.query.system?.events);
 
   useEffect((): void => {
-    const filtered = filterEvents(allAccounts, t, optionsAll, events);
+    const filtered = filterEvents(allAccounts, optionsAll, events);
 
     filtered && queueAction(filtered);
-  }, [allAccounts, events, optionsAll, queueAction, t]);
+  }, [allAccounts, events, optionsAll, queueAction]);
 
   return (
     <StatusDisplay />
