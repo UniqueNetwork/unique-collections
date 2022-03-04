@@ -57,12 +57,6 @@ export function useToken (): UseTokenInterface {
       isUnsigned: false,
       txFailedCb: () => {
         console.log('create nft fail'); errorCallback && errorCallback();
-
-        queueAction({
-          action: 'Custom. Create NFT',
-          message: 'NFT creation error',
-          status: 'error'
-        });
       },
       txStartCb: () => { console.log('create nft start'); },
       txSuccessCb: () => {

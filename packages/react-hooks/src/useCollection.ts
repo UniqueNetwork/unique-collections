@@ -111,12 +111,6 @@ export function useCollection () {
         callBacks?.onFailed && callBacks.onFailed();
 
         console.log('create collection failed');
-
-        queueAction({
-          action: 'Custom. Create collection',
-          message: 'Collection creation error',
-          status: 'error'
-        });
       },
       txStartCb: () => {
         callBacks?.onStart && callBacks.onStart();
