@@ -125,12 +125,6 @@ export function useCollection () {
         callBacks?.onSuccess && callBacks.onSuccess(result);
 
         console.log('create collection success');
-
-        queueAction({
-          action: 'Custom. Create collection',
-          message: 'Collection successfully created',
-          status: 'success'
-        });
       },
       txUpdateCb: () => {
         callBacks?.onUpdate && callBacks.onUpdate();

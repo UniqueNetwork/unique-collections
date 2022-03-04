@@ -1,14 +1,13 @@
-// Copyright 2017-2021 @polkadot/react-components authors & contributors
+// Copyright 2017-2022 @polkadot/react-components authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import type { IconName } from '@fortawesome/fontawesome-svg-core';
 import type { QueueStatus, QueueTx, QueueTxStatus } from './types';
 
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import AddressMini from '../AddressMini';
-import Button from '../Button';
 import Icon from '../Icon';
 import Spinner from '../Spinner';
 import { STATUS_COMPLETE } from './constants';
@@ -174,14 +173,6 @@ function Status ({ className = '' }: Props): React.ReactElement<Props> | null {
     setAllTx(filterTx(txqueue));
   }, [txqueue]);
 
-  const _onDismiss = useCallback(
-    (): void => {
-      allSt.map((s) => s.removeItem());
-      completedTx.map((t) => t.removeItem());
-    },
-    [allSt, completedTx]
-  );
-
   console.log('allTx', allTx, 'completedTx', completedTx, 'allSt', allSt);
 
   const txWithFeeError = allTx.filter((txItem) => txItem.error?.message.includes('Inability to pay some fees'));
@@ -193,17 +184,6 @@ function Status ({ className = '' }: Props): React.ReactElement<Props> | null {
 
   return (
     <div className={`ui--Status ${className}`}>
-      {(allSt.length + completedTx.length) > 1 && (
-        <div className='dismiss'>
-          <Button
-            icon='times'
-            isBasic
-            isFull
-            label={'Dismiss all notifications'}
-            onClick={_onDismiss}
-          />
-        </div>
-      )}
       {txWithFeeError.map(renderItem)}
       {customEvents.map(renderStatus)}
     </div>
