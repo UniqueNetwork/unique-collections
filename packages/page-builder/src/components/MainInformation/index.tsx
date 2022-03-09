@@ -3,16 +3,12 @@
 
 import './styles.scss';
 
-import BN from 'bn.js';
-import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
+import React, { memo, useCallback } from 'react';
 import { useHistory } from 'react-router';
 
-import { SubmittableResult } from '@polkadot/api';
-import TransactionContext from '@polkadot/app-builder/TransactionContext/TransactionContext';
 import { Input, TextArea, UnqButton } from '@polkadot/react-components';
-import { useCollection } from '@polkadot/react-hooks';
 
-import WarningText from '../WarningText';
+// import WarningText from '../WarningText';
 
 interface MainInformationProps {
   account: string;
@@ -24,70 +20,13 @@ interface MainInformationProps {
   tokenPrefix: string;
 }
 
-const stepText = 'Creating collection and saving it to blockchain';
-
 function MainInformation (props: MainInformationProps): React.ReactElement {
   const { account, description, name, setDescription, setName, setTokenPrefix, tokenPrefix } = props;
-  const { calculateCreateCollectionFee, createCollection } = useCollection();
-  const [createFees, setCreateFees] = useState<BN | null>(null);
   const history = useHistory();
-  const { setTransactions } = useContext(TransactionContext);
 
-  const calculateFee = useCallback(async () => {
-    if (account) {
-      const fees = await calculateCreateCollectionFee({ account, description, modeprm: { nft: null }, name, tokenPrefix });
-
-      setCreateFees(fees);
-    }
-  }, [account, calculateCreateCollectionFee, description, name, tokenPrefix]);
-
-  const goToNextStep = useCallback((result: SubmittableResult) => {
-    const { events } = result;
-
-    let collectionId = 0;
-
-    events.forEach(({ event: { data, method, section } }) => {
-      if ((section === 'common') && (method === 'CollectionCreated')) {
-        collectionId = parseInt(data[0].toString(), 10);
-      }
-    });
-
-    setTransactions([
-      {
-        state: 'finished',
-        text: stepText
-      }
-    ]);
-
-    setTimeout(() => {
-      setTransactions([]);
-    }, 3000);
-
-    if (collectionId) {
-      history.push(`/builder/collections/${collectionId}/cover`);
-    }
-  }, [setTransactions, history]);
-
-  const onCreateCollection = useCallback(() => {
-    if (account && name && tokenPrefix) {
-      setTransactions([
-        {
-          state: 'active',
-          text: stepText
-        }
-      ]);
-
-      createCollection(account, {
-        description,
-        modeprm: { nft: null },
-        name,
-        tokenPrefix
-      }, {
-        onFailed: setTransactions.bind(null, []),
-        onSuccess: goToNextStep
-      });
-    }
-  }, [account, createCollection, description, goToNextStep, name, setTransactions, tokenPrefix]);
+  const goToNextStep = useCallback(() => {
+    history.push('/builder/collections/new-collection/cover');
+  }, [history]);
 
   const handleTokenPrefix = useCallback((value: string) => {
     const replaceValue = value.replace(/[^a-zA-Z0-9]+/, '');
@@ -106,10 +45,6 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
   const handleBlurSymbol = useCallback(() => {
     setTokenPrefix(tokenPrefix.trim());
   }, [setTokenPrefix, tokenPrefix]);
-
-  useEffect(() => {
-    void calculateFee();
-  }, [calculateFee]);
 
   return (
     <div className='main-information shadow-block'>
@@ -146,14 +81,14 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
           value={tokenPrefix}
         />
       </div>
-      { createFees && (
+      {/* { createFees && (
         <WarningText fee={createFees} />
-      )}
+      )} */}
       <UnqButton
         content='Confirm'
         isDisabled={!name || !tokenPrefix}
         isFilled
-        onClick={onCreateCollection}
+        onClick={goToNextStep}
         size='medium'
       />
     </div>

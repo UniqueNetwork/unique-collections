@@ -13,13 +13,13 @@ import Cover from '@polkadot/app-builder/components/Cover';
 import MainInformation from '@polkadot/app-builder/components/MainInformation';
 import Stepper from '@polkadot/app-builder/components/Stepper';
 import TokenAttributes from '@polkadot/app-builder/components/TokenAttributes';
-import { ArtificialAttributeItemType } from '@polkadot/app-builder/components/TokenAttributes/AttributesRowEditable';
 import TokenPreview from '@polkadot/app-builder/components/TokenPreview';
 import NftPage from '@polkadot/app-builder/containers/NftPage';
 import { AppCtx } from '@polkadot/apps/AppContext';
 import { UnqButton } from '@polkadot/react-components';
 import { useScreenWidthFromThreshold, useTokenAttributes } from '@polkadot/react-hooks';
-import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/useCollection';
+
+import { useCollectionForm, useCollectionInfo } from '../../hooks';
 
 interface CollectionPageProps {
   account: string;
@@ -35,17 +35,12 @@ interface CollectionPageProps {
 function CollectionPage ({ account, basePath }: CollectionPageProps): ReactElement {
   const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
   const [lessThanThreshold] = useScreenWidthFromThreshold(1023);
-  const [collectionName, setCollectionName] = useState<string>('');
-  const [avatarImg, setAvatarImg] = useState<File | null>(null);
+  const { collectionId }: { collectionId: string } = useParams();
+  const { collectionInfo } = useCollectionInfo(collectionId);
+  const { attributes, coverImg, description, name, setAttributes, setCoverImg, setDescription, setName, setTokenPrefix, tokenPrefix } = useCollectionForm();
   const [tokenImg, setTokenImg] = useState<File | null>(null);
-  const [collectionDescription, setCollectionDescription] = useState<string>('');
-  const [attributes, setAttributes] = useState<ArtificialAttributeItemType[]>([]);
-  const [tokenPrefix, setTokenPrefix] = useState<string>('');
   const history = useHistory();
   const location = useLocation();
-  const { collectionId }: { collectionId: string } = useParams();
-  const { getDetailedCollectionInfo } = useCollection();
-  const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
   const { constAttributes, constOnChainSchema, resetAttributes, setTokenConstAttributes, tokenConstAttributes } = useTokenAttributes(collectionInfo);
   const { setPreviewButtonDisplayed } = useContext(AppCtx);
   const previewMode = lessThanThreshold;
@@ -53,16 +48,6 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
   const handleOnBtnClick = useCallback(() => {
     setIsPreviewOpen((prev) => !prev);
   }, []);
-
-  const fetchCollectionInfo = useCallback(async () => {
-    if (collectionId) {
-      const info: NftCollectionInterface | null = await getDetailedCollectionInfo(collectionId);
-
-      if (info) {
-        setCollectionInfo(info);
-      }
-    }
-  }, [collectionId, getDetailedCollectionInfo]);
 
   // set previewButtonDisplayed to AppContext
   useEffect(() => {
@@ -85,10 +70,6 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
       history.push(`/builder/collections/${collectionId}/cover`);
     }
   }, [collectionId, history, location]);
-
-  useEffect(() => {
-    void fetchCollectionInfo();
-  }, [fetchCollectionInfo]);
 
   return (
     <div className='collection-page'>
@@ -120,10 +101,10 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
             >
               <MainInformation
                 account={account}
-                description={collectionDescription}
-                name={collectionName}
-                setDescription={setCollectionDescription}
-                setName={setCollectionName}
+                description={description}
+                name={name}
+                setDescription={setDescription}
+                setName={setName}
                 setTokenPrefix={setTokenPrefix}
                 tokenPrefix={tokenPrefix}
               />
@@ -135,9 +116,9 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
                 <Route path={`${basePath}/collections/${collectionId}/cover`}>
                   <Cover
                     account={account}
-                    avatarImg={avatarImg}
+                    coverImg={coverImg}
                     collectionId={collectionId}
-                    setAvatarImg={setAvatarImg}
+                    setCoverImg={setCoverImg}
                   />
                 </Route>
                 <Route path={`${basePath}/collections/${collectionId}/token-attributes`}>
@@ -170,14 +151,14 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
         <div className={`preview-cards ${!isPreviewOpen ? 'hidden' : ''}`}>
           <CollectionPreview
             avatarImg={avatarImg}
-            collectionDescription={collectionDescription}
+            collectionDescription={description}
             collectionInfo={collectionInfo}
-            collectionName={collectionName}
+            collectionName={name}
           />
           <TokenPreview
             attributes={attributes}
             collectionInfo={collectionInfo}
-            collectionName={collectionName}
+            collectionName={name}
             constAttributes={constAttributes}
             tokenConstAttributes={tokenConstAttributes}
             tokenImg={tokenImg}
