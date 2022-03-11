@@ -3,7 +3,6 @@
 
 import './styles.scss';
 
-import BN from 'bn.js';
 import React, { memo, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
@@ -11,20 +10,19 @@ import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader';
 
 import clearIcon from '@polkadot/app-builder/images/closeIcon.svg';
 import { UnqButton } from '@polkadot/react-components';
-import { useCollection, useImageService } from '@polkadot/react-hooks';
+import { useImageService } from '@polkadot/react-hooks';
 
 import uploadIcon from '../../images/uploadIcon.svg';
-import WarningText from '../WarningText';
 
 interface CoverProps {
   account: string;
   coverImg: File | null;
-  collectionId: string;
+  collectionId?: string;
   setCoverImg: (avatarImg: File | null) => void;
   setVariableSchema: (schema: string) => void;
 }
 
-function Cover ({ account, collectionId, coverImg, setCoverImg, setVariableSchema }: CoverProps): React.ReactElement {
+function Cover ({ coverImg, setCoverImg, setVariableSchema }: CoverProps): React.ReactElement {
   const [imgAddress, setImgAddress] = useState<string>();
   const [imageUploading, setImageUploading] = useState<boolean>(false);
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
@@ -154,14 +152,15 @@ function Cover ({ account, collectionId, coverImg, setCoverImg, setVariableSchem
         </div>
       </div>
       { imageUploading && (
-        <p>
+        <div>
           <Loader
             active
             className='simple-loader'
           >
             Please wait a few seconds
           </Loader>
-        </p>
+          <br />
+        </div>
       )}
       {/* { (imgAddress && coverFees) && (
         <WarningText fee={coverFees} />

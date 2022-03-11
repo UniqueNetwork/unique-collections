@@ -21,7 +21,7 @@ interface MainInformationProps {
 }
 
 function MainInformation (props: MainInformationProps): React.ReactElement {
-  const { account, description, name, setDescription, setName, setTokenPrefix, tokenPrefix } = props;
+  const { description, name, setDescription, setName, setTokenPrefix, tokenPrefix } = props;
   const history = useHistory();
 
   const goToNextStep = useCallback(() => {
@@ -81,9 +81,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
           value={tokenPrefix}
         />
       </div>
-      {/* { createFees && (
-        <WarningText fee={createFees} />
-      )} */}
+      <br />
       <UnqButton
         content='Confirm'
         isDisabled={!name || !tokenPrefix}

@@ -57,6 +57,26 @@ interface TransactionCallBacks {
   onUpdate?: () => void;
 }
 
+interface CreateCollectionEx {
+  access?: string // AllowList
+  account: string;
+  description: string;
+  mode: { Fungible: 8 } | { nft: null };
+  name: string;
+  tokenPrefix: string;
+  offchainSchema?: string;
+  schemaVersion: 'Unique' | 'ImageUrl';
+  pendingSponsor?: string;
+  limits: {
+    accountTokenOwnershipLimit?: number;
+    ownerCanTransfer?: boolean;
+    onwerCanDestroy?: boolean;
+  },
+  variableOnChainSchema?: string;
+  constOnChainSchema: string;
+  metaUpdatePermission?: string; // 'Admin'
+}
+
 export function useCollection () {
   const { api } = useApi();
   const { queueAction, queueExtrinsic } = useContext(StatusContext);
@@ -126,7 +146,7 @@ export function useCollection () {
         console.log('create collection update');
       }
     });
-  }, [api, queueAction, queueExtrinsic]);
+  }, [api, queueExtrinsic]);
 
   const setCollectionSponsor = useCallback(({ account, collectionId, errorCallback, newSponsor, successCallback }: { account: string, collectionId: string, newSponsor: string, successCallback?: () => void, errorCallback?: () => void }) => {
     const transaction = api.tx.unique.setCollectionSponsor(collectionId, newSponsor);
@@ -386,14 +406,97 @@ export function useCollection () {
     return [];
   }, [api]);
 
+  const calculateCreateCollectionExFee = useCallback(async ({ access, account, constOnChainSchema, description, limits, metaUpdatePermission, mode, name, offchainSchema, pendingSponsor, schemaVersion, tokenPrefix, variableOnChainSchema }: CreateCollectionEx): Promise<BN | null> => {
+    try {
+      const extrinsic = api.tx.unique.createCollectionEx({
+        access,
+        constOnChainSchema,
+        description,
+        limits,
+        metaUpdatePermission,
+        mode,
+        name,
+        offchainSchema,
+        pendingSponsor,
+        schemaVersion,
+        tokenPrefix,
+        variableOnChainSchema
+      });
+      const fee = (await extrinsic.paymentInfo(account) as { partialFee: BN }).partialFee;
+      // @todo fet from chain - api.consts.common.CollectionCreationPrice
+      const createCollectionChainFee = new BN(100).mul(new BN(10).pow(new BN(formatBalance.getDefaults().decimals)));
+
+      return fee.add(createCollectionChainFee);
+    } catch (error) {
+      console.error((error as Error).message);
+
+      return null;
+    }
+  }, [api]);
+
+  const createCollectionEx = useCallback(({ access, account, constOnChainSchema, description, limits, metaUpdatePermission, mode, name, offchainSchema, pendingSponsor, schemaVersion, tokenPrefix, variableOnChainSchema }: CreateCollectionEx, callBacks?: TransactionCallBacks) => {
+    const extrinsic = api.tx.unique.createCollectionEx({
+      access,
+      constOnChainSchema,
+      description,
+      limits,
+      metaUpdatePermission,
+      mode,
+      name,
+      offchainSchema,
+      pendingSponsor,
+      schemaVersion,
+      tokenPrefix,
+      variableOnChainSchema
+    });
+
+    queueExtrinsic({
+      accountId: account && account.toString(),
+      extrinsic: extrinsic,
+      isUnsigned: false,
+      txFailedCb: () => {
+        callBacks?.onFailed && callBacks.onFailed();
+
+        queueAction({
+          action: '',
+          message: 'Collection creation failed',
+          status: 'error'
+        });
+
+        console.log('create collection failed');
+      },
+      txStartCb: () => {
+        callBacks?.onStart && callBacks.onStart();
+      },
+      txSuccessCb: (result: SubmittableResult) => {
+        callBacks?.onSuccess && callBacks.onSuccess(result);
+
+        queueAction({
+          action: '',
+          message: 'Collection successfully created',
+          status: 'success'
+        });
+
+        console.log('create collection success');
+      },
+      txUpdateCb: () => {
+        callBacks?.onUpdate && callBacks.onUpdate();
+
+        console.log('create collection update');
+      }
+    });
+  }, [api, queueAction, queueExtrinsic]);
+
   return {
     addCollectionAdmin,
+    calculateCreateCollectionExFee,
     calculateCreateCollectionFee,
     calculateSetConstOnChainSchemaFees,
     calculateSetSchemaVersionFee,
     calculateSetVariableOnChainSchemaFee,
     confirmSponsorship,
     createCollection,
+    createCollectionEx,
     destroyCollection,
     getCollectionAdminList,
     getCollectionOnChainSchema,

@@ -25,7 +25,7 @@ import AttributesRow from './AttributesRow';
 interface TokenAttributes {
   account: string;
   attributes: ArtificialAttributeItemType[];
-  collectionId: string;
+  collectionId?: string;
   collectionInfo?: NftCollectionInterface;
   setAttributes: (param: any) => void
 }
@@ -46,7 +46,7 @@ const stepTexts = [
 ];
 
 function TokenAttributes ({ account, attributes, collectionId, collectionInfo, setAttributes }: TokenAttributes): ReactElement {
-  const { calculateSetConstOnChainSchemaFees, calculateSetSchemaVersionFee, getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
+  const { calculateCreateCollectionExFee, calculateSetConstOnChainSchemaFees, calculateSetSchemaVersionFee, getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<number[]>([]);
   const [emptyEnums, setEmptyEnums] = useState<number[]>([]);
@@ -94,7 +94,7 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
 
     queueAction({
       action: '',
-      message: 'Collection successfully created',
+      message: 'Attributes successfully set',
       status: 'success'
     });
     history.push('/builder');
@@ -104,25 +104,27 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
     if (collectionInfo?.schemaVersion === 'Unique') {
       onSuccess();
     } else {
-      setTransactions([
-        {
-          state: 'finished',
-          step: 1,
-          text: stepTexts[0]
-        },
-        {
-          state: 'active',
-          step: 2,
-          text: stepTexts[1]
-        }
-      ]);
-      setSchemaVersion({
-        account,
-        collectionId,
-        errorCallback: setTransactions.bind(null, []),
-        schemaVersion: 'Unique',
-        successCallback: onSuccess
-      });
+      if (collectionId) {
+        setTransactions([
+          {
+            state: 'finished',
+            step: 1,
+            text: stepTexts[0]
+          },
+          {
+            state: 'active',
+            step: 2,
+            text: stepTexts[1]
+          }
+        ]);
+        setSchemaVersion({
+          account,
+          collectionId,
+          errorCallback: setTransactions.bind(null, []),
+          schemaVersion: 'Unique',
+          successCallback: onSuccess
+        });
+      }
     }
   }, [account, collectionId, collectionInfo?.schemaVersion, onSuccess, setSchemaVersion, setTransactions]);
 
@@ -155,12 +157,28 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
       const converted: AttributeItemType[] = convertArtificialAttributesToProtobuf(attributes);
       const protobufJson: ProtobufAttributeType = fillProtobufJson(converted);
 
-      if (account && collectionId) {
-        const constOnChainSchemaFees = await calculateSetConstOnChainSchemaFees({ account, collectionId, schema: JSON.stringify(protobufJson) }) || new BN(0);
-        const schemaVersionFee = await calculateSetSchemaVersionFee({ account, collectionId, schemaVersion: 'Unique' }) || new BN(0);
-        const fees = constOnChainSchemaFees.add(schemaVersionFee);
+      if (account) {
+        if (collectionId) {
+          const constOnChainSchemaFees = await calculateSetConstOnChainSchemaFees({ account, collectionId, schema: JSON.stringify(protobufJson) }) || new BN(0);
+          const schemaVersionFee = await calculateSetSchemaVersionFee({ account, collectionId, schemaVersion: 'Unique' }) || new BN(0);
+          const fees = constOnChainSchemaFees.add(schemaVersionFee);
 
-        setFees(fees);
+          setFees(fees);
+        } else {
+          // { access, account, constOnChainSchema, description, limits, metaUpdatePermission, mode, name, offchainSchema, pendingSponsor, schemaVersion, tokenPrefix, variableOnChainSchema
+          const fees = calculateCreateCollectionExFee({
+            account, constOnChainSchema: JSON.stringify(protobufJson),
+            description,
+            limits: {
+              ownerCanTransfer,
+              onwerCanDestroy,
+            }
+            mode: { nft: null },
+            schemaVersion: 'Unique',
+            tokenPrefix,
+            variableOnChainSchema
+          }) || new BN(0);
+        }
       }
     } catch (e) {
       console.log('save onChain schema error', e);

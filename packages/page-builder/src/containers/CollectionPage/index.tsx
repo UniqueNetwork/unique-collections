@@ -37,7 +37,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
   const [lessThanThreshold] = useScreenWidthFromThreshold(1023);
   const { collectionId }: { collectionId: string } = useParams();
   const { collectionInfo } = useCollectionInfo(collectionId);
-  const { attributes, coverImg, description, name, setAttributes, setCoverImg, setDescription, setName, setTokenPrefix, tokenPrefix } = useCollectionForm();
+  const { attributes, avatarImg, coverImg, description, name, setAttributes, setCoverImg, setDescription, setName, setTokenPrefix, setVariableSchema, tokenPrefix } = useCollectionForm(account);
   const [tokenImg, setTokenImg] = useState<File | null>(null);
   const history = useHistory();
   const location = useLocation();
@@ -92,7 +92,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
       <div className='page-main'>
         <div className={`main-section ${isPreviewOpen ? 'hidden' : ''}`}>
           {location.pathname !== `/builder/collections/${collectionId}/new-nft` && (
-            <Stepper />
+            <Stepper collectionId={collectionId} />
           )}
           <Switch>
             <Route
@@ -109,6 +109,22 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
                 tokenPrefix={tokenPrefix}
               />
             </Route>
+            <Route path={`${basePath}/new-collection/cover`}>
+              <Cover
+                account={account}
+                coverImg={coverImg}
+                setCoverImg={setCoverImg}
+                setVariableSchema={setVariableSchema}
+              />
+            </Route>
+            <Route path={`${basePath}/new-collection/token-attributes`}>
+              <TokenAttributes
+                account={account}
+                attributes={attributes}
+                collectionInfo={collectionInfo}
+                setAttributes={setAttributes}
+              />
+            </Route>
             <Route
               path={`${basePath}/collections/:collectionId`}
             >
@@ -116,9 +132,10 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
                 <Route path={`${basePath}/collections/${collectionId}/cover`}>
                   <Cover
                     account={account}
-                    coverImg={coverImg}
                     collectionId={collectionId}
+                    coverImg={coverImg}
                     setCoverImg={setCoverImg}
+                    setVariableSchema={setVariableSchema}
                   />
                 </Route>
                 <Route path={`${basePath}/collections/${collectionId}/token-attributes`}>
