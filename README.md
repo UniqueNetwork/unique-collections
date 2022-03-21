@@ -6,7 +6,7 @@ A collection builder for Unique Network
 
 Start project locally
 
-Starts project on [http://localhost:3000](http://localhost:3000) into development mode.
+Starts project on [http://localhost:3003](http://localhost:3003) into development mode.
 
 ### `yarn start`
 
