@@ -4,6 +4,7 @@
 import BN from 'bn.js';
 import { useCallback, useContext } from 'react';
 
+import { SubmittableResult } from '@polkadot/api';
 import { StatusContext } from '@polkadot/react-components';
 import { ProtobufAttributeType } from '@polkadot/react-components/util/protobufUtils';
 import { useApi } from '@polkadot/react-hooks/useApi';
@@ -52,13 +53,13 @@ export interface NftCollectionInterface {
 interface TransactionCallBacks {
   onFailed?: () => void;
   onStart?: () => void;
-  onSuccess?: () => void;
+  onSuccess?: (result: SubmittableResult) => void;
   onUpdate?: () => void;
 }
 
 export function useCollection () {
   const { api } = useApi();
-  const { queueExtrinsic } = useContext(StatusContext);
+  const { queueAction, queueExtrinsic } = useContext(StatusContext);
   const { hex2a } = useDecoder();
 
   const getCollectionTokensCount = useCallback(async (collectionId: string): Promise<number> => {
@@ -88,8 +89,8 @@ export function useCollection () {
   const calculateCreateCollectionFee = useCallback(async ({ account, description, modeprm, name, tokenPrefix }: { account: string, name: string, description: string, tokenPrefix: string, modeprm: { nft?: null, fungible?: null, refungible?: null, invalid?: null }}): Promise<BN | null> => {
     try {
       const fee = (await api.tx.unique.createCollection(strToUTF16(name), strToUTF16(description), strToUTF16(tokenPrefix), modeprm).paymentInfo(account) as { partialFee: BN }).partialFee;
-      // @todo fet from chain - api.consts.common.CollectionCreationPrice
-      const createCollectionChainFee = new BN(100).mul(new BN(10).pow(new BN(formatBalance.getDefaults().decimals)));
+      const collectionCreationPrice = api.consts.common.collectionCreationPrice as unknown as BN;
+      const createCollectionChainFee = collectionCreationPrice || new BN(100).mul(new BN(10).pow(new BN(formatBalance.getDefaults().decimals)));
 
       return fee.add(createCollectionChainFee);
     } catch (error) {
@@ -106,12 +107,26 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { callBacks?.onFailed && callBacks.onFailed(); console.log('create collection failed'); },
-      txStartCb: () => { callBacks?.onStart && callBacks.onStart(); console.log('create collection start'); },
-      txSuccessCb: () => { callBacks?.onSuccess && callBacks.onSuccess(); console.log('create collection success'); },
-      txUpdateCb: () => { callBacks?.onUpdate && callBacks.onUpdate(); console.log('create collection update'); }
+      txFailedCb: () => {
+        callBacks?.onFailed && callBacks.onFailed();
+
+        console.log('create collection failed');
+      },
+      txStartCb: () => {
+        callBacks?.onStart && callBacks.onStart();
+      },
+      txSuccessCb: (result: SubmittableResult) => {
+        callBacks?.onSuccess && callBacks.onSuccess(result);
+
+        console.log('create collection success');
+      },
+      txUpdateCb: () => {
+        callBacks?.onUpdate && callBacks.onUpdate();
+
+        console.log('create collection update');
+      }
     });
-  }, [api, queueExtrinsic]);
+  }, [api, queueAction, queueExtrinsic]);
 
   const setCollectionSponsor = useCallback(({ account, collectionId, errorCallback, newSponsor, successCallback }: { account: string, collectionId: string, newSponsor: string, successCallback?: () => void, errorCallback?: () => void }) => {
     const transaction = api.tx.unique.setCollectionSponsor(collectionId, newSponsor);

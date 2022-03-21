@@ -1,17 +1,15 @@
-// Copyright 2017-2021 @polkadot/react-components authors & contributors
+// Copyright 2017-2022 @polkadot/react-components authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import type { IconName } from '@fortawesome/fontawesome-svg-core';
 import type { QueueStatus, QueueTx, QueueTxStatus } from './types';
 
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import AddressMini from '../AddressMini';
-import Button from '../Button';
 import Icon from '../Icon';
 import Spinner from '../Spinner';
-import { useTranslation } from '../translate';
 import { STATUS_COMPLETE } from './constants';
 import StatusContext from './Context';
 
@@ -84,8 +82,8 @@ function renderStatus ({ account, action, id, message, removeItem, status }: Que
           <div className='desc'>
             <div className='header'>
               {Array.isArray(action)
-                ? action.map((action, index) => <div key={index}>{action}</div>)
-                : action}
+                ? action.map((action, index) => <div key={index}>{action.replace('Custom. ', '')}</div>)
+                : action.replace('Custom. ', '')}
             </div>
             {account && (
               <AddressMini value={account} />
@@ -113,6 +111,11 @@ function renderItem ({ error, extrinsic, id, removeItem, rpc, status }: QueueTx)
   }
 
   const icon = signerIconName(status) as 'ban' | 'spinner';
+  const errorMessage = error?.message.includes('Inability to pay some fees') ? 'Error. Balance too low' : '';
+
+  if (!errorMessage) {
+    return null;
+  }
 
   return (
     <div
@@ -138,7 +141,7 @@ function renderItem ({ error, extrinsic, id, removeItem, rpc, status }: QueueTx)
               {section}.{method}
             </div>
             <div className='status'>
-              {error ? (error.message || error) : status}
+              {errorMessage}
             </div>
           </div>
         </div>
@@ -161,7 +164,6 @@ function Status ({ className = '' }: Props): React.ReactElement<Props> | null {
   const { stqueue, txqueue } = useContext(StatusContext);
   const [allSt, setAllSt] = useState<QueueStatus[]>([]);
   const [[allTx, completedTx], setAllTx] = useState<[QueueTx[], QueueTx[]]>([[], []]);
-  const { t } = useTranslation();
 
   useEffect((): void => {
     setAllSt(filterSt(stqueue));
@@ -171,33 +173,19 @@ function Status ({ className = '' }: Props): React.ReactElement<Props> | null {
     setAllTx(filterTx(txqueue));
   }, [txqueue]);
 
-  const _onDismiss = useCallback(
-    (): void => {
-      allSt.map((s) => s.removeItem());
-      completedTx.map((t) => t.removeItem());
-    },
-    [allSt, completedTx]
-  );
+  console.log('allTx', allTx, 'completedTx', completedTx, 'allSt', allSt);
 
-  if (!allSt.length && !allTx.length) {
+  const txWithFeeError = allTx.filter((txItem) => txItem.error?.message.includes('Inability to pay some fees'));
+  const customEvents = allSt.filter((eventItem) => eventItem.action.includes('Custom'));
+
+  if (!txWithFeeError.length && !customEvents.length) {
     return null;
   }
 
   return (
     <div className={`ui--Status ${className}`}>
-      {(allSt.length + completedTx.length) > 1 && (
-        <div className='dismiss'>
-          <Button
-            icon='times'
-            isBasic
-            isFull
-            label={t<string>('Dismiss all notifications')}
-            onClick={_onDismiss}
-          />
-        </div>
-      )}
-      {allTx.map(renderItem)}
-      {allSt.map(renderStatus)}
+      {txWithFeeError.map(renderItem)}
+      {customEvents.map(renderStatus)}
     </div>
   );
 }

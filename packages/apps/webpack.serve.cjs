@@ -17,7 +17,7 @@ module.exports = merge(
       proxy: {
         '/v1/graphql/': {
           changeOrigin: true,
-          target: 'https://dev-api-explorer.unique.network'
+          target: 'https://hasura.dev.uniquenetwork.dev/'
         }
       },
       static: path.resolve(__dirname, 'build')
