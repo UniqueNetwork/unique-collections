@@ -2,16 +2,16 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import BN from 'bn.js';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 
 import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
 import { ArtificialAttributeItemType } from '@polkadot/app-builder/components/TokenAttributes/AttributesRowEditable';
 import { AttributeItemType, fillProtobufJson, ProtobufAttributeType } from '@polkadot/react-components/util/protobufUtils';
 import { useCollection } from '@polkadot/react-hooks';
 
-export const useCollectionForm = (account: string, collectionId?: string) => {
-  const { attributes, description, imgAddress, name, onwerCanDestroy, ownerCanTransfer, tokenPrefix } = useContext(CollectionFormContext);
-  const { calculateCreateCollectionExFee, calculateCreateCollectionFee, calculateSetConstOnChainSchemaFees, calculateSetSchemaVersionFee } = useCollection();
+export const useCollectionFees = (account: string, collectionId?: string) => {
+  const { attributes, description, imgAddress, name, ownerCanDestroy, ownerCanTransfer, tokenPrefix } = useContext(CollectionFormContext);
+  const { calculateCreateCollectionExFee, calculateSetConstOnChainSchemaFees, calculateSetSchemaVersionFee } = useCollection();
   const [fees, setFees] = useState<BN | null>(null);
 
   const convertArtificialAttributesToProtobuf = useCallback((attributes: ArtificialAttributeItemType[]): AttributeItemType[] => {
@@ -34,11 +34,13 @@ export const useCollectionForm = (account: string, collectionId?: string) => {
         collectionId,
         schema: JSON.stringify(protobufJson)
       }) || new BN(0);
+
       const schemaVersionFee = await calculateSetSchemaVersionFee({
         account,
         collectionId,
         schemaVersion: 'Unique'
       }) || new BN(0);
+
       const createCollectionFees = constOnChainSchemaFees.add(schemaVersionFee);
 
       setFees(createCollectionFees);
@@ -59,7 +61,7 @@ export const useCollectionForm = (account: string, collectionId?: string) => {
         constOnChainSchema: JSON.stringify(protobufJson),
         description,
         limits: {
-          onwerCanDestroy,
+          ownerCanDestroy,
           ownerCanTransfer
         },
         mode: { nft: null },
@@ -71,7 +73,7 @@ export const useCollectionForm = (account: string, collectionId?: string) => {
 
       setFees(createCollectionFees);
     }
-  }, [account, attributes, calculateCreateCollectionExFee, convertArtificialAttributesToProtobuf, description, imgAddress, name, onwerCanDestroy, ownerCanTransfer, tokenPrefix]);
+  }, [account, attributes, calculateCreateCollectionExFee, convertArtificialAttributesToProtobuf, description, imgAddress, name, ownerCanDestroy, ownerCanTransfer, tokenPrefix]);
 
   return {
     calculateFee,

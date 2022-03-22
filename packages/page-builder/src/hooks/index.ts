@@ -2,5 +2,5 @@
 // SPDX-License-Identifier: Apache-2.0
 
 export * from './useAttributes';
-export * from './useCollectionForm';
+export * from './useCollectionFees';
 export * from './useCollectionInfo';

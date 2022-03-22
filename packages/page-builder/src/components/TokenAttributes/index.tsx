@@ -5,12 +5,13 @@ import './styles.scss';
 
 import type { AttributeItemType, ProtobufAttributeType } from '@polkadot/react-components/util/protobufUtils';
 
-import BN from 'bn.js';
 import _maxBy from 'lodash/maxBy';
 import React, { memo, ReactElement, useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 
+import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
+import { useCollectionFees } from '@polkadot/app-builder/hooks';
 import TransactionContext from '@polkadot/app-builder/TransactionContext/TransactionContext';
 import { HelpTooltip, StatusContext, UnqButton } from '@polkadot/react-components';
 import { fillAttributes, fillProtobufJson } from '@polkadot/react-components/util/protobufUtils';
@@ -24,10 +25,8 @@ import AttributesRow from './AttributesRow';
 
 interface TokenAttributes {
   account: string;
-  attributes: ArtificialAttributeItemType[];
   collectionId?: string;
   collectionInfo?: NftCollectionInterface;
-  setAttributes: (param: any) => void
 }
 
 const defaultAttributesWithTokenIpfs: ArtificialAttributeItemType[] = [
@@ -45,15 +44,17 @@ const stepTexts = [
   'Setting image location'
 ];
 
-function TokenAttributes ({ account, attributes, collectionId, collectionInfo, setAttributes }: TokenAttributes): ReactElement {
+function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttributes): ReactElement {
   const { getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<number[]>([]);
   const [emptyEnums, setEmptyEnums] = useState<number[]>([]);
   const history = useHistory();
+  const { calculateFee, calculateFeeEx, fees } = useCollectionFees(account, collectionId);
   const { queueAction } = useContext(StatusContext);
   const isOwner = collectionInfo?.owner === account;
   const { setTransactions } = useContext(TransactionContext);
+  const { attributes, name, setAttributes } = useContext(CollectionFormContext);
 
   const onAddItem = useCallback(() => {
     const newAttributes = [...attributes];
@@ -240,6 +241,21 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
   useEffect(() => {
     fillCollectionAttributes();
   }, [fillCollectionAttributes]);
+
+  useEffect(() => {
+    if (collectionId) {
+      void calculateFee();
+    } else {
+      void calculateFeeEx();
+    }
+  }, [calculateFee, calculateFeeEx, collectionId]);
+
+  // if we have no collection name filled, lets fill in in
+  useEffect(() => {
+    if (!collectionId && !name) {
+      history.push('/builder/new-collection/main-information');
+    }
+  });
 
   return (
     <div className='token-attributes shadow-block'>

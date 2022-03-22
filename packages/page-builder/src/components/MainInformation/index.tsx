@@ -7,7 +7,7 @@ import React, { memo, useCallback, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router';
 
 import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
-import { useCollectionForm } from '@polkadot/app-builder/hooks';
+import { useCollectionFees } from '@polkadot/app-builder/hooks';
 import { Input, TextArea, UnqButton } from '@polkadot/react-components';
 
 import WarningText from '../WarningText';
@@ -18,7 +18,7 @@ interface MainInformationProps {
 
 function MainInformation ({ account }: MainInformationProps): React.ReactElement {
   const { description, name, setDescription, setName, setTokenPrefix, tokenPrefix } = useContext(CollectionFormContext);
-  const { calculateFeeEx, fees } = useCollectionForm(account);
+  const { calculateFeeEx, fees } = useCollectionFees(account);
   const history = useHistory();
 
   const goToNextStep = useCallback(() => {

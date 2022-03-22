@@ -6,9 +6,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useCollection } from '@polkadot/react-hooks';
 import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
-export const useCollectionInfo = (collectionId: string) => {
+export const useCollectionInfo = (collectionId?: string) => {
   const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
   const { getDetailedCollectionInfo } = useCollection();
+
+  console.log('collectionId', collectionId);
 
   const fetchCollectionInfo = useCallback(async () => {
     if (collectionId) {

@@ -3,31 +3,39 @@
 
 import './styles.scss';
 
-import React, { memo, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
+import BN from 'bn.js';
+import React, { memo, SyntheticEvent, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader';
 
+import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
 import clearIcon from '@polkadot/app-builder/images/closeIcon.svg';
 import { UnqButton } from '@polkadot/react-components';
-import { useImageService } from '@polkadot/react-hooks';
+import { useCollection, useImageService } from '@polkadot/react-hooks';
 
 import uploadIcon from '../../images/uploadIcon.svg';
+import TransactionContext from '../../TransactionContext/TransactionContext';
+import WarningText from '../WarningText';
 
 interface CoverProps {
   account: string;
-  coverImg: File | null;
   collectionId?: string;
-  setCoverImg: (avatarImg: File | null) => void;
-  setVariableSchema: (schema: string) => void;
 }
 
-function Cover ({ coverImg, setCoverImg, setVariableSchema }: CoverProps): React.ReactElement {
+const stepText = 'Uploading collection cover to IPFS';
+
+function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
   const [imgAddress, setImgAddress] = useState<string>();
+  const [coverFees, setCoverFees] = useState<BN | null>(null);
   const [imageUploading, setImageUploading] = useState<boolean>(false);
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const { uploadImg } = useImageService();
   const history = useHistory();
+  const { coverImg, name, setCoverImg, setVariableSchema } = useContext(CollectionFormContext);
+  const { calculateSetVariableOnChainSchemaFee, saveVariableOnChainSchema } = useCollection();
+  const { setTransactions, transactions } = useContext(TransactionContext);
+
   const inputFileRef = useRef<HTMLInputElement>(null);
 
   const setCollectionCover = useCallback(() => {
@@ -39,6 +47,22 @@ function Cover ({ coverImg, setCoverImg, setVariableSchema }: CoverProps): React
       setVariableSchema(JSON.stringify(varDataWithImage));
     }
   }, [imgAddress, setVariableSchema]);
+
+  const calculateFee = useCallback(async () => {
+    if (account && collectionId) {
+      let setVariableOnChainSchemaFee: BN = new BN(0);
+
+      if (account && collectionId && imgAddress) {
+        const varDataWithImage = {
+          collectionCover: imgAddress
+        };
+
+        setVariableOnChainSchemaFee = (await calculateSetVariableOnChainSchemaFee({ account, collectionId, schema: JSON.stringify(varDataWithImage) })) || new BN(0);
+      }
+
+      setCoverFees(setVariableOnChainSchemaFee);
+    }
+  }, [account, calculateSetVariableOnChainSchemaFee, collectionId, imgAddress]);
 
   const clearTokenImg = useCallback(() => {
     setCoverImg(null);
@@ -71,21 +95,66 @@ function Cover ({ coverImg, setCoverImg, setVariableSchema }: CoverProps): React
     void uploadImage(file);
   }, [setCoverImg, uploadImage]);
 
+  const onSuccess = useCallback(() => {
+    if (collectionId) {
+      setTransactions([
+        {
+          state: 'finished',
+          text: stepText
+        }
+      ]);
+
+      setTimeout(() => {
+        setTransactions([]);
+      }, 3000);
+
+      history.push(`/builder/collections/${collectionId}/token-attributes`);
+    }
+  }, [collectionId, history, setTransactions]);
+
+  const saveVariableSchema = useCallback(() => {
+    if (!imgAddress) {
+      onSuccess();
+    } else if (account && collectionId && imgAddress) {
+      setTransactions([
+        {
+          state: 'active',
+          text: stepText
+        }
+      ]);
+      const varDataWithImage = {
+        collectionCover: imgAddress
+      };
+
+      saveVariableOnChainSchema({
+        account,
+        collectionId,
+        errorCallback: setTransactions.bind(null, []),
+        schema: JSON.stringify(varDataWithImage),
+        successCallback: onSuccess
+      });
+    }
+  }, [account, collectionId, imgAddress, onSuccess, saveVariableOnChainSchema, setTransactions]);
+
   const closeSaveConfirmation = useCallback(() => {
     setIsSaveConfirmationOpen(false);
   }, []);
+
+  const onConfirm = useCallback(() => {
+    if (collectionId) {
+      saveVariableSchema();
+    } else {
+      history.push('/builder/collections/new-collection/token-attributes');
+    }
+  }, [collectionId, history, saveVariableSchema]);
 
   const saveConfirm = useCallback(() => {
     if (!coverImg) {
       setIsSaveConfirmationOpen(true);
     } else {
-      history.push('/builder/collections/new-collection/token-attributes');
+      onConfirm();
     }
-  }, [history, coverImg]);
-
-  const onConfirm = useCallback(() => {
-    history.push('/builder/collections/new-collection/token-attributes');
-  }, [history]);
+  }, [coverImg, onConfirm]);
 
   const clearFileImage = useCallback(() => {
     if (!imgAddress && inputFileRef.current) {
@@ -102,6 +171,17 @@ function Cover ({ coverImg, setCoverImg, setVariableSchema }: CoverProps): React
   useEffect(() => {
     setCollectionCover();
   }, [setCollectionCover]);
+
+  useEffect(() => {
+    void calculateFee();
+  }, [calculateFee]);
+
+  // if we have no collection name filled, lets fill in in
+  useEffect(() => {
+    if (!collectionId && !name) {
+      history.push('/builder/new-collection/main-information');
+    }
+  });
 
   return (
     <div className='cover shadow-block'>
@@ -162,9 +242,9 @@ function Cover ({ coverImg, setCoverImg, setVariableSchema }: CoverProps): React
           <br />
         </div>
       )}
-      {/* { (imgAddress && coverFees) && (
+      { (imgAddress && coverFees) && (
         <WarningText fee={coverFees} />
-      )} */}
+      )}
       <Confirm
         cancelButton='No, return'
         className='unique-modal'
@@ -177,7 +257,7 @@ function Cover ({ coverImg, setCoverImg, setVariableSchema }: CoverProps): React
       />
       <UnqButton
         content='Confirm'
-        isDisabled={imageUploading}
+        isDisabled={transactions?.length > 0 || imageUploading}
         isFilled
         onClick={saveConfirm}
         size='medium'

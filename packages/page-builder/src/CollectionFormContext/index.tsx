@@ -21,7 +21,7 @@ function CollectionForm ({ children }: Props): React.ReactElement<Props> | null 
   const [imgAddress, setImgAddress] = useState<string>();
   const [name, setName] = useState<string>('');
   const [ownerCanTransfer, setOwnerCanTransfer] = useState<boolean>(false);
-  const [onwerCanDestroy, setOnwerCanDestroy] = useState<boolean>(false);
+  const [ownerCanDestroy, setOwnerCanDestroy] = useState<boolean>(false);
   const [protobufJson, setProtobufJson] = useState<File | null>(null);
   const [tokenPrefix, setTokenPrefix] = useState<string>('');
   const [variableSchema, setVariableSchema] = useState<string>('');
@@ -34,7 +34,7 @@ function CollectionForm ({ children }: Props): React.ReactElement<Props> | null 
     description,
     imgAddress,
     name,
-    onwerCanDestroy,
+    ownerCanDestroy,
     ownerCanTransfer,
     setAttributes,
     setAvatarImg,
@@ -46,7 +46,7 @@ function CollectionForm ({ children }: Props): React.ReactElement<Props> | null 
     setVariableSchema,
     tokenPrefix,
     variableSchema
-  }), [attributes, avatarImg, coverImg, createFees, description, imgAddress, name, onwerCanDestroy, ownerCanTransfer, tokenPrefix, variableSchema]);
+  }), [attributes, avatarImg, coverImg, createFees, description, imgAddress, name, ownerCanDestroy, ownerCanTransfer, tokenPrefix, variableSchema]);
 
   return (
     <CollectionFormContext.Provider value={value}>

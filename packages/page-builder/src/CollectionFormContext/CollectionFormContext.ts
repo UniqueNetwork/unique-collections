@@ -6,6 +6,8 @@ import React from 'react';
 
 import { ArtificialAttributeItemType } from '@polkadot/app-builder/components/TokenAttributes/AttributesRowEditable';
 
+export type AttributesCallBackType = (prevAttributes: ArtificialAttributeItemType[]) => ArtificialAttributeItemType[]
+
 export interface CollectionFormProps {
   attributes: ArtificialAttributeItemType[];
   avatarImg: File | null;
@@ -14,9 +16,9 @@ export interface CollectionFormProps {
   description: string;
   imgAddress?: string;
   name: string;
-  onwerCanDestroy: boolean;
+  ownerCanDestroy: boolean;
   ownerCanTransfer: boolean;
-  setAttributes: (attributes: ArtificialAttributeItemType[]) => void;
+  setAttributes: (attributes: ArtificialAttributeItemType[] | AttributesCallBackType) => void;
   setAvatarImg: (avatarImg: File | null) => void;
   setCoverImg: (coverImg: File | null) => void;
   setDescription: (description: string) => void;

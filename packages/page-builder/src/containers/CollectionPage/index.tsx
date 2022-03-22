@@ -19,7 +19,7 @@ import { AppCtx } from '@polkadot/apps/AppContext';
 import { UnqButton } from '@polkadot/react-components';
 import { useScreenWidthFromThreshold, useTokenAttributes } from '@polkadot/react-hooks';
 
-import { useCollectionForm, useCollectionInfo } from '../../hooks';
+import { useCollectionInfo } from '../../hooks';
 
 interface CollectionPageProps {
   account: string;
@@ -36,9 +36,9 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
   const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
   const [lessThanThreshold] = useScreenWidthFromThreshold(1023);
   const { collectionId }: { collectionId: string } = useParams();
-  const { collectionInfo } = useCollectionInfo(collectionId);
-  const { attributes, avatarImg, coverImg, description, name, setAttributes, setCoverImg, setDescription, setName, setTokenPrefix, setVariableSchema, tokenPrefix } = useCollectionForm(account);
-  const [tokenImg, setTokenImg] = useState<File | null>(null);
+  const collectionIdParam = collectionId && collectionId !== 'new-collection' ? collectionId : undefined;
+
+  const { collectionInfo } = useCollectionInfo(collectionIdParam);
   const history = useHistory();
   const location = useLocation();
   const { constAttributes, constOnChainSchema, resetAttributes, setTokenConstAttributes, tokenConstAttributes } = useTokenAttributes(collectionInfo);
@@ -101,28 +101,17 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
             >
               <MainInformation
                 account={account}
-                description={description}
-                name={name}
-                setDescription={setDescription}
-                setName={setName}
-                setTokenPrefix={setTokenPrefix}
-                tokenPrefix={tokenPrefix}
               />
             </Route>
             <Route path={`${basePath}/new-collection/cover`}>
               <Cover
                 account={account}
-                coverImg={coverImg}
-                setCoverImg={setCoverImg}
-                setVariableSchema={setVariableSchema}
               />
             </Route>
             <Route path={`${basePath}/new-collection/token-attributes`}>
               <TokenAttributes
                 account={account}
-                attributes={attributes}
                 collectionInfo={collectionInfo}
-                setAttributes={setAttributes}
               />
             </Route>
             <Route
@@ -132,19 +121,14 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
                 <Route path={`${basePath}/collections/${collectionId}/cover`}>
                   <Cover
                     account={account}
-                    collectionId={collectionId}
-                    coverImg={coverImg}
-                    setCoverImg={setCoverImg}
-                    setVariableSchema={setVariableSchema}
+                    collectionId={collectionIdParam}
                   />
                 </Route>
                 <Route path={`${basePath}/collections/${collectionId}/token-attributes`}>
                   <TokenAttributes
                     account={account}
-                    attributes={attributes}
-                    collectionId={collectionId}
+                    collectionId={collectionIdParam}
                     collectionInfo={collectionInfo}
-                    setAttributes={setAttributes}
                   />
                 </Route>
                 <Route path={`${basePath}/collections/${collectionId}/new-nft`}>
@@ -156,9 +140,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
                     constOnChainSchema={constOnChainSchema}
                     resetAttributes={resetAttributes}
                     setTokenConstAttributes={setTokenConstAttributes}
-                    setTokenImg={setTokenImg}
                     tokenConstAttributes={tokenConstAttributes}
-                    tokenImg={tokenImg}
                   />
                 </Route>
               </Switch>
@@ -167,19 +149,12 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
         </div>
         <div className={`preview-cards ${!isPreviewOpen ? 'hidden' : ''}`}>
           <CollectionPreview
-            avatarImg={avatarImg}
-            collectionDescription={description}
             collectionInfo={collectionInfo}
-            collectionName={name}
           />
           <TokenPreview
-            attributes={attributes}
             collectionInfo={collectionInfo}
-            collectionName={name}
             constAttributes={constAttributes}
             tokenConstAttributes={tokenConstAttributes}
-            tokenImg={tokenImg}
-            tokenPrefix={tokenPrefix}
           />
         </div>
         {previewMode && (
