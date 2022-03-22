@@ -14,7 +14,6 @@ interface AttributesRowProps {
   attributeType: ArtificialFieldType;
   attributeCountType: ArtificialFieldRuleType;
   attributeValues: string[];
-  isOwner: boolean;
 }
 
 function AttributesRow (props: AttributesRowProps): ReactElement {

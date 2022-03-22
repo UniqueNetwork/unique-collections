@@ -53,12 +53,15 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   const { calculateFee, calculateFeeEx, fees } = useCollectionFees(account, collectionId);
   const { queueAction } = useContext(StatusContext);
   const isOwner = collectionInfo?.owner === account;
+  const canSaveAttributes = isOwner || !collectionId;
   const { setTransactions } = useContext(TransactionContext);
   const { attributes, name, setAttributes } = useContext(CollectionFormContext);
 
+  console.log('attributes', attributes);
+
   const onAddItem = useCallback(() => {
     const newAttributes = [...attributes];
-    const findNextId = (_maxBy(newAttributes, 'id') as AttributeItemType).id;
+    const findNextId = (_maxBy(newAttributes, 'id') as AttributeItemType)?.id ?? 0;
 
     newAttributes.push({
       fieldType: 'string',
@@ -297,7 +300,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
           />
         </div>
       </div>
-      { !isOwner && attributes.map((attribute: ArtificialAttributeItemType, index: number) => {
+      { !canSaveAttributes && attributes.map((attribute: ArtificialAttributeItemType, index: number) => {
         if (attribute.name !== 'ipfsJson') {
           return (
             <AttributesRow
@@ -305,7 +308,6 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
               attributeName={attribute.name}
               attributeType={attribute.fieldType}
               attributeValues={attribute.values}
-              isOwner={isOwner}
               key={`${attribute.name}-${index}`}
             />
           );
@@ -313,7 +315,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
           return null;
         }
       })}
-      { isOwner && attributes.map((attribute: ArtificialAttributeItemType) => {
+      { canSaveAttributes && attributes.map((attribute: ArtificialAttributeItemType) => {
         if (attribute.name !== 'ipfsJson') {
           return (
             <AttributesRowEditable
@@ -322,9 +324,9 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
               attributeType={attribute.fieldType}
               attributeValues={attribute.values}
               attributes={attributes}
+              canSaveAttributes={canSaveAttributes}
               formErrors={formErrors}
               id={attribute.id}
-              isOwner={isOwner}
               key={`${attribute.id}`}
               removeItem={deleteAttribute}
               setAttributeCountType={setAttributeCountType}

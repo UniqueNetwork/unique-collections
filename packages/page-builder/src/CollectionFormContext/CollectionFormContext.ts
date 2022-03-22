@@ -23,8 +23,10 @@ export interface CollectionFormProps {
   setCoverImg: (coverImg: File | null) => void;
   setDescription: (description: string) => void;
   setName: (name: string) => void;
+  setTokenImg: (tokenImg: File | null) => void;
   setTokenPrefix: (tokenPrefix: string) => void;
   setVariableSchema: (variableSchema: string) => void;
+  tokenImg: File | null;
   tokenPrefix: string;
   variableSchema: string;
 }

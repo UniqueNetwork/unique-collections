@@ -25,6 +25,7 @@ function CollectionForm ({ children }: Props): React.ReactElement<Props> | null 
   const [protobufJson, setProtobufJson] = useState<File | null>(null);
   const [tokenPrefix, setTokenPrefix] = useState<string>('');
   const [variableSchema, setVariableSchema] = useState<string>('');
+  const [tokenImg, setTokenImg] = useState<File | null>(null);
 
   const value = useMemo(() => ({
     attributes,
@@ -42,11 +43,13 @@ function CollectionForm ({ children }: Props): React.ReactElement<Props> | null 
     setDescription,
     setImgAddress,
     setName,
+    setTokenImg,
     setTokenPrefix,
     setVariableSchema,
+    tokenImg,
     tokenPrefix,
     variableSchema
-  }), [attributes, avatarImg, coverImg, createFees, description, imgAddress, name, ownerCanDestroy, ownerCanTransfer, tokenPrefix, variableSchema]);
+  }), [attributes, avatarImg, coverImg, createFees, description, imgAddress, name, ownerCanDestroy, ownerCanTransfer, tokenImg, tokenPrefix, variableSchema]);
 
   return (
     <CollectionFormContext.Provider value={value}>
