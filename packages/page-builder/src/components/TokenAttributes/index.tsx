@@ -46,11 +46,10 @@ const stepTexts = [
 ];
 
 function TokenAttributes ({ account, attributes, collectionId, collectionInfo, setAttributes }: TokenAttributes): ReactElement {
-  const { calculateCreateCollectionExFee, calculateSetConstOnChainSchemaFees, calculateSetSchemaVersionFee, getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
+  const { getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<number[]>([]);
   const [emptyEnums, setEmptyEnums] = useState<number[]>([]);
-  const [fees, setFees] = useState<BN | null>(null);
   const history = useHistory();
   const { queueAction } = useContext(StatusContext);
   const isOwner = collectionInfo?.owner === account;
@@ -152,39 +151,6 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
     });
   }, []);
 
-  const calculateFees = useCallback(async () => {
-    try {
-      const converted: AttributeItemType[] = convertArtificialAttributesToProtobuf(attributes);
-      const protobufJson: ProtobufAttributeType = fillProtobufJson(converted);
-
-      if (account) {
-        if (collectionId) {
-          const constOnChainSchemaFees = await calculateSetConstOnChainSchemaFees({ account, collectionId, schema: JSON.stringify(protobufJson) }) || new BN(0);
-          const schemaVersionFee = await calculateSetSchemaVersionFee({ account, collectionId, schemaVersion: 'Unique' }) || new BN(0);
-          const fees = constOnChainSchemaFees.add(schemaVersionFee);
-
-          setFees(fees);
-        } else {
-          // { access, account, constOnChainSchema, description, limits, metaUpdatePermission, mode, name, offchainSchema, pendingSponsor, schemaVersion, tokenPrefix, variableOnChainSchema
-          const fees = calculateCreateCollectionExFee({
-            account, constOnChainSchema: JSON.stringify(protobufJson),
-            description,
-            limits: {
-              ownerCanTransfer,
-              onwerCanDestroy,
-            }
-            mode: { nft: null },
-            schemaVersion: 'Unique',
-            tokenPrefix,
-            variableOnChainSchema
-          }) || new BN(0);
-        }
-      }
-    } catch (e) {
-      console.log('save onChain schema error', e);
-    }
-  }, [account, attributes, calculateSetConstOnChainSchemaFees, calculateSetSchemaVersionFee, collectionId, convertArtificialAttributesToProtobuf]);
-
   const onSaveForm = useCallback(() => {
     setIsSaveConfirmationOpen(false);
 
@@ -274,10 +240,6 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
   useEffect(() => {
     fillCollectionAttributes();
   }, [fillCollectionAttributes]);
-
-  useEffect(() => {
-    void calculateFees();
-  }, [calculateFees]);
 
   return (
     <div className='token-attributes shadow-block'>

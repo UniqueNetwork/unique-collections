@@ -1,27 +1,24 @@
-// Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
+// Copyright 2017-2022 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import './styles.scss';
 
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router';
 
+import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
+import { useCollectionForm } from '@polkadot/app-builder/hooks';
 import { Input, TextArea, UnqButton } from '@polkadot/react-components';
 
-// import WarningText from '../WarningText';
+import WarningText from '../WarningText';
 
 interface MainInformationProps {
   account: string;
-  description: string;
-  name: string;
-  setDescription: (description: string) => void;
-  setName: (name: string) => void;
-  setTokenPrefix: (tokenPrefix: string) => void;
-  tokenPrefix: string;
 }
 
-function MainInformation (props: MainInformationProps): React.ReactElement {
-  const { description, name, setDescription, setName, setTokenPrefix, tokenPrefix } = props;
+function MainInformation ({ account }: MainInformationProps): React.ReactElement {
+  const { description, name, setDescription, setName, setTokenPrefix, tokenPrefix } = useContext(CollectionFormContext);
+  const { calculateFeeEx, fees } = useCollectionForm(account);
   const history = useHistory();
 
   const goToNextStep = useCallback(() => {
@@ -45,6 +42,10 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
   const handleBlurSymbol = useCallback(() => {
     setTokenPrefix(tokenPrefix.trim());
   }, [setTokenPrefix, tokenPrefix]);
+
+  useEffect(() => {
+    void calculateFeeEx();
+  }, [calculateFeeEx]);
 
   return (
     <div className='main-information shadow-block'>
@@ -81,7 +82,9 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
           value={tokenPrefix}
         />
       </div>
-      <br />
+      { fees && (
+        <WarningText fee={fees} />
+      )}
       <UnqButton
         content='Confirm'
         isDisabled={!name || !tokenPrefix}
