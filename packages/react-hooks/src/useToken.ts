@@ -27,7 +27,7 @@ interface UseTokenInterface {
 
 export function useToken (): UseTokenInterface {
   const { api } = useApi();
-  const { queueExtrinsic } = useContext(StatusContext);
+  const { queueAction, queueExtrinsic } = useContext(StatusContext);
 
   const calculateCreateItemFee = useCallback(async ({ account, collectionId, constData, owner, variableData }: { account: string, collectionId: string, constData: string, owner: string, variableData: string }): Promise<BN | null> => {
     try {
@@ -55,12 +55,22 @@ export function useToken (): UseTokenInterface {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('create nft fail'); errorCallback && errorCallback(); },
+      txFailedCb: () => {
+        console.log('create nft fail'); errorCallback && errorCallback();
+      },
       txStartCb: () => { console.log('create nft start'); },
-      txSuccessCb: () => { console.log('create nft success'); successCallback && successCallback(); },
+      txSuccessCb: () => {
+        successCallback && successCallback();
+
+        queueAction({
+          action: 'Custom. Create NFT',
+          message: 'NFT successfully created',
+          status: 'success'
+        });
+      },
       txUpdateCb: () => { console.log('create nft update'); }
     });
-  }, [api, queueExtrinsic]);
+  }, [api, queueAction, queueExtrinsic]);
 
   const setVariableMetadata = useCallback((
     { account, collectionId, errorCallback, successCallback, tokenId, variableData }:
@@ -71,9 +81,16 @@ export function useToken (): UseTokenInterface {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('set variable metadata fail'); errorCallback && errorCallback(); },
+      txFailedCb: () => {
+        console.log('set variable metadata fail');
+        errorCallback && errorCallback();
+      },
       txStartCb: () => { console.log('set variable metadata start'); },
-      txSuccessCb: () => { console.log('set variable metadata success'); successCallback && successCallback(); },
+      txSuccessCb: () => {
+        console.log('set variable metadata success');
+
+        successCallback && successCallback();
+      },
       txUpdateCb: () => { console.log('set variable metadata update'); }
     });
   }, [api, queueExtrinsic]);
@@ -126,11 +143,6 @@ export function useToken (): UseTokenInterface {
 
     if (tokenId && collectionInfo) {
       tokenDetailsData = await getDetailedTokenInfo(collectionInfo.id, tokenId);
-      /* if (Object.prototype.hasOwnProperty.call(collectionInfo.mode, 'nft')) {
-        tokenDetailsData = await getDetailedTokenInfo(collectionInfo.id, tokenId);
-      } else if (Object.prototype.hasOwnProperty.call(collectionInfo.mode, 'reFungible')) {
-        tokenDetailsData = await getDetailedReFungibleTokenInfo(collectionInfo.id, tokenId);
-      } */
     }
 
     return tokenDetailsData;

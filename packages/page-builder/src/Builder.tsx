@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/apps , UseTech authors & contributors
+// Copyright 2017-2022 @polkadot/apps , UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import './styles.scss';
@@ -19,16 +19,16 @@ const { graphQlAdminSecret, graphQlApi } = envConfig;
 const graphQlUrl = process.env.NODE_ENV === 'production' ? graphQlApi : '/v1/graphql/';
 
 const headers: {[k: string]: string} = {
-  'content-type': 'application/json',
-}
+  'content-type': 'application/json'
+};
 
 if (graphQlAdminSecret) {
   headers['x-hasura-admin-secret'] = graphQlAdminSecret;
 }
 
 const client = new ApolloClient({
-  headers,
   cache: new InMemoryCache(),
+  headers,
   uri: graphQlUrl
 });
 
