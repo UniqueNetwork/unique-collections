@@ -9,7 +9,7 @@ import { useHistory } from 'react-router';
 
 import { SubmittableResult } from '@polkadot/api';
 import TransactionContext from '@polkadot/app-builder/TransactionContext/TransactionContext';
-import { Input, TextArea, UnqButton } from '@polkadot/react-components';
+import { Input, TextArea, UnqButton, Checkbox } from '@polkadot/react-components';
 import { useCollection } from '@polkadot/react-hooks';
 
 import WarningText from '../WarningText';
@@ -30,6 +30,7 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
   const { account, description, name, setDescription, setName, setTokenPrefix, tokenPrefix } = props;
   const { calculateCreateCollectionFee, createCollection } = useCollection();
   const [createFees, setCreateFees] = useState<BN | null>(null);
+  const [minfest, setMinfest] = useState<boolean>(false);
   const history = useHistory();
   const { setTransactions } = useContext(TransactionContext);
 
@@ -146,12 +147,22 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
           value={tokenPrefix}
         />
       </div>
+      <div className='info-block'>
+        <Checkbox
+          label={<> By participating in the MintFest you are agreeing to the <a
+            href='https://unique.network/terms/mintfest/'
+            rel='noreferrer nooperer'
+            target='_blank'>Terms and Service</a> of the contest</>}
+          onChange={setMinfest}
+          value={minfest}
+        />
+      </div>
       { createFees && (
         <WarningText fee={createFees} />
       )}
       <UnqButton
         content='Confirm'
-        isDisabled={!name || !tokenPrefix}
+        isDisabled={!name || !tokenPrefix || !minfest}
         isFilled
         onClick={onCreateCollection}
         size='medium'
