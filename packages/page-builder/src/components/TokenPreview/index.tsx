@@ -55,8 +55,6 @@ function TokenPreview ({ collectionInfo, constAttributes, tokenConstAttributes }
       arrToFilter = attributes ?? [];
     }
 
-    console.log('arrToFilter', arrToFilter, 'constAttributes', constAttributes, 'isCollectionPage', isCollectionPage, 'attributes', attributes);
-
     return (arrToFilter as []).filter((elem: { name: string }) => elem.name !== 'ipfsJson');
   }, [attributes, constAttributes, location]);
 

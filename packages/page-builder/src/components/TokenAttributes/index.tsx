@@ -16,7 +16,8 @@ import TransactionContext from '@polkadot/app-builder/TransactionContext/Transac
 import { HelpTooltip, StatusContext, UnqButton } from '@polkadot/react-components';
 import { fillAttributes, fillProtobufJson } from '@polkadot/react-components/util/protobufUtils';
 import { useCollection } from '@polkadot/react-hooks';
-import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
+import { CreateCollectionEx, NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
+import { str2vec } from '@polkadot/react-hooks/utils';
 
 import plusIcon from '../../images/plusIcon.svg';
 import AttributesRowEditable, { ArtificialAttributeItemType, ArtificialFieldRuleType, ArtificialFieldType } from '../TokenAttributes/AttributesRowEditable';
@@ -44,8 +45,10 @@ const stepTexts = [
   'Setting image location'
 ];
 
+const creatingCollectionText = 'Creating collection and saving it to blockchain';
+
 function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttributes): ReactElement {
-  const { getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
+  const { createCollectionEx, getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<number[]>([]);
   const [emptyEnums, setEmptyEnums] = useState<number[]>([]);
@@ -55,9 +58,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   const isOwner = collectionInfo?.owner === account;
   const canSaveAttributes = isOwner || !collectionId;
   const { setTransactions } = useContext(TransactionContext);
-  const { attributes, name, setAttributes } = useContext(CollectionFormContext);
-
-  console.log('attributes', attributes);
+  const { attributes, description, imgAddress, name, ownerCanDestroy, ownerCanTransfer, setAttributes, setOwnerCanDestroy, setOwnerCanTransfer, setTokenLimit, tokenLimit, tokenPrefix } = useContext(CollectionFormContext);
 
   const onAddItem = useCallback(() => {
     const newAttributes = [...attributes];
@@ -79,29 +80,46 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   }, []);
 
   const onSuccess = useCallback(() => {
-    setTransactions([
-      {
-        state: 'finished',
-        step: 1,
-        text: stepTexts[0]
-      },
-      {
-        state: 'finished',
-        step: 2,
-        text: stepTexts[1]
-      }
-    ]);
+    if (collectionId) {
+      setTransactions([
+        {
+          state: 'finished',
+          step: 1,
+          text: stepTexts[0]
+        },
+        {
+          state: 'finished',
+          step: 2,
+          text: stepTexts[1]
+        }
+      ]);
+
+      queueAction({
+        action: '',
+        message: 'Attributes successfully set',
+        status: 'success'
+      });
+    } else {
+      setTransactions([
+        {
+          state: 'finished',
+          text: creatingCollectionText
+        }
+      ]);
+
+      queueAction({
+        action: '',
+        message: 'Collection successfully created',
+        status: 'success'
+      });
+    }
+
     setTimeout(() => {
       setTransactions([]);
     }, 3000);
 
-    queueAction({
-      action: '',
-      message: 'Attributes successfully set',
-      status: 'success'
-    });
     history.push('/builder');
-  }, [setTransactions, queueAction, history]);
+  }, [collectionId, history, setTransactions, queueAction]);
 
   const setUniqueSchemaVersion = useCallback(() => {
     if (collectionInfo?.schemaVersion === 'Unique') {
@@ -162,32 +180,76 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
       const converted: AttributeItemType[] = convertArtificialAttributesToProtobuf(attributes);
       const protobufJson: ProtobufAttributeType = fillProtobufJson(converted);
 
-      setTransactions([
-        {
-          state: 'active',
-          step: 1,
-          text: stepTexts[0]
-        },
-        {
-          state: 'not-active',
-          step: 2,
-          text: stepTexts[1]
-        }
-      ]);
+      if (account) {
+        if (collectionId) {
+          setTransactions([
+            {
+              state: 'active',
+              step: 1,
+              text: stepTexts[0]
+            },
+            {
+              state: 'not-active',
+              step: 2,
+              text: stepTexts[1]
+            }
+          ]);
 
-      if (account && collectionId) {
-        saveConstOnChainSchema({
-          account,
-          collectionId,
-          errorCallback: setTransactions.bind(null, []),
-          schema: JSON.stringify(protobufJson),
-          successCallback: setUniqueSchemaVersion
-        });
+          saveConstOnChainSchema({
+            account,
+            collectionId,
+            errorCallback: setTransactions.bind(null, []),
+            schema: JSON.stringify(protobufJson),
+            successCallback: setUniqueSchemaVersion
+          });
+        } else {
+          setTransactions([
+            {
+              state: 'active',
+              text: creatingCollectionText
+            }
+          ]);
+
+          const collectionData: CreateCollectionEx = {
+            account,
+            constOnChainSchema: JSON.stringify(protobufJson),
+            description: str2vec(description),
+            limits: {
+              ownerCanDestroy,
+              ownerCanTransfer,
+              tokenLimit
+            },
+            mode: { nft: null },
+            name: str2vec(name),
+            schemaVersion: 'Unique',
+            tokenPrefix: str2vec(tokenPrefix),
+            variableOnChainSchema: JSON.stringify({
+              collectionCover: imgAddress
+            })
+          };
+
+          createCollectionEx({
+            ...collectionData
+          }, {
+            onFailed: (result) => {
+              console.log('Collection creation failed', result);
+
+              setTransactions([]);
+
+              queueAction({
+                action: '',
+                message: 'Collection creation failed',
+                status: 'error'
+              });
+            },
+            onSuccess
+          });
+        }
       }
     } catch (e) {
       console.log('save onChain schema error', e);
     }
-  }, [convertArtificialAttributesToProtobuf, attributes, setTransactions, account, collectionId, saveConstOnChainSchema, setUniqueSchemaVersion]);
+  }, [convertArtificialAttributesToProtobuf, attributes, account, collectionId, setTransactions, saveConstOnChainSchema, setUniqueSchemaVersion, createCollectionEx, description, ownerCanDestroy, ownerCanTransfer, tokenLimit, name, tokenPrefix, imgAddress]);
 
   const deleteAttribute = useCallback((id: number) => {
     setAttributes(attributes.filter((attribute: ArtificialAttributeItemType) => attribute.id !== id));
@@ -238,6 +300,8 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
       } else {
         setAttributes([...converted, ...defaultAttributesWithTokenIpfs]);
       }
+    } else {
+      setAttributes([...defaultAttributesWithTokenIpfs]);
     }
   }, [collectionInfo, convertProtobufToArtificialAttributes, getCollectionOnChainSchema, setAttributes]);
 

@@ -103,3 +103,11 @@ export function formatStrBalance (value: BN | undefined = new BN(0), incomeDecim
 
   return `${arr[0]}${arr[1] ? `.${arr[1].substr(0, decimals)}` : ''}`;
 }
+
+export function str2vec (str: number[] | string): number[] {
+  if (typeof str !== 'string') {
+    return str;
+  }
+
+  return Array.from(str).map((x) => x.charCodeAt(0));
+}

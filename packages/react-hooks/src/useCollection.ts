@@ -51,26 +51,26 @@ export interface NftCollectionInterface {
 }
 
 interface TransactionCallBacks {
-  onFailed?: () => void;
+  onFailed?: (result: SubmittableResult) => void;
   onStart?: () => void;
   onSuccess?: (result: SubmittableResult) => void;
   onUpdate?: () => void;
 }
 
-interface CreateCollectionEx {
+export interface CreateCollectionEx {
   access?: string // AllowList
   account: string;
-  description: string;
+  description: number[];
   mode: { Fungible: 8 } | { nft: null };
-  name: string;
-  tokenPrefix: string;
+  name: number[];
+  tokenPrefix: number[];
   offchainSchema?: string;
   schemaVersion: 'Unique' | 'ImageUrl';
   pendingSponsor?: string;
   limits: {
-    accountTokenOwnershipLimit?: number;
     ownerCanTransfer?: boolean;
     ownerCanDestroy?: boolean;
+    tokenLimit?: number;
   },
   variableOnChainSchema?: string;
   constOnChainSchema: string;
@@ -232,8 +232,6 @@ export function useCollection () {
 
   const setOffChainSchema = useCallback(({ account, collectionId, errorCallback, schema, successCallback }: { account: string, schema: string, collectionId: string, successCallback?: () => void, errorCallback?: () => void }) => {
     const transaction = api.tx.unique.setOffchainSchema(collectionId, schema);
-
-    console.log('schema!!!', schema);
 
     queueExtrinsic({
       accountId: account && account.toString(),
@@ -454,8 +452,8 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: extrinsic,
       isUnsigned: false,
-      txFailedCb: () => {
-        callBacks?.onFailed && callBacks.onFailed();
+      txFailedCb: (result: SubmittableResult) => {
+        callBacks?.onFailed && callBacks.onFailed(result);
 
         queueAction({
           action: '',

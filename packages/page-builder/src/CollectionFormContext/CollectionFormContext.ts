@@ -23,10 +23,14 @@ export interface CollectionFormProps {
   setCoverImg: (coverImg: File | null) => void;
   setDescription: (description: string) => void;
   setName: (name: string) => void;
+  setOwnerCanDestroy: (ownerCanDestroy: boolean) => void;
+  setOwnerCanTransfer: (ownerCanTransfer: boolean) => void;
   setTokenImg: (tokenImg: File | null) => void;
+  setTokenLimit: (tokenLimit: number) => void;
   setTokenPrefix: (tokenPrefix: string) => void;
   setVariableSchema: (variableSchema: string) => void;
   tokenImg: File | null;
+  tokenLimit: number;
   tokenPrefix: string;
   variableSchema: string;
 }
