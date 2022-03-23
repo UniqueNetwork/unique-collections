@@ -156,7 +156,6 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
           onChange={setMinfest}
           value={minfest}
         />
-
       </div>
       { createFees && (
         <WarningText fee={createFees} />
