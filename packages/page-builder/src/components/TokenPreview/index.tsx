@@ -3,9 +3,10 @@
 
 import './styles.scss';
 
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
 import { TokenAttribute } from '@polkadot/app-builder/types';
 import { AttributeItemType } from '@polkadot/react-components/util/protobufUtils';
 import { useDecoder } from '@polkadot/react-hooks';
@@ -15,17 +16,14 @@ import defaultIcon from '../../images/defaultIcon.svg';
 import { ArtificialAttributeItemType } from '../TokenAttributes/AttributesRowEditable';
 
 interface TokenPreviewProps {
-  attributes: ArtificialAttributeItemType[];
   collectionInfo?: NftCollectionInterface;
-  collectionName: string;
   constAttributes: AttributeItemType[];
   tokenConstAttributes: { [key: string]: TokenAttribute };
-  tokenImg: File | null;
-  tokenPrefix?: string;
 }
 
-function TokenPreview ({ attributes, collectionInfo, collectionName, constAttributes, tokenConstAttributes, tokenImg, tokenPrefix }: TokenPreviewProps): React.ReactElement {
+function TokenPreview ({ collectionInfo, constAttributes, tokenConstAttributes }: TokenPreviewProps): React.ReactElement {
   const { collectionName16Decoder, hex2a } = useDecoder();
+  const { attributes, coverImg, name, tokenPrefix } = useContext(CollectionFormContext);
   const [values, setValues] = useState<{ [key: string]: string | string[] | number | undefined }>({});
   const location = useLocation();
 
@@ -51,10 +49,10 @@ function TokenPreview ({ attributes, collectionInfo, collectionName, constAttrib
 
   const tokenAttributes = useMemo(() => {
     const isCollectionPage = location.pathname.includes('/token-attributes');
-    let arrToFilter: AttributeItemType[] | ArtificialAttributeItemType[] = constAttributes;
+    let arrToFilter: AttributeItemType[] | ArtificialAttributeItemType[] = constAttributes ?? [];
 
     if (isCollectionPage) {
-      arrToFilter = attributes;
+      arrToFilter = attributes ?? [];
     }
 
     return (arrToFilter as []).filter((elem: { name: string }) => elem.name !== 'ipfsJson');
@@ -71,14 +69,14 @@ function TokenPreview ({ attributes, collectionInfo, collectionName, constAttrib
         <div className='token-img'>
           <img
             alt='token-img'
-            src={tokenImg ? URL.createObjectURL(tokenImg) : defaultIcon as string}
+            src={coverImg ? URL.createObjectURL(coverImg) : defaultIcon as string}
           />
         </div>
         <div className='content-description'>
           <h3 className='content-header'>
             {collectionInfo ? hex2a(collectionInfo.tokenPrefix) : (tokenPrefix || 'Symbol')} #1
           </h3>
-          <p className='content-text'>{ collectionInfo ? collectionName16Decoder(collectionInfo.name) : (collectionName || 'Collection name')}</p>
+          <p className='content-text'>{ collectionInfo ? collectionName16Decoder(collectionInfo.name) : (name || 'Collection name')}</p>
           { !!tokenAttributes.length && (
             <div className='const-attributes'>
               <h4>Token attributes</h4>

@@ -1,65 +1,59 @@
-// Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
+// Copyright 2017-2022 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import './styles.scss';
 
-import BN from 'bn.js';
 import React, { memo, SyntheticEvent, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader';
 
+import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
+import { useCollectionFees } from '@polkadot/app-builder/hooks';
 import clearIcon from '@polkadot/app-builder/images/closeIcon.svg';
-import TransactionContext from '@polkadot/app-builder/TransactionContext/TransactionContext';
 import { UnqButton } from '@polkadot/react-components';
 import { useCollection, useImageService } from '@polkadot/react-hooks';
 
 import uploadIcon from '../../images/uploadIcon.svg';
+import TransactionContext from '../../TransactionContext/TransactionContext';
 import WarningText from '../WarningText';
 
 interface CoverProps {
   account: string;
-  avatarImg: File | null;
-  collectionId: string;
-  setAvatarImg: (avatarImg: File | null) => void;
+  collectionId?: string;
 }
 
-const stepText = 'Uploading collection cover to IPFS'; // ['Uploading collection cover to IPFS', 'Saving cover img url to blockchain'];
+const stepText = 'Uploading collection cover to IPFS';
 
-function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps): React.ReactElement {
-  const { calculateSetVariableOnChainSchemaFee, saveVariableOnChainSchema } = useCollection();
-  const [coverFees, setCoverFees] = useState<BN | null>(null);
-  const [imgAddress, setImgAddress] = useState<string>();
+function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
+  const { calculateCoverFee, calculateFeeEx, fees } = useCollectionFees(account);
   const [imageUploading, setImageUploading] = useState<boolean>(false);
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const { uploadImg } = useImageService();
   const history = useHistory();
-  const inputFileRef = useRef<HTMLInputElement>(null);
+  const { coverImg, imgAddress, name, setCoverImg, setImgAddress, setVariableSchema } = useContext(CollectionFormContext);
+  const { saveVariableOnChainSchema } = useCollection();
   const { setTransactions, transactions } = useContext(TransactionContext);
 
-  const calculateFee = useCallback(async () => {
-    if (account) {
-      let setVariableOnChainSchemaFee: BN = new BN(0);
+  const inputFileRef = useRef<HTMLInputElement>(null);
 
-      if (account && collectionId && imgAddress) {
-        const varDataWithImage = {
-          collectionCover: imgAddress
-        };
+  const setCollectionCover = useCallback(() => {
+    if (imgAddress) {
+      const varDataWithImage = {
+        collectionCover: imgAddress
+      };
 
-        setVariableOnChainSchemaFee = (await calculateSetVariableOnChainSchemaFee({ account, collectionId, schema: JSON.stringify(varDataWithImage) })) || new BN(0);
-      }
-
-      setCoverFees(setVariableOnChainSchemaFee);
+      setVariableSchema(JSON.stringify(varDataWithImage));
     }
-  }, [account, calculateSetVariableOnChainSchemaFee, collectionId, imgAddress]);
+  }, [imgAddress, setVariableSchema]);
 
   const clearTokenImg = useCallback(() => {
-    setAvatarImg(null);
+    setCoverImg(null);
 
     if (inputFileRef.current) {
       inputFileRef.current.value = '';
     }
-  }, [setAvatarImg]);
+  }, [setCoverImg]);
 
   const uploadImage = useCallback(async (file: File): Promise<void> => {
     if (file) {
@@ -74,29 +68,31 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
 
       setImageUploading(false);
     }
-  }, [clearTokenImg, uploadImg]);
+  }, [clearTokenImg, setImgAddress, uploadImg]);
 
   const uploadAvatar = useCallback((event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
     const file: File = (target.files as FileList)[0];
 
-    setAvatarImg(file);
+    setCoverImg(file);
     void uploadImage(file);
-  }, [setAvatarImg, uploadImage]);
+  }, [setCoverImg, uploadImage]);
 
   const onSuccess = useCallback(() => {
-    setTransactions([
-      {
-        state: 'finished',
-        text: stepText
-      }
-    ]);
+    if (collectionId) {
+      setTransactions([
+        {
+          state: 'finished',
+          text: stepText
+        }
+      ]);
 
-    setTimeout(() => {
-      setTransactions([]);
-    }, 3000);
+      setTimeout(() => {
+        setTransactions([]);
+      }, 3000);
 
-    history.push(`/builder/collections/${collectionId}/token-attributes`);
+      history.push(`/builder/collections/${collectionId}/token-attributes`);
+    }
   }, [collectionId, history, setTransactions]);
 
   const saveVariableSchema = useCallback(() => {
@@ -127,30 +123,52 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
     setIsSaveConfirmationOpen(false);
   }, []);
 
+  const onConfirm = useCallback(() => {
+    if (collectionId) {
+      saveVariableSchema();
+    } else {
+      history.push('/builder/collections/new-collection/token-attributes');
+    }
+  }, [collectionId, history, saveVariableSchema]);
+
   const saveConfirm = useCallback(() => {
-    if (!avatarImg) {
+    if (!coverImg) {
       setIsSaveConfirmationOpen(true);
     } else {
-      saveVariableSchema();
+      onConfirm();
     }
-  }, [saveVariableSchema, avatarImg]);
+  }, [coverImg, onConfirm]);
 
   const clearFileImage = useCallback(() => {
     if (!imgAddress && inputFileRef.current) {
       inputFileRef.current.value = '';
-      setAvatarImg(null);
-      setCoverFees(null);
+      setCoverImg(null);
       setImgAddress(undefined);
     }
-  }, [imgAddress, setAvatarImg]);
+  }, [imgAddress, setCoverImg, setImgAddress]);
 
   useEffect(() => {
     clearFileImage();
   }, [clearFileImage]);
 
   useEffect(() => {
-    void calculateFee();
-  }, [calculateFee]);
+    setCollectionCover();
+  }, [setCollectionCover]);
+
+  useEffect(() => {
+    if (collectionId) {
+      void calculateCoverFee();
+    } else {
+      void calculateFeeEx();
+    }
+  }, [calculateCoverFee, calculateFeeEx, collectionId]);
+
+  // if we have no collection name filled, lets fill in in
+  useEffect(() => {
+    if (!collectionId && !name) {
+      history.push('/builder/new-collection/main-information');
+    }
+  });
 
   return (
     <div className='cover shadow-block'>
@@ -171,12 +189,12 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
             className='upload-img'
             htmlFor='avatar-file-input'
           >
-            {avatarImg
+            {coverImg
               ? (
                 <img
                   alt='token-img'
                   className='token-img'
-                  src={URL.createObjectURL(avatarImg)}
+                  src={URL.createObjectURL(coverImg)}
                 />
 
               )
@@ -191,7 +209,7 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
             className='clear-btn'
             onClick={clearTokenImg}
           >
-            { avatarImg && (
+            { coverImg && (
               <img
                 alt='clear'
                 src={clearIcon as string}
@@ -201,17 +219,18 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
         </div>
       </div>
       { imageUploading && (
-        <p>
+        <div>
           <Loader
             active
             className='simple-loader'
           >
             Please wait a few seconds
           </Loader>
-        </p>
+          <br />
+        </div>
       )}
-      { (imgAddress && coverFees) && (
-        <WarningText fee={coverFees} />
+      { (imgAddress && fees) && (
+        <WarningText fee={fees} />
       )}
       <Confirm
         cancelButton='No, return'
@@ -220,7 +239,7 @@ function Cover ({ account, avatarImg, collectionId, setAvatarImg }: CoverProps):
         content='You cannot return to editing the cover in this product version.'
         header='You have not entered the cover. Are you sure that you want to create the collection without it?'
         onCancel={closeSaveConfirmation}
-        onConfirm={saveVariableSchema}
+        onConfirm={onConfirm}
         open={isSaveConfirmationOpen}
       />
       <UnqButton

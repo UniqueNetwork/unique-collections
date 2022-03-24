@@ -19,7 +19,7 @@ interface Props {
   transactions: TransactionType[];
 }
 
-function TransactionModal ({ className = '', transactions }: Props): React.ReactElement<Props> {
+function CollectionForm ({ className = '', transactions }: Props): React.ReactElement<Props> {
   return (
     <Modal
       className={`${className} transition-modal unique-modal`}
@@ -90,13 +90,13 @@ function TransactionModal ({ className = '', transactions }: Props): React.React
   );
 }
 
-export default React.memo(styled(TransactionModal)`
+export default React.memo(styled(CollectionForm)`
   background: #f2f2f2;
 
   &.transition-modal.unique-modal {
 
     .content {
-      padding-bottom: 0 !important;
+      padding-bottom: calc((var(--gap) / 2) * 3) !important;
     }
   }
 

@@ -1,94 +1,30 @@
-// Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
+// Copyright 2017-2022 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import './styles.scss';
 
-import BN from 'bn.js';
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 
-import { SubmittableResult } from '@polkadot/api';
-import TransactionContext from '@polkadot/app-builder/TransactionContext/TransactionContext';
-import { Input, TextArea, UnqButton, Checkbox } from '@polkadot/react-components';
-import { useCollection } from '@polkadot/react-hooks';
+import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
+import { useCollectionFees } from '@polkadot/app-builder/hooks';
+import { Checkbox, Input, TextArea, UnqButton } from '@polkadot/react-components';
 
 import WarningText from '../WarningText';
 
 interface MainInformationProps {
   account: string;
-  description: string;
-  name: string;
-  setDescription: (description: string) => void;
-  setName: (name: string) => void;
-  setTokenPrefix: (tokenPrefix: string) => void;
-  tokenPrefix: string;
 }
 
-const stepText = 'Creating collection and saving it to blockchain';
-
-function MainInformation (props: MainInformationProps): React.ReactElement {
-  const { account, description, name, setDescription, setName, setTokenPrefix, tokenPrefix } = props;
-  const { calculateCreateCollectionFee, createCollection } = useCollection();
-  const [createFees, setCreateFees] = useState<BN | null>(null);
+function MainInformation ({ account }: MainInformationProps): React.ReactElement {
+  const { description, name, setDescription, setName, setTokenPrefix, tokenPrefix } = useContext(CollectionFormContext);
+  const { calculateFeeEx, fees } = useCollectionFees(account);
   const [minfest, setMinfest] = useState<boolean>(false);
   const history = useHistory();
-  const { setTransactions } = useContext(TransactionContext);
 
-  const calculateFee = useCallback(async () => {
-    if (account) {
-      const fees = await calculateCreateCollectionFee({ account, description, modeprm: { nft: null }, name, tokenPrefix });
-
-      setCreateFees(fees);
-    }
-  }, [account, calculateCreateCollectionFee, description, name, tokenPrefix]);
-
-  const goToNextStep = useCallback((result: SubmittableResult) => {
-    const { events } = result;
-
-    let collectionId = 0;
-
-    events.forEach(({ event: { data, method, section } }) => {
-      if ((section === 'common') && (method === 'CollectionCreated')) {
-        collectionId = parseInt(data[0].toString(), 10);
-      }
-    });
-
-    setTransactions([
-      {
-        state: 'finished',
-        text: stepText
-      }
-    ]);
-
-    setTimeout(() => {
-      setTransactions([]);
-    }, 3000);
-
-    if (collectionId) {
-      history.push(`/builder/collections/${collectionId}/cover`);
-    }
-  }, [setTransactions, history]);
-
-  const onCreateCollection = useCallback(() => {
-    if (account && name && tokenPrefix) {
-      setTransactions([
-        {
-          state: 'active',
-          text: stepText
-        }
-      ]);
-
-      createCollection(account, {
-        description,
-        modeprm: { nft: null },
-        name,
-        tokenPrefix
-      }, {
-        onFailed: setTransactions.bind(null, []),
-        onSuccess: goToNextStep
-      });
-    }
-  }, [account, createCollection, description, goToNextStep, name, setTransactions, tokenPrefix]);
+  const goToNextStep = useCallback(() => {
+    history.push('/builder/collections/new-collection/cover');
+  }, [history]);
 
   const handleTokenPrefix = useCallback((value: string) => {
     const replaceValue = value.replace(/[^a-zA-Z0-9]+/, '');
@@ -109,8 +45,8 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
   }, [setTokenPrefix, tokenPrefix]);
 
   useEffect(() => {
-    void calculateFee();
-  }, [calculateFee]);
+    void calculateFeeEx();
+  }, [calculateFeeEx]);
 
   return (
     <div className='main-information shadow-block'>
@@ -152,19 +88,20 @@ function MainInformation (props: MainInformationProps): React.ReactElement {
           label={<> By participating in the MintFest you are agreeing to the <a
             href='https://unique.network/terms/mintfest/'
             rel='noreferrer nooperer'
-            target='_blank'>Terms and Service</a> of the contest</>}
+            target='_blank'
+          >Terms and Service</a> of the contest</>}
           onChange={setMinfest}
           value={minfest}
         />
       </div>
-      { createFees && (
-        <WarningText fee={createFees} />
+      { fees && (
+        <WarningText fee={fees} />
       )}
       <UnqButton
         content='Confirm'
         isDisabled={!name || !tokenPrefix || !minfest}
         isFilled
-        onClick={onCreateCollection}
+        onClick={goToNextStep}
         size='medium'
       />
     </div>

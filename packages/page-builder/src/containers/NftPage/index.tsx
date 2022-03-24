@@ -3,8 +3,9 @@
 
 import './styles.scss';
 
-import React, { memo, ReactElement, useCallback, useEffect, useState } from 'react';
+import React, { memo, ReactElement, useCallback, useContext, useEffect, useState } from 'react';
 
+import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
 import CreateNFT from '@polkadot/app-builder/components/CreateNFT';
 import { TokenAttribute } from '@polkadot/app-builder/types';
 import { AttributeItemType, ProtobufAttributeType } from '@polkadot/react-components/util/protobufUtils';
@@ -19,13 +20,12 @@ interface NftPageProps {
   constOnChainSchema: ProtobufAttributeType | undefined;
   resetAttributes: () => void;
   setTokenConstAttributes: (attr: (prevAttributes: { [p: string]: TokenAttribute }) => { [p: string]: TokenAttribute }) => void | ((prevAttributes: { [p: string]: TokenAttribute }) => { [p: string]: TokenAttribute });
-  setTokenImg: (image: File | null) => void;
   tokenConstAttributes: { [key: string]: TokenAttribute };
-  tokenImg: File | null;
 }
 
-function NftPage ({ account, collectionId, constAttributes, constOnChainSchema, resetAttributes, setTokenConstAttributes, setTokenImg, tokenConstAttributes, tokenImg }: NftPageProps): ReactElement {
+function NftPage ({ account, collectionId, constAttributes, constOnChainSchema, resetAttributes, setTokenConstAttributes, tokenConstAttributes }: NftPageProps): ReactElement {
   const { getDetailedCollectionInfo } = useCollection();
+  const { setTokenImg, tokenImg } = useContext(CollectionFormContext);
   const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
   const isOwner = collectionInfo?.owner === account;
 
