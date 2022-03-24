@@ -3,12 +3,12 @@
 
 import './styles.scss';
 
-import React, { memo, useCallback, useContext, useEffect } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 
 import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
 import { useCollectionFees } from '@polkadot/app-builder/hooks';
-import { Input, TextArea, UnqButton } from '@polkadot/react-components';
+import { Checkbox, Input, TextArea, UnqButton } from '@polkadot/react-components';
 
 import WarningText from '../WarningText';
 
@@ -19,6 +19,7 @@ interface MainInformationProps {
 function MainInformation ({ account }: MainInformationProps): React.ReactElement {
   const { description, name, setDescription, setName, setTokenPrefix, tokenPrefix } = useContext(CollectionFormContext);
   const { calculateFeeEx, fees } = useCollectionFees(account);
+  const [minfest, setMinfest] = useState<boolean>(false);
   const history = useHistory();
 
   const goToNextStep = useCallback(() => {
@@ -82,12 +83,23 @@ function MainInformation ({ account }: MainInformationProps): React.ReactElement
           value={tokenPrefix}
         />
       </div>
+      <div className='info-block'>
+        <Checkbox
+          label={<> By participating in the MintFest you are agreeing to the <a
+            href='https://unique.network/terms/mintfest/'
+            rel='noreferrer nooperer'
+            target='_blank'
+          >Terms and Service</a> of the contest</>}
+          onChange={setMinfest}
+          value={minfest}
+        />
+      </div>
       { fees && (
         <WarningText fee={fees} />
       )}
       <UnqButton
         content='Confirm'
-        isDisabled={!name || !tokenPrefix}
+        isDisabled={!name || !tokenPrefix || !minfest}
         isFilled
         onClick={goToNextStep}
         size='medium'

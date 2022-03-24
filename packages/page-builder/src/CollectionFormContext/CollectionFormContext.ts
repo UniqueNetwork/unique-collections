@@ -1,7 +1,6 @@
 // Copyright 2017-2022 @polkadot/UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import BN from 'bn.js';
 import React from 'react';
 
 import { ArtificialAttributeItemType } from '@polkadot/app-builder/components/TokenAttributes/AttributesRowEditable';
@@ -12,7 +11,6 @@ export interface CollectionFormProps {
   attributes: ArtificialAttributeItemType[];
   avatarImg: File | null;
   coverImg: File | null;
-  createFees: BN | null;
   description: string;
   imgAddress?: string;
   name: string;
@@ -22,6 +20,7 @@ export interface CollectionFormProps {
   setAvatarImg: (avatarImg: File | null) => void;
   setCoverImg: (coverImg: File | null) => void;
   setDescription: (description: string) => void;
+  setImgAddress: (imgAddress?: string) => void;
   setName: (name: string) => void;
   setOwnerCanDestroy: (ownerCanDestroy: boolean) => void;
   setOwnerCanTransfer: (ownerCanTransfer: boolean) => void;

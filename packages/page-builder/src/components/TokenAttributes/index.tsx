@@ -13,7 +13,7 @@ import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
 import { useCollectionFees } from '@polkadot/app-builder/hooks';
 import TransactionContext from '@polkadot/app-builder/TransactionContext/TransactionContext';
-import { HelpTooltip, StatusContext, UnqButton } from '@polkadot/react-components';
+import { HelpTooltip, UnqButton } from '@polkadot/react-components';
 import { fillAttributes, fillProtobufJson } from '@polkadot/react-components/util/protobufUtils';
 import { useCollection } from '@polkadot/react-hooks';
 import { CreateCollectionEx, NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
@@ -45,7 +45,7 @@ const stepTexts = [
   'Setting image location'
 ];
 
-const creatingCollectionText = 'Creating collection and saving it to blockchain';
+const creatingCollectionText = 'Creating collection';
 
 function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttributes): ReactElement {
   const { createCollectionEx, getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
@@ -54,11 +54,10 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   const [emptyEnums, setEmptyEnums] = useState<number[]>([]);
   const history = useHistory();
   const { calculateFee, calculateFeeEx, fees } = useCollectionFees(account, collectionId);
-  const { queueAction } = useContext(StatusContext);
   const isOwner = collectionInfo?.owner === account;
   const canSaveAttributes = isOwner || !collectionId;
   const { setTransactions } = useContext(TransactionContext);
-  const { attributes, description, imgAddress, name, ownerCanDestroy, ownerCanTransfer, setAttributes, setOwnerCanDestroy, setOwnerCanTransfer, setTokenLimit, tokenLimit, tokenPrefix } = useContext(CollectionFormContext);
+  const { attributes, description, imgAddress, name, ownerCanDestroy, ownerCanTransfer, setAttributes, tokenLimit, tokenPrefix } = useContext(CollectionFormContext);
 
   const onAddItem = useCallback(() => {
     const newAttributes = [...attributes];
@@ -81,24 +80,21 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
 
   const onSuccess = useCallback(() => {
     if (collectionId) {
-      setTransactions([
+      const transactions = [
         {
           state: 'finished',
-          step: 1,
           text: stepTexts[0]
-        },
-        {
-          state: 'finished',
-          step: 2,
-          text: stepTexts[1]
         }
-      ]);
+      ];
 
-      queueAction({
-        action: '',
-        message: 'Attributes successfully set',
-        status: 'success'
-      });
+      if (collectionInfo?.schemaVersion !== 'Unique') {
+        transactions.push({
+          state: 'finished',
+          text: stepTexts[1]
+        });
+      }
+
+      setTransactions(transactions);
     } else {
       setTransactions([
         {
@@ -106,12 +102,6 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
           text: creatingCollectionText
         }
       ]);
-
-      queueAction({
-        action: '',
-        message: 'Collection successfully created',
-        status: 'success'
-      });
     }
 
     setTimeout(() => {
@@ -119,7 +109,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     }, 3000);
 
     history.push('/builder');
-  }, [collectionId, history, setTransactions, queueAction]);
+  }, [collectionId, history, collectionInfo?.schemaVersion, setTransactions]);
 
   const setUniqueSchemaVersion = useCallback(() => {
     if (collectionInfo?.schemaVersion === 'Unique') {
@@ -129,15 +119,14 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
         setTransactions([
           {
             state: 'finished',
-            step: 1,
             text: stepTexts[0]
           },
           {
             state: 'active',
-            step: 2,
             text: stepTexts[1]
           }
         ]);
+
         setSchemaVersion({
           account,
           collectionId,
@@ -182,18 +171,21 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
 
       if (account) {
         if (collectionId) {
-          setTransactions([
+          const transactions = [
             {
               state: 'active',
-              step: 1,
               text: stepTexts[0]
-            },
-            {
-              state: 'not-active',
-              step: 2,
-              text: stepTexts[1]
             }
-          ]);
+          ];
+
+          if (collectionInfo?.schemaVersion !== 'Unique') {
+            transactions.push({
+              state: 'not-active',
+              text: stepTexts[1]
+            });
+          }
+
+          setTransactions(transactions);
 
           saveConstOnChainSchema({
             account,
@@ -235,12 +227,6 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
               console.log('Collection creation failed', result);
 
               setTransactions([]);
-
-              queueAction({
-                action: '',
-                message: 'Collection creation failed',
-                status: 'error'
-              });
             },
             onSuccess
           });
@@ -249,7 +235,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     } catch (e) {
       console.log('save onChain schema error', e);
     }
-  }, [convertArtificialAttributesToProtobuf, attributes, account, collectionId, setTransactions, saveConstOnChainSchema, setUniqueSchemaVersion, createCollectionEx, description, ownerCanDestroy, ownerCanTransfer, tokenLimit, name, tokenPrefix, imgAddress]);
+  }, [convertArtificialAttributesToProtobuf, attributes, account, collectionId, collectionInfo?.schemaVersion, setTransactions, saveConstOnChainSchema, setUniqueSchemaVersion, description, ownerCanDestroy, ownerCanTransfer, tokenLimit, name, tokenPrefix, imgAddress, createCollectionEx, onSuccess]);
 
   const deleteAttribute = useCallback((id: number) => {
     setAttributes(attributes.filter((attribute: ArtificialAttributeItemType) => attribute.id !== id));

@@ -51,7 +51,7 @@ export interface NftCollectionInterface {
 }
 
 interface TransactionCallBacks {
-  onFailed?: (result: SubmittableResult) => void;
+  onFailed?: (result: SubmittableResult | null) => void;
   onStart?: () => void;
   onSuccess?: (result: SubmittableResult) => void;
   onUpdate?: () => void;
@@ -127,8 +127,14 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => {
-        callBacks?.onFailed && callBacks.onFailed();
+      txFailedCb: (res) => {
+        callBacks?.onFailed && callBacks.onFailed(res);
+
+        queueAction({
+          action: 'Custom. Create collection',
+          message: 'Collection creation failed',
+          status: 'error'
+        });
 
         console.log('create collection failed');
       },
@@ -137,6 +143,12 @@ export function useCollection () {
       },
       txSuccessCb: (result: SubmittableResult) => {
         callBacks?.onSuccess && callBacks.onSuccess(result);
+
+        queueAction({
+          action: 'Custom. Create collection',
+          message: 'Collection successfully created',
+          status: 'success'
+        });
 
         console.log('create collection success');
       },
@@ -291,12 +303,32 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('set collection constOnChain fail'); errorCallback && errorCallback(); },
+      txFailedCb: () => {
+        console.log('set collection constOnChain fail');
+
+        queueAction({
+          action: 'Custom. Attributes',
+          message: 'Setting attributes failed',
+          status: 'error'
+        });
+
+        errorCallback && errorCallback();
+      },
       txStartCb: () => { console.log('set collection constOnChain start'); },
-      txSuccessCb: () => { console.log('set collection constOnChain success'); successCallback && successCallback(); },
+      txSuccessCb: () => {
+        console.log('set collection constOnChain success');
+
+        queueAction({
+          action: 'Custom. Attributes',
+          message: 'Attributes successfully set',
+          status: 'success'
+        });
+
+        successCallback && successCallback();
+      },
       txUpdateCb: () => { console.log('set collection constOnChain update'); }
     });
-  }, [api, queueExtrinsic]);
+  }, [api.tx.unique, queueAction, queueExtrinsic]);
 
   const calculateSetVariableOnChainSchemaFee = useCallback(async ({ account, collectionId, schema }: { account: string, schema: string, collectionId: string }): Promise<BN | null> => {
     try {
@@ -317,12 +349,32 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('set collection varOnChain fail'); errorCallback && errorCallback(); },
+      txFailedCb: () => {
+        console.log('set collection varOnChain fail');
+
+        queueAction({
+          action: 'Custom. Cover image',
+          message: 'Setting cover image failed',
+          status: 'error'
+        });
+
+        errorCallback && errorCallback();
+      },
       txStartCb: () => { console.log('set collection varOnChain start'); },
-      txSuccessCb: () => { console.log('set collection varOnChain success'); successCallback && successCallback(); },
+      txSuccessCb: () => {
+        console.log('set collection varOnChain success');
+
+        queueAction({
+          action: 'Custom. Cover image',
+          message: 'Cover image successfully set',
+          status: 'success'
+        });
+
+        successCallback && successCallback();
+      },
       txUpdateCb: () => { console.log('set collection varOnChain update'); }
     });
-  }, [api, queueExtrinsic]);
+  }, [api.tx.unique, queueAction, queueExtrinsic]);
 
   const destroyCollection = useCallback(({ account, collectionId, errorCallback, successCallback }: { account: string, collectionId: string, successCallback?: () => void, errorCallback?: () => void }) => {
     const transaction = api.tx.unique.destroyCollection(collectionId);
@@ -452,11 +504,11 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: extrinsic,
       isUnsigned: false,
-      txFailedCb: (result: SubmittableResult) => {
+      txFailedCb: (result: SubmittableResult | null) => {
         callBacks?.onFailed && callBacks.onFailed(result);
 
         queueAction({
-          action: '',
+          action: 'Custom. Create collection',
           message: 'Collection creation failed',
           status: 'error'
         });
@@ -470,7 +522,7 @@ export function useCollection () {
         callBacks?.onSuccess && callBacks.onSuccess(result);
 
         queueAction({
-          action: '',
+          action: 'Custom. Create collection',
           message: 'Collection successfully created',
           status: 'success'
         });

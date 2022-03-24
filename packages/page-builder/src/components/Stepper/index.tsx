@@ -25,7 +25,7 @@ function Stepper ({ collectionId }: { collectionId?: string }): React.ReactEleme
         if (!collectionId) {
           history.push('/builder/new-collection/cover');
         } else {
-          history.push(`/builder/${collectionId}/cover`);
+          history.push(`/builder/collections/${collectionId}/cover`);
         }
 
         break;
@@ -33,7 +33,7 @@ function Stepper ({ collectionId }: { collectionId?: string }): React.ReactEleme
         if (!collectionId) {
           history.push('/builder/new-collection/token-attributes');
         } else {
-          history.push(`/builder/${collectionId}/token-attributes`);
+          history.push(`/builder/collections/${collectionId}/token-attributes`);
         }
 
         break;

@@ -3,13 +3,13 @@
 
 import './styles.scss';
 
-import BN from 'bn.js';
 import React, { memo, SyntheticEvent, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader';
 
 import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
+import { useCollectionFees } from '@polkadot/app-builder/hooks';
 import clearIcon from '@polkadot/app-builder/images/closeIcon.svg';
 import { UnqButton } from '@polkadot/react-components';
 import { useCollection, useImageService } from '@polkadot/react-hooks';
@@ -26,14 +26,13 @@ interface CoverProps {
 const stepText = 'Uploading collection cover to IPFS';
 
 function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
-  const [imgAddress, setImgAddress] = useState<string>();
-  const [coverFees, setCoverFees] = useState<BN | null>(null);
+  const { calculateCoverFee, calculateFeeEx, fees } = useCollectionFees(account);
   const [imageUploading, setImageUploading] = useState<boolean>(false);
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const { uploadImg } = useImageService();
   const history = useHistory();
-  const { coverImg, name, setCoverImg, setVariableSchema } = useContext(CollectionFormContext);
-  const { calculateSetVariableOnChainSchemaFee, saveVariableOnChainSchema } = useCollection();
+  const { coverImg, imgAddress, name, setCoverImg, setImgAddress, setVariableSchema } = useContext(CollectionFormContext);
+  const { saveVariableOnChainSchema } = useCollection();
   const { setTransactions, transactions } = useContext(TransactionContext);
 
   const inputFileRef = useRef<HTMLInputElement>(null);
@@ -47,22 +46,6 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
       setVariableSchema(JSON.stringify(varDataWithImage));
     }
   }, [imgAddress, setVariableSchema]);
-
-  const calculateFee = useCallback(async () => {
-    if (account && collectionId) {
-      let setVariableOnChainSchemaFee: BN = new BN(0);
-
-      if (account && collectionId && imgAddress) {
-        const varDataWithImage = {
-          collectionCover: imgAddress
-        };
-
-        setVariableOnChainSchemaFee = (await calculateSetVariableOnChainSchemaFee({ account, collectionId, schema: JSON.stringify(varDataWithImage) })) || new BN(0);
-      }
-
-      setCoverFees(setVariableOnChainSchemaFee);
-    }
-  }, [account, calculateSetVariableOnChainSchemaFee, collectionId, imgAddress]);
 
   const clearTokenImg = useCallback(() => {
     setCoverImg(null);
@@ -85,7 +68,7 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
 
       setImageUploading(false);
     }
-  }, [clearTokenImg, uploadImg]);
+  }, [clearTokenImg, setImgAddress, uploadImg]);
 
   const uploadAvatar = useCallback((event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
@@ -162,7 +145,7 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
       setCoverImg(null);
       setImgAddress(undefined);
     }
-  }, [imgAddress, setCoverImg]);
+  }, [imgAddress, setCoverImg, setImgAddress]);
 
   useEffect(() => {
     clearFileImage();
@@ -173,8 +156,12 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
   }, [setCollectionCover]);
 
   useEffect(() => {
-    void calculateFee();
-  }, [calculateFee]);
+    if (collectionId) {
+      void calculateCoverFee();
+    } else {
+      void calculateFeeEx();
+    }
+  }, [calculateCoverFee, calculateFeeEx, collectionId]);
 
   // if we have no collection name filled, lets fill in in
   useEffect(() => {
@@ -242,8 +229,8 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
           <br />
         </div>
       )}
-      { (imgAddress && coverFees) && (
-        <WarningText fee={coverFees} />
+      { (imgAddress && fees) && (
+        <WarningText fee={fees} />
       )}
       <Confirm
         cancelButton='No, return'

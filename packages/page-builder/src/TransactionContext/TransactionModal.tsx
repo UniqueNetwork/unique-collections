@@ -96,7 +96,7 @@ export default React.memo(styled(TransactionModal)`
   &.transition-modal.unique-modal {
 
     .content {
-      padding-bottom: calc((var(--gap) / 2) * 3) !important;
+      padding-bottom: 0 !important;
     }
   }
 
