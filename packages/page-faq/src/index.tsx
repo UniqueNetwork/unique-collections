@@ -41,17 +41,23 @@ function Faq (): React.ReactElement<Props> {
         >Polkadot&#123;.js&#125; extension</a> or <a onClick={openManageAccout}>the Manage accounts</a> page. Follow the instructions.</p>
         <p>Keep your wallet seed phrase safe! Please write it down on paper or export the JSON key with a password you will never forget.</p>
         <Header as='h4'>Q: How much does it cost to create a collection?</Header>
-        { uniqueTelegram ? (<>
-            <p>A: You need about 105 testUNQ to create and customize the collection. </p>
-            <p>To get some OPL for free go to special Telegram Bot: <a
+        { uniqueTelegram
+          ? (<>
+            <p>A: You need about 105 testUNQ to create and customize the collection.
+            To get some OPL for free go to special Telegram Bot: <a
               href={uniqueTelegram || 'https://web.telegram.org/'}
               rel='noopener noreferrer'
               target='_blank'
-            >@unique2faucet_opal_bot.</a></p>
-          </>) : (<>
-          <p>A: You need about 105 QTZ to create and customize the collection.</p>
-          <p>To get some QTZ go to MEXC Exchange: <a href="https://www.mexc.com/" target="_blank">https://www.mexc.com/</a></p>
-        </>)}
+            >@unique2faucet_opal_bot</a></p>
+          </>)
+          : (<>
+            <p>A: You need about 5 QTZ to create and customize the collection.</p>
+            <p>To get some QTZ go to MEXC Exchange: <a
+              href='https://www.mexc.com/'
+              rel='noreferrer'
+              target='_blank'
+            >https://www.mexc.com/</a></p>
+          </>)}
 
         <Header as='h4'>Q: How many tokens can I create?</Header>
         <p>A: You can create an unlimited number of collections and tokens. The current functionality does not allow you to create collections with a limited number of tokens, but we will add this feature later.</p>
