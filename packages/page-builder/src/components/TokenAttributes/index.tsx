@@ -70,7 +70,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     newAttributes.push({
       fieldType: 'string',
       id: findNextId + 1,
-      name: `attribute${attributes.length}`,
+      name: `attribute${findNextId}`,
       rule: 'required',
       values: []
     });
