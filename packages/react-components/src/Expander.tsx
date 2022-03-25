@@ -108,12 +108,15 @@ function Expander ({ children, className = '', help, helpIcon, isOpen, isPadded,
           height='10'
           viewBox='0 0 18 10'
           width='18'
-          xmlns='http://www.w3.org/2000/svg'>
-          <path d='M16.5 1L9 8.5L1.5 1'
+          xmlns='http://www.w3.org/2000/svg'
+        >
+          <path
+            d='M16.5 1L9 8.5L1.5 1'
             stroke='#040B1D'
             strokeLinecap='round'
             strokeLinejoin='round'
-            strokeWidth='1.5'/>
+            strokeWidth='1.5'
+          />
         </svg>
       </div>
       {hasContent && (isExpanded || withHidden) && (

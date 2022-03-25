@@ -70,7 +70,7 @@ export interface CreateCollectionEx {
   limits: {
     ownerCanTransfer?: boolean;
     ownerCanDestroy?: boolean;
-    tokenLimit?: number;
+    tokenLimit?: string;
   },
   variableOnChainSchema?: string;
   constOnChainSchema: string;

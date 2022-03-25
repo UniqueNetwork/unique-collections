@@ -13,12 +13,13 @@ import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
 import { useCollectionFees } from '@polkadot/app-builder/hooks';
 import TransactionContext from '@polkadot/app-builder/TransactionContext/TransactionContext';
-import { HelpTooltip, UnqButton } from '@polkadot/react-components';
+import { Checkbox, HelpTooltip, Input, UnqButton } from '@polkadot/react-components';
 import { fillAttributes, fillProtobufJson } from '@polkadot/react-components/util/protobufUtils';
-import { useCollection } from '@polkadot/react-hooks';
+import { useCollection, useIsMountedRef } from '@polkadot/react-hooks';
 import { CreateCollectionEx, NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 import { str2vec } from '@polkadot/react-hooks/utils';
 
+import expanderIcon from '../../images/expanderIcon.svg';
 import plusIcon from '../../images/plusIcon.svg';
 import AttributesRowEditable, { ArtificialAttributeItemType, ArtificialFieldRuleType, ArtificialFieldType } from '../TokenAttributes/AttributesRowEditable';
 import WarningText from '../WarningText';
@@ -46,18 +47,21 @@ const stepTexts = [
 ];
 
 const creatingCollectionText = 'Creating collection';
+const maxTokenLimit = 10000;
 
 function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttributes): ReactElement {
   const { createCollectionEx, getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<number[]>([]);
   const [emptyEnums, setEmptyEnums] = useState<number[]>([]);
+  const [opened, setOpened] = useState(false);
   const history = useHistory();
   const { calculateFee, calculateFeeEx, fees } = useCollectionFees(account, collectionId);
   const isOwner = collectionInfo?.owner === account;
   const canSaveAttributes = isOwner || !collectionId;
   const { setTransactions } = useContext(TransactionContext);
-  const { attributes, description, imgAddress, name, ownerCanDestroy, ownerCanTransfer, setAttributes, tokenLimit, tokenPrefix } = useContext(CollectionFormContext);
+  const { attributes, description, imgAddress, name, ownerCanDestroy, ownerCanTransfer, setAttributes, setOwnerCanDestroy, setTokenLimit, tokenLimit, tokenPrefix } = useContext(CollectionFormContext);
+  const mountedRef = useIsMountedRef();
 
   const onAddItem = useCallback(() => {
     const newAttributes = [...attributes];
@@ -71,8 +75,8 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
       values: []
     });
 
-    setAttributes(newAttributes);
-  }, [attributes, setAttributes]);
+    mountedRef.current && setAttributes(newAttributes);
+  }, [attributes, mountedRef, setAttributes]);
 
   const closeSaveConfirmation = useCallback(() => {
     setIsSaveConfirmationOpen(false);
@@ -94,9 +98,9 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
         });
       }
 
-      setTransactions(transactions);
+      mountedRef.current && setTransactions(transactions);
     } else {
-      setTransactions([
+      mountedRef.current && setTransactions([
         {
           state: 'finished',
           text: creatingCollectionText
@@ -105,18 +109,18 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     }
 
     setTimeout(() => {
-      setTransactions([]);
-    }, 3000);
+      mountedRef.current && setTransactions([]);
 
-    history.push('/builder');
-  }, [collectionId, history, collectionInfo?.schemaVersion, setTransactions]);
+      history.push('/builder');
+    }, 3000);
+  }, [collectionId, history, collectionInfo?.schemaVersion, mountedRef, setTransactions]);
 
   const setUniqueSchemaVersion = useCallback(() => {
     if (collectionInfo?.schemaVersion === 'Unique') {
       onSuccess();
     } else {
       if (collectionId) {
-        setTransactions([
+        mountedRef.current && setTransactions([
           {
             state: 'finished',
             text: stepTexts[0]
@@ -127,7 +131,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
           }
         ]);
 
-        setSchemaVersion({
+        mountedRef.current && setSchemaVersion({
           account,
           collectionId,
           errorCallback: setTransactions.bind(null, []),
@@ -136,7 +140,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
         });
       }
     }
-  }, [account, collectionId, collectionInfo?.schemaVersion, onSuccess, setSchemaVersion, setTransactions]);
+  }, [account, collectionId, collectionInfo?.schemaVersion, mountedRef, onSuccess, setSchemaVersion, setTransactions]);
 
   const convertArtificialAttributesToProtobuf = useCallback((attributes: ArtificialAttributeItemType[]): AttributeItemType[] => {
     return attributes.map((attr: ArtificialAttributeItemType): AttributeItemType => {
@@ -291,6 +295,20 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     }
   }, [collectionInfo, convertProtobufToArtificialAttributes, getCollectionOnChainSchema, setAttributes]);
 
+  const toggleAdvanced = useCallback(() => {
+    mountedRef.current && setOpened((prevOpen) => !prevOpen);
+  }, [mountedRef]);
+
+  const onLimitChange = useCallback((value: string) => {
+    const numVal = Number(value);
+
+    if (numVal > maxTokenLimit) {
+      return;
+    }
+
+    setTokenLimit(numVal.toString());
+  }, [setTokenLimit]);
+
   useEffect(() => {
     fillCollectionAttributes();
   }, [fillCollectionAttributes]);
@@ -402,6 +420,71 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
           src={plusIcon as string}
         />
       </UnqButton>
+
+      { !collectionId && (
+        <div className='custom-expander'>
+          <div
+            className='custom-expander--header'
+            onClick={toggleAdvanced}
+          >
+            <span>Advanced settings</span>
+            <img
+              alt='expander'
+              className={opened ? 'expanded' : ''}
+              src={expanderIcon as string}
+            >
+            </img>
+          </div>
+          { opened && (
+            <div className='custom-expander--inner'>
+              <span>This functionality allows you to customize the token. You can define your NFT's traits in the fields below. For example, name, accessory, gender, background, face, body, tier etc.</span>
+              <form>
+                <div className='form-item'>
+                  <div className='form-item--with-tooltip'>
+                    <Checkbox
+                      label='Owner can destroy collection'
+                      onChange={setOwnerCanDestroy}
+                      value={ownerCanDestroy}
+                    />
+                    <HelpTooltip
+                      className={'help'}
+                      content={
+                        <span>
+                    Should you decide to keep the right to destroy the collection, a marketplace could reject it depending on its policies as it gives the author the power to arbitrarily destroy a collection at any moment in the future
+                        </span>
+                      }
+                    />
+                  </div>
+                </div>
+                <div className='form-item'>
+                  <div className='form-item--with-tooltip'>
+                    Token limit
+                    <HelpTooltip
+                      className={'help'}
+                      content={
+                        <span>
+                    The token limit (collection size) is a mandatory parameter if you want to list your collection on a marketplace.
+                        </span>
+                      }
+                    />
+                  </div>
+                  <p>Max 10 000</p>
+                  <Input
+                    className='isSmall'
+                    max={maxTokenLimit}
+                    min={1}
+                    onChange={onLimitChange}
+                    placeholder='Attribute name'
+                    type='number'
+                    value={tokenLimit}
+                  />
+                </div>
+              </form>
+            </div>
+          )}
+        </div>
+      )}
+
       { fees && (
         <WarningText fee={fees} />
       )}

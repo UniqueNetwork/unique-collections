@@ -25,11 +25,11 @@ export interface CollectionFormProps {
   setOwnerCanDestroy: (ownerCanDestroy: boolean) => void;
   setOwnerCanTransfer: (ownerCanTransfer: boolean) => void;
   setTokenImg: (tokenImg: File | null) => void;
-  setTokenLimit: (tokenLimit: number) => void;
+  setTokenLimit: (tokenLimit: string) => void;
   setTokenPrefix: (tokenPrefix: string) => void;
   setVariableSchema: (variableSchema: string) => void;
   tokenImg: File | null;
-  tokenLimit: number;
+  tokenLimit: string;
   tokenPrefix: string;
   variableSchema: string;
 }

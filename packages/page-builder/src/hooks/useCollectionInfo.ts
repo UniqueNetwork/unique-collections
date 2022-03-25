@@ -10,8 +10,6 @@ export const useCollectionInfo = (collectionId?: string) => {
   const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
   const { getDetailedCollectionInfo } = useCollection();
 
-  console.log('collectionId', collectionId);
-
   const fetchCollectionInfo = useCallback(async () => {
     if (collectionId) {
       const info: NftCollectionInterface | null = await getDetailedCollectionInfo(collectionId);
