@@ -3,7 +3,7 @@
 
 import './styles.scss';
 
-import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router';
 
 import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
@@ -17,9 +17,8 @@ interface MainInformationProps {
 }
 
 function MainInformation ({ account }: MainInformationProps): React.ReactElement {
-  const { description, name, setDescription, setName, setTokenPrefix, tokenPrefix } = useContext(CollectionFormContext);
+  const { description, mintFest, name, setDescription, setMintFest, setName, setTokenPrefix, tokenPrefix } = useContext(CollectionFormContext);
   const { calculateFeeEx, fees } = useCollectionFees(account);
-  const [minfest, setMinfest] = useState<boolean>(false);
   const history = useHistory();
 
   const goToNextStep = useCallback(() => {
@@ -90,8 +89,8 @@ function MainInformation ({ account }: MainInformationProps): React.ReactElement
             rel='noreferrer nooperer'
             target='_blank'
           >Terms and Service</a> of the contest</>}
-          onChange={setMinfest}
-          value={minfest}
+          onChange={setMintFest}
+          value={mintFest}
         />
       </div>
       { fees && (
@@ -99,7 +98,7 @@ function MainInformation ({ account }: MainInformationProps): React.ReactElement
       )}
       <UnqButton
         content='Confirm'
-        isDisabled={!name || !tokenPrefix || !minfest}
+        isDisabled={!name || !tokenPrefix || !mintFest}
         isFilled
         onClick={goToNextStep}
         size='medium'

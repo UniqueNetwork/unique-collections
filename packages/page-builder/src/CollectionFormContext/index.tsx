@@ -24,6 +24,7 @@ function CollectionForm ({ children }: Props): React.ReactElement<Props> | null 
   const [tokenLimit, setTokenLimit] = useState<string>('10000');
   const [variableSchema, setVariableSchema] = useState<string>('');
   const [tokenImg, setTokenImg] = useState<File | null>(null);
+  const [mintFest, setMintFest] = useState<boolean>(false);
 
   const value = useMemo(() => ({
     attributes,
@@ -31,6 +32,7 @@ function CollectionForm ({ children }: Props): React.ReactElement<Props> | null 
     coverImg,
     description,
     imgAddress,
+    mintFest,
     name,
     ownerCanDestroy,
     ownerCanTransfer,
@@ -39,6 +41,7 @@ function CollectionForm ({ children }: Props): React.ReactElement<Props> | null 
     setCoverImg,
     setDescription,
     setImgAddress,
+    setMintFest,
     setName,
     setOwnerCanDestroy,
     setOwnerCanTransfer,
@@ -50,7 +53,7 @@ function CollectionForm ({ children }: Props): React.ReactElement<Props> | null 
     tokenLimit,
     tokenPrefix,
     variableSchema
-  }), [attributes, avatarImg, coverImg, description, imgAddress, name, ownerCanDestroy, ownerCanTransfer, tokenImg, tokenLimit, tokenPrefix, variableSchema]);
+  }), [attributes, avatarImg, coverImg, description, imgAddress, mintFest, name, ownerCanDestroy, ownerCanTransfer, tokenImg, tokenLimit, tokenPrefix, variableSchema]);
 
   return (
     <CollectionFormContext.Provider value={value}>
