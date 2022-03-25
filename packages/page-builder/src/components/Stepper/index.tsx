@@ -7,11 +7,14 @@ import React, { memo, useCallback } from 'react';
 import { useHistory } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
-function Stepper ({ collectionId }: { collectionId?: string }): React.ReactElement {
+function Stepper ({ collectionId, disabled }: { collectionId?: string, disabled: boolean }): React.ReactElement {
   const location = useLocation();
   const history = useHistory();
-  const stepClassName = collectionId ? 'step disabled' : 'step';
-  const mainInformationStepClassName = `${location.pathname.includes('/main-information') ? `${stepClassName} active-step` : stepClassName}`;
+  const firstStepClassName = collectionId ? 'step disabled' : 'step';
+  const otherStepsClassName = disabled ? 'step disabled' : 'step';
+  const mainInformationStepClassName = `${location.pathname.includes('/main-information') ? `${firstStepClassName} active-step` : firstStepClassName}`;
+  const coverStepClassName = `${location.pathname.includes('/cover') ? `${otherStepsClassName} active-step` : otherStepsClassName}`;
+  const attributesStepClassName = `${location.pathname.includes('/token-attributes') ? `${otherStepsClassName} active-step` : otherStepsClassName}`;
 
   const onStepClick = useCallback((step: number) => {
     switch (step) {
@@ -23,6 +26,10 @@ function Stepper ({ collectionId }: { collectionId?: string }): React.ReactEleme
         break;
       case 2:
         if (!collectionId) {
+          if (disabled) {
+            break;
+          }
+
           history.push('/builder/new-collection/cover');
         } else {
           history.push(`/builder/collections/${collectionId}/cover`);
@@ -31,6 +38,10 @@ function Stepper ({ collectionId }: { collectionId?: string }): React.ReactEleme
         break;
       case 3:
         if (!collectionId) {
+          if (disabled) {
+            break;
+          }
+
           history.push('/builder/new-collection/token-attributes');
         } else {
           history.push(`/builder/collections/${collectionId}/token-attributes`);
@@ -38,7 +49,7 @@ function Stepper ({ collectionId }: { collectionId?: string }): React.ReactEleme
 
         break;
     }
-  }, [collectionId, history]);
+  }, [collectionId, history, disabled]);
 
   return (
     <div className='stepper-main shadow-block'>
@@ -51,14 +62,14 @@ function Stepper ({ collectionId }: { collectionId?: string }): React.ReactEleme
         </div>
         <div className='step-line' />
         <div
-          className={`${location.pathname.includes('/cover') ? 'step active-step' : 'step'}`}
+          className={coverStepClassName}
           onClick={onStepClick.bind(null, 2)}
         >
           2
         </div>
         <div className='step-line' />
         <div
-          className={`${location.pathname.includes('/token-attributes') ? 'step active-step' : 'step'}`}
+          className={attributesStepClassName}
           onClick={onStepClick.bind(null, 3)}
         >
           3

@@ -8,6 +8,7 @@ import { Route, Switch, useHistory } from 'react-router';
 import { useLocation, useParams } from 'react-router-dom';
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header';
 
+import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
 import CollectionPreview from '@polkadot/app-builder/components/CollectionPreview';
 import Cover from '@polkadot/app-builder/components/Cover';
 import MainInformation from '@polkadot/app-builder/components/MainInformation';
@@ -43,6 +44,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
   const location = useLocation();
   const { constAttributes, constOnChainSchema, resetAttributes, setTokenConstAttributes, tokenConstAttributes } = useTokenAttributes(collectionInfo);
   const { setPreviewButtonDisplayed } = useContext(AppCtx);
+  const { mintFest, name, tokenPrefix } = useContext(CollectionFormContext);
   const previewMode = lessThanThreshold;
 
   const handleOnBtnClick = useCallback(() => {
@@ -92,7 +94,10 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
       <div className='page-main'>
         <div className={`main-section ${isPreviewOpen ? 'hidden' : ''}`}>
           {location.pathname !== `/builder/collections/${collectionId}/new-nft` && (
-            <Stepper collectionId={collectionId} />
+            <Stepper
+              collectionId={collectionId}
+              disabled={(!collectionId && (!mintFest || !name || !tokenPrefix))}
+            />
           )}
           <Switch>
             <Route
