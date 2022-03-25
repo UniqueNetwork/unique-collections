@@ -173,8 +173,6 @@ function Status ({ className = '' }: Props): React.ReactElement<Props> | null {
     setAllTx(filterTx(txqueue));
   }, [txqueue]);
 
-  console.log('allTx', allTx, 'completedTx', completedTx, 'allSt', allSt);
-
   const txWithFeeError = allTx.filter((txItem) => txItem.error?.message.includes('Inability to pay some fees'));
   const customEvents = allSt.filter((eventItem) => eventItem.action.includes('Custom'));
 

@@ -7,13 +7,14 @@ import { useCallback, useContext, useState } from 'react';
 import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
 import { ArtificialAttributeItemType } from '@polkadot/app-builder/components/TokenAttributes/AttributesRowEditable';
 import { AttributeItemType, fillProtobufJson, ProtobufAttributeType } from '@polkadot/react-components/util/protobufUtils';
-import { useCollection } from '@polkadot/react-hooks';
+import { useCollection, useIsMountedRef } from '@polkadot/react-hooks';
 import { str2vec } from '@polkadot/react-hooks/utils';
 
 export const useCollectionFees = (account: string, collectionId?: string) => {
   const { attributes, description, imgAddress, name, ownerCanDestroy, ownerCanTransfer, tokenLimit, tokenPrefix } = useContext(CollectionFormContext);
   const { calculateCreateCollectionExFee, calculateSetConstOnChainSchemaFees, calculateSetSchemaVersionFee, calculateSetVariableOnChainSchemaFee } = useCollection();
   const [fees, setFees] = useState<BN | null>(null);
+  const mountedRef = useIsMountedRef();
 
   const convertArtificialAttributesToProtobuf = useCallback((attributes: ArtificialAttributeItemType[]): AttributeItemType[] => {
     return attributes.map((attr: ArtificialAttributeItemType): AttributeItemType => {
@@ -37,9 +38,9 @@ export const useCollectionFees = (account: string, collectionId?: string) => {
         setVariableOnChainSchemaFee = (await calculateSetVariableOnChainSchemaFee({ account, collectionId, schema: JSON.stringify(varDataWithImage) })) || new BN(0);
       }
 
-      setFees(setVariableOnChainSchemaFee);
+      mountedRef.current && setFees(setVariableOnChainSchemaFee);
     }
-  }, [account, calculateSetVariableOnChainSchemaFee, collectionId, imgAddress]);
+  }, [account, calculateSetVariableOnChainSchemaFee, collectionId, imgAddress, mountedRef]);
 
   const calculateFee = useCallback(async () => {
     if (account && collectionId) {
@@ -60,9 +61,9 @@ export const useCollectionFees = (account: string, collectionId?: string) => {
 
       const createCollectionFees = constOnChainSchemaFees.add(schemaVersionFee);
 
-      setFees(createCollectionFees);
+      mountedRef.current && setFees(createCollectionFees);
     }
-  }, [account, attributes, calculateSetConstOnChainSchemaFees, calculateSetSchemaVersionFee, collectionId, convertArtificialAttributesToProtobuf]);
+  }, [account, attributes, calculateSetConstOnChainSchemaFees, calculateSetSchemaVersionFee, collectionId, convertArtificialAttributesToProtobuf, mountedRef]);
 
   const calculateFeeEx = useCallback(async () => {
     const converted: AttributeItemType[] = convertArtificialAttributesToProtobuf(attributes);
@@ -89,9 +90,9 @@ export const useCollectionFees = (account: string, collectionId?: string) => {
         variableOnChainSchema
       }) || new BN(0);
 
-      setFees(createCollectionFees);
+      mountedRef.current && setFees(createCollectionFees);
     }
-  }, [account, attributes, calculateCreateCollectionExFee, convertArtificialAttributesToProtobuf, description, imgAddress, name, ownerCanDestroy, ownerCanTransfer, tokenLimit, tokenPrefix]);
+  }, [account, attributes, calculateCreateCollectionExFee, convertArtificialAttributesToProtobuf, description, imgAddress, mountedRef, name, ownerCanDestroy, ownerCanTransfer, tokenLimit, tokenPrefix]);
 
   return {
     calculateCoverFee,
