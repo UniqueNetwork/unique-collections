@@ -1,4 +1,4 @@
-// Copyright 2017-2022 @polkadot/react-api authors & contributors
+// Copyright 2017-2022 @polkadot/UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import React, { useMemo, useState } from 'react';
@@ -11,8 +11,18 @@ interface Props {
   children: React.ReactNode;
 }
 
+export const defaultAttributesWithTokenIpfs: ArtificialAttributeItemType[] = [
+  {
+    fieldType: 'string',
+    id: 0,
+    name: 'ipfsJson',
+    rule: 'required',
+    values: []
+  }
+];
+
 function CollectionForm ({ children }: Props): React.ReactElement<Props> | null {
-  const [attributes, setAttributes] = useState<ArtificialAttributeItemType[]>([]);
+  const [attributes, setAttributes] = useState<ArtificialAttributeItemType[]>(defaultAttributesWithTokenIpfs);
   const [avatarImg, setAvatarImg] = useState<File | null>(null);
   const [description, setDescription] = useState<string>('');
   const [coverImg, setCoverImg] = useState<File | null>(null);
@@ -61,5 +71,7 @@ function CollectionForm ({ children }: Props): React.ReactElement<Props> | null 
     </CollectionFormContext.Provider>
   );
 }
+
+export * from './CollectionFormContext';
 
 export default React.memo(CollectionForm);

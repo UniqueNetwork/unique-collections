@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
+// Copyright 2017-2022 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import './styles.scss';
@@ -10,7 +10,7 @@ import React, { memo, ReactElement, useCallback, useContext, useEffect, useState
 import { useHistory } from 'react-router';
 import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 
-import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
+import { CollectionFormContext, defaultAttributesWithTokenIpfs } from '@polkadot/app-builder/CollectionFormContext';
 import { useCollectionFees } from '@polkadot/app-builder/hooks';
 import TransactionContext from '@polkadot/app-builder/TransactionContext/TransactionContext';
 import { Checkbox, HelpTooltip, Input, UnqButton } from '@polkadot/react-components';
@@ -30,16 +30,6 @@ interface TokenAttributes {
   collectionId?: string;
   collectionInfo?: NftCollectionInterface;
 }
-
-const defaultAttributesWithTokenIpfs: ArtificialAttributeItemType[] = [
-  {
-    fieldType: 'string',
-    id: 0,
-    name: 'ipfsJson',
-    rule: 'required',
-    values: []
-  }
-];
 
 const stepTexts = [
   'Setting collection traits',
