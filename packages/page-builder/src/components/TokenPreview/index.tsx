@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
+// Copyright 2017-2022 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import './styles.scss';
@@ -62,6 +62,8 @@ function TokenPreview ({ collectionInfo, constAttributes, tokenConstAttributes }
     fillAttributesValues();
   }, [fillAttributesValues]);
 
+  console.log('tokenAttributes', tokenAttributes, 'constAttributes', constAttributes, 'attributes', attributes);
+
   return (
     <div className='token-preview shadow-block'>
       <div className='token-preview-header'>Token preview</div>
@@ -84,7 +86,7 @@ function TokenPreview ({ collectionInfo, constAttributes, tokenConstAttributes }
                 { tokenAttributes.map((collectionAttribute: AttributeItemType | ArtificialAttributeItemType) => (
                   <p
                     className='content-text'
-                    key={collectionAttribute.name}
+                    key={collectionAttribute.id}
                   >
                     {collectionAttribute.name}: {values[collectionAttribute.name] || ''}
                   </p>
