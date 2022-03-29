@@ -23,7 +23,7 @@ interface TokenPreviewProps {
 
 function TokenPreview ({ collectionInfo, constAttributes, tokenConstAttributes }: TokenPreviewProps): React.ReactElement {
   const { collectionName16Decoder, hex2a } = useDecoder();
-  const { attributes, coverImg, name, tokenPrefix } = useContext(CollectionFormContext);
+  const { attributes, name, tokenImg, tokenPrefix } = useContext(CollectionFormContext);
   const [values, setValues] = useState<{ [key: string]: string | string[] | number | undefined }>({});
   const location = useLocation();
 
@@ -62,8 +62,6 @@ function TokenPreview ({ collectionInfo, constAttributes, tokenConstAttributes }
     fillAttributesValues();
   }, [fillAttributesValues]);
 
-  console.log('tokenAttributes', tokenAttributes, 'constAttributes', constAttributes, 'attributes', attributes);
-
   return (
     <div className='token-preview shadow-block'>
       <div className='token-preview-header'>Token preview</div>
@@ -71,7 +69,7 @@ function TokenPreview ({ collectionInfo, constAttributes, tokenConstAttributes }
         <div className='token-img'>
           <img
             alt='token-img'
-            src={coverImg ? URL.createObjectURL(coverImg) : defaultIcon as string}
+            src={tokenImg ? URL.createObjectURL(tokenImg) : defaultIcon as string}
           />
         </div>
         <div className='content-description'>
