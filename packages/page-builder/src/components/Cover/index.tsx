@@ -49,11 +49,12 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
 
   const clearTokenImg = useCallback(() => {
     setCoverImg(null);
+    setImgAddress(undefined);
 
     if (inputFileRef.current) {
       inputFileRef.current.value = '';
     }
-  }, [setCoverImg]);
+  }, [setCoverImg, setImgAddress]);
 
   const uploadImage = useCallback(async (file: File): Promise<void> => {
     if (file) {
@@ -229,7 +230,7 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
           <br />
         </div>
       )}
-      { (imgAddress && fees) && (
+      { !!fees && (
         <WarningText fee={fees} />
       )}
       <Confirm

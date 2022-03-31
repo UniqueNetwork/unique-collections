@@ -1,4 +1,4 @@
-// Copyright 2017-2022 @polkadot/UseTech authors & contributors
+// Copyright 2017-2022 @polkadot/react-api authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
@@ -36,13 +36,6 @@ export interface CollectionFormProps {
   variableSchema: string;
 }
 
-const CollectionFormContext: React.Context<CollectionFormProps> = React.createContext({} as unknown as CollectionFormProps);
-const CollectionFormConsumer: React.Consumer<CollectionFormProps> = CollectionFormContext.Consumer;
-const CollectionFormProvider: React.Provider<CollectionFormProps> = CollectionFormContext.Provider;
+export const CollectionFormContext: React.Context<CollectionFormProps> = React.createContext({} as unknown as CollectionFormProps);
 
 export default CollectionFormContext;
-
-export {
-  CollectionFormConsumer,
-  CollectionFormProvider
-};
