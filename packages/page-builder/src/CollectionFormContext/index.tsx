@@ -31,7 +31,7 @@ function CollectionForm ({ children }: Props): React.ReactElement<Props> | null 
   const [ownerCanTransfer, setOwnerCanTransfer] = useState<boolean>(false);
   const [ownerCanDestroy, setOwnerCanDestroy] = useState<boolean>(true);
   const [tokenPrefix, setTokenPrefix] = useState<string>('');
-  const [tokenLimit, setTokenLimit] = useState<string>('10000');
+  const [tokenLimit, setTokenLimit] = useState<string>('');
   const [variableSchema, setVariableSchema] = useState<string>('');
   const [tokenImg, setTokenImg] = useState<File | null>(null);
   const [mintFest, setMintFest] = useState<boolean>(false);
