@@ -491,7 +491,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
         />
         <UnqButton
           content='Confirm'
-          isDisabled={formErrors?.length > 0 || emptyEnums?.length > 0}
+          isDisabled={formErrors?.length > 0 || emptyEnums?.length > 0 || tokenLimit === '0'}
           isFilled
           onClick={onSaveAll}
           size='medium'
