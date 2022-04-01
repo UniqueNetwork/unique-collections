@@ -37,7 +37,7 @@ const stepTexts = [
 ];
 
 const creatingCollectionText = 'Creating collection';
-const maxTokenLimit = 10000;
+const maxTokenLimit = 4294967295;
 
 function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttributes): ReactElement {
   const { createCollectionEx, getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
@@ -458,13 +458,13 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
                       }
                     />
                   </div>
-                  <p>Max 10 000</p>
+                  <p>Max 4 294 967 295</p>
                   <Input
                     className='isSmall'
                     max={maxTokenLimit}
                     min={1}
                     onChange={onLimitChange}
-                    placeholder='Attribute name'
+                    placeholder='Token limit'
                     type='number'
                     value={tokenLimit}
                   />
