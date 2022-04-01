@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
+// Copyright 2017-2022 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import BN from 'bn.js';
@@ -167,10 +167,18 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('set collection sponsor fail'); errorCallback && errorCallback(); },
-      txStartCb: () => { console.log('set collection sponsor start'); },
-      txSuccessCb: () => { console.log('set collection sponsor success'); successCallback && successCallback(); },
-      txUpdateCb: () => { console.log('set collection sponsor update'); }
+      txFailedCb: () => {
+        console.log('set collection sponsor fail'); errorCallback && errorCallback();
+      },
+      txStartCb: () => {
+        console.log('set collection sponsor start');
+      },
+      txSuccessCb: () => {
+        console.log('set collection sponsor success'); successCallback && successCallback();
+      },
+      txUpdateCb: () => {
+        console.log('set collection sponsor update');
+      }
     });
   }, [api, queueExtrinsic]);
 
@@ -181,10 +189,18 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('remove collection sponsor fail'); errorCallback && errorCallback(); },
-      txStartCb: () => { console.log('remove collection sponsor start'); },
-      txSuccessCb: () => { console.log('remove collection sponsor success'); successCallback && successCallback(); },
-      txUpdateCb: () => { console.log('remove collection sponsor update'); }
+      txFailedCb: () => {
+        console.log('remove collection sponsor fail'); errorCallback && errorCallback();
+      },
+      txStartCb: () => {
+        console.log('remove collection sponsor start');
+      },
+      txSuccessCb: () => {
+        console.log('remove collection sponsor success'); successCallback && successCallback();
+      },
+      txUpdateCb: () => {
+        console.log('remove collection sponsor update');
+      }
     });
   }, [api, queueExtrinsic]);
 
@@ -195,10 +211,18 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('confirm sponsorship fail'); errorCallback && errorCallback(); },
-      txStartCb: () => { console.log('confirm sponsorship start'); },
-      txSuccessCb: () => { console.log('confirm sponsorship success'); successCallback && successCallback(); },
-      txUpdateCb: () => { console.log('confirm sponsorship update'); }
+      txFailedCb: () => {
+        console.log('confirm sponsorship fail'); errorCallback && errorCallback();
+      },
+      txStartCb: () => {
+        console.log('confirm sponsorship start');
+      },
+      txSuccessCb: () => {
+        console.log('confirm sponsorship success'); successCallback && successCallback();
+      },
+      txUpdateCb: () => {
+        console.log('confirm sponsorship update');
+      }
     });
   }, [api, queueExtrinsic]);
 
@@ -235,10 +259,18 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('set schema version fail'); errorCallback && errorCallback(); },
-      txStartCb: () => { console.log('set schema version  start'); },
-      txSuccessCb: () => { console.log('set schema version  success'); successCallback && successCallback(); },
-      txUpdateCb: () => { console.log('set schema version  update'); }
+      txFailedCb: () => {
+        console.log('set schema version fail'); errorCallback && errorCallback();
+      },
+      txStartCb: () => {
+        console.log('set schema version  start');
+      },
+      txSuccessCb: () => {
+        console.log('set schema version  success'); successCallback && successCallback();
+      },
+      txUpdateCb: () => {
+        console.log('set schema version  update');
+      }
     });
   }, [api, queueExtrinsic]);
 
@@ -249,10 +281,18 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('set offChain schema fail'); errorCallback && errorCallback(); },
-      txStartCb: () => { console.log('set offChain schema start'); },
-      txSuccessCb: () => { console.log('set offChain schema success'); successCallback && successCallback(); },
-      txUpdateCb: () => { console.log('set offChain schema update'); }
+      txFailedCb: () => {
+        console.log('set offChain schema fail'); errorCallback && errorCallback();
+      },
+      txStartCb: () => {
+        console.log('set offChain schema start');
+      },
+      txSuccessCb: () => {
+        console.log('set offChain schema success'); successCallback && successCallback();
+      },
+      txUpdateCb: () => {
+        console.log('set offChain schema update');
+      }
     });
   }, [api, queueExtrinsic]);
 
@@ -263,10 +303,18 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('add collection admin fail'); errorCallback && errorCallback(); },
-      txStartCb: () => { console.log('add collection admin start'); },
-      txSuccessCb: () => { console.log('add collection admin success'); successCallback && successCallback(); },
-      txUpdateCb: () => { console.log('add collection admin update'); }
+      txFailedCb: () => {
+        console.log('add collection admin fail'); errorCallback && errorCallback();
+      },
+      txStartCb: () => {
+        console.log('add collection admin start');
+      },
+      txSuccessCb: () => {
+        console.log('add collection admin success'); successCallback && successCallback();
+      },
+      txUpdateCb: () => {
+        console.log('add collection admin update');
+      }
     });
   }, [api, queueExtrinsic]);
 
@@ -277,10 +325,18 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('remove collection admin fail'); errorCallback && errorCallback(); },
-      txStartCb: () => { console.log('remove collection admin start'); },
-      txSuccessCb: () => { console.log('remove collection admin success'); successCallback && successCallback(); },
-      txUpdateCb: () => { console.log('remove collection admin update'); }
+      txFailedCb: () => {
+        console.log('remove collection admin fail'); errorCallback && errorCallback();
+      },
+      txStartCb: () => {
+        console.log('remove collection admin start');
+      },
+      txSuccessCb: () => {
+        console.log('remove collection admin success'); successCallback && successCallback();
+      },
+      txUpdateCb: () => {
+        console.log('remove collection admin update');
+      }
     });
   }, [api, queueExtrinsic]);
 
@@ -314,7 +370,9 @@ export function useCollection () {
 
         errorCallback && errorCallback();
       },
-      txStartCb: () => { console.log('set collection constOnChain start'); },
+      txStartCb: () => {
+        console.log('set collection constOnChain start');
+      },
       txSuccessCb: () => {
         console.log('set collection constOnChain success');
 
@@ -326,7 +384,9 @@ export function useCollection () {
 
         successCallback && successCallback();
       },
-      txUpdateCb: () => { console.log('set collection constOnChain update'); }
+      txUpdateCb: () => {
+        console.log('set collection constOnChain update');
+      }
     });
   }, [api.tx.unique, queueAction, queueExtrinsic]);
 
@@ -360,7 +420,9 @@ export function useCollection () {
 
         errorCallback && errorCallback();
       },
-      txStartCb: () => { console.log('set collection varOnChain start'); },
+      txStartCb: () => {
+        console.log('set collection varOnChain start');
+      },
       txSuccessCb: () => {
         console.log('set collection varOnChain success');
 
@@ -372,7 +434,9 @@ export function useCollection () {
 
         successCallback && successCallback();
       },
-      txUpdateCb: () => { console.log('set collection varOnChain update'); }
+      txUpdateCb: () => {
+        console.log('set collection varOnChain update');
+      }
     });
   }, [api.tx.unique, queueAction, queueExtrinsic]);
 
@@ -383,10 +447,18 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('set collection varOnChain fail'); errorCallback && errorCallback(); },
-      txStartCb: () => { console.log('set collection varOnChain start'); },
-      txSuccessCb: () => { console.log('set collection varOnChain success'); successCallback && successCallback(); },
-      txUpdateCb: () => { console.log('set collection varOnChain update'); }
+      txFailedCb: () => {
+        console.log('set collection varOnChain fail'); errorCallback && errorCallback();
+      },
+      txStartCb: () => {
+        console.log('set collection varOnChain start');
+      },
+      txSuccessCb: () => {
+        console.log('set collection varOnChain success'); successCallback && successCallback();
+      },
+      txUpdateCb: () => {
+        console.log('set collection varOnChain update');
+      }
     });
   }, [api, queueExtrinsic]);
 
