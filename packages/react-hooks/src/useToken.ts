@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
+// Copyright 2017-2022 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import BN from 'bn.js';
@@ -58,7 +58,9 @@ export function useToken (): UseTokenInterface {
       txFailedCb: () => {
         console.log('create nft fail'); errorCallback && errorCallback();
       },
-      txStartCb: () => { console.log('create nft start'); },
+      txStartCb: () => {
+        console.log('create nft start');
+      },
       txSuccessCb: () => {
         successCallback && successCallback();
 
@@ -68,7 +70,9 @@ export function useToken (): UseTokenInterface {
           status: 'success'
         });
       },
-      txUpdateCb: () => { console.log('create nft update'); }
+      txUpdateCb: () => {
+        console.log('create nft update');
+      }
     });
   }, [api, queueAction, queueExtrinsic]);
 
@@ -85,13 +89,17 @@ export function useToken (): UseTokenInterface {
         console.log('set variable metadata fail');
         errorCallback && errorCallback();
       },
-      txStartCb: () => { console.log('set variable metadata start'); },
+      txStartCb: () => {
+        console.log('set variable metadata start');
+      },
       txSuccessCb: () => {
         console.log('set variable metadata success');
 
         successCallback && successCallback();
       },
-      txUpdateCb: () => { console.log('set variable metadata update'); }
+      txUpdateCb: () => {
+        console.log('set variable metadata update');
+      }
     });
   }, [api, queueExtrinsic]);
 
