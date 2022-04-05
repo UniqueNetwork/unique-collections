@@ -529,6 +529,10 @@ export function useCollection () {
   }, [api]);
 
   const calculateCreateCollectionExFee = useCallback(async ({ access, account, constOnChainSchema, description, limits, metaUpdatePermission, mode, name, offchainSchema, pendingSponsor, schemaVersion, tokenPrefix, variableOnChainSchema }: CreateCollectionEx): Promise<BN | null> => {
+    if (!limits.tokenLimit) {
+      delete limits.tokenLimit;
+    }
+
     try {
       const extrinsic = api.tx.unique.createCollectionEx({
         access,
@@ -557,6 +561,10 @@ export function useCollection () {
   }, [api]);
 
   const createCollectionEx = useCallback(({ access, account, constOnChainSchema, description, limits, metaUpdatePermission, mode, name, offchainSchema, pendingSponsor, schemaVersion, tokenPrefix, variableOnChainSchema }: CreateCollectionEx, callBacks?: TransactionCallBacks) => {
+    if (!limits.tokenLimit) {
+      delete limits.tokenLimit;
+    }
+
     const extrinsic = api.tx.unique.createCollectionEx({
       access,
       constOnChainSchema,

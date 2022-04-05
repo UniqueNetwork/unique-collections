@@ -458,6 +458,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
                       }
                     />
                   </div>
+                  <br />
                   <Input
                     className='isSmall'
                     max={maxTokenLimit}

@@ -1,12 +1,9 @@
-// Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
+// Copyright 2017-2022 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import React, { memo, ReactElement } from 'react';
 import styled from 'styled-components';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import packageJson from '../../../../package.json';
 import discord from '../../public/logos/discord.svg';
 import github from '../../public/logos/github.svg';
 import subsocial from '../../public/logos/subsocial.svg';
@@ -25,7 +22,6 @@ function Footer ({ className = '' }): ReactElement {
           >Unique Network</a> —
             the NFT chain build for Polkadot and Kusama.
           </div>
-          <div className='app-footer__info__version'>Version {(packageJson as { version: string }).version}</div>
         </div>
         <div className='app-footer__social-links'>
           <a

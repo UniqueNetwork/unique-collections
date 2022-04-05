@@ -4,7 +4,6 @@
 import './styles.scss';
 
 import React, { memo, useContext } from 'react';
-import { useParams } from 'react-router-dom';
 
 import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
 import defaultIcon from '@polkadot/app-builder/images/defaultIcon.svg';
@@ -18,7 +17,6 @@ interface CollectionPreviewProps {
 function CollectionPreview ({ collectionInfo }: CollectionPreviewProps): React.ReactElement {
   const { imgUrl } = useCollectionCover(collectionInfo);
   const { avatarImg, description, name } = useContext(CollectionFormContext);
-  const { collectionId }: { collectionId: string } = useParams();
   const { collectionName16Decoder } = useDecoder();
 
   return (
@@ -45,9 +43,6 @@ function CollectionPreview ({ collectionInfo }: CollectionPreviewProps): React.R
         <div className='content-description'>
           <h3 className='content-header'>{collectionInfo ? collectionName16Decoder(collectionInfo.name) : (name || 'Name')}</h3>
           <p className='content-text'>{collectionInfo ? collectionName16Decoder(collectionInfo?.description) : description || 'Description'}</p>
-          { collectionId && (
-            <p className='content-info'><span>ID:</span> {collectionId}</p>
-          )}
         </div>
       </div>
     </div>

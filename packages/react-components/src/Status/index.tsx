@@ -168,6 +168,18 @@ function Status ({ className = '' }: Props): React.ReactElement<Props> | null {
     setAllTx(filterTx(txqueue));
   }, [txqueue]);
 
+  allSt.forEach((eventItem) => {
+    if (eventItem?.message) {
+      console.log('st.message', eventItem.message);
+    }
+  });
+
+  allTx.forEach((eventItem) => {
+    if (eventItem?.error?.message) {
+      console.log('tx.message', eventItem.error.message);
+    }
+  });
+
   const customEvents = allSt.filter((eventItem) => eventItem.action.includes('Custom'));
   const customFessError = allSt.filter((eventItem) => eventItem?.message?.includes('NotSufficientFounds')).map((eventItem) => ({ ...eventItem, message: 'Error. Balance too low' }));
   const feesError = allTx.filter((eventItem) => eventItem?.error?.message.includes('Inability to pay some fees')).map((eventItem) => ({ ...eventItem, error: { ...eventItem.error, message: 'Error. Balance too low' } }) as QueueTx);
