@@ -290,9 +290,15 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   }, [mountedRef]);
 
   const onLimitChange = useCallback((value: string) => {
+    if (!value) {
+      setTokenLimit('');
+
+      return;
+    }
+
     const numVal = Number(value);
 
-    if (numVal > maxTokenLimit) {
+    if (numVal > maxTokenLimit || numVal < 0) {
       return;
     }
 
@@ -427,7 +433,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
           </div>
           { opened && (
             <div className='custom-expander--inner'>
-              <span>This functionality allows you to customize the token. You can define your NFT's traits in the fields below. For example, name, accessory, gender, background, face, body, tier etc.</span>
+              <span>These settings are intended for users who want to place their collection on the marketplace. Take note: once set, these parameters cannot be modified later on.</span>
               <form>
                 <div className='form-item'>
                   <div className='form-item--with-tooltip'>
@@ -462,7 +468,6 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
                   <Input
                     className='isSmall'
                     max={maxTokenLimit}
-                    min={1}
                     onChange={onLimitChange}
                     placeholder='Token limit'
                     type='number'
