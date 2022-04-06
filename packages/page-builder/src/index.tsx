@@ -10,6 +10,7 @@ import { AppProps as Props } from '@polkadot/react-components/types';
 
 import Disclaimer from './components/Disclaimer';
 import Builder from './Builder';
+import CollectionForm from './CollectionFormContext';
 import Transactions from './TransactionContext';
 
 function CollectionBuilder (props: Props): React.ReactElement {
@@ -54,9 +55,12 @@ function CollectionBuilder (props: Props): React.ReactElement {
   return (
     <main className='builder-page'>
       <Transactions>
-        <Builder
-          {...props}
-        />
+        <CollectionForm>
+          <Builder
+            {...props}
+          />
+        </CollectionForm>
+
       </Transactions>
     </main>
   );

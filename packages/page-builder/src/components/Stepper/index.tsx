@@ -3,29 +3,74 @@
 
 import './styles.scss';
 
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
+import { useHistory } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
-function Stepper (): React.ReactElement {
+function Stepper ({ collectionId, disabled }: { collectionId?: string, disabled: boolean }): React.ReactElement {
   const location = useLocation();
+  const history = useHistory();
+  const firstStepClassName = collectionId ? 'step disabled' : 'step';
+  const otherStepsClassName = disabled ? 'step disabled' : 'step';
+  const mainInformationStepClassName = `${location.pathname.includes('/main-information') ? `${firstStepClassName} active-step` : firstStepClassName}`;
+  const coverStepClassName = `${location.pathname.includes('/cover') ? `${otherStepsClassName} active-step` : otherStepsClassName}`;
+  const attributesStepClassName = `${location.pathname.includes('/token-attributes') ? `${otherStepsClassName} active-step` : otherStepsClassName}`;
+
+  const onStepClick = useCallback((step: number) => {
+    switch (step) {
+      case 1:
+        if (!collectionId) {
+          history.push('/builder/new-collection/main-information');
+        }
+
+        break;
+      case 2:
+        if (!collectionId) {
+          if (disabled) {
+            break;
+          }
+
+          history.push('/builder/new-collection/cover');
+        } else {
+          history.push(`/builder/collections/${collectionId}/cover`);
+        }
+
+        break;
+      case 3:
+        if (!collectionId) {
+          if (disabled) {
+            break;
+          }
+
+          history.push('/builder/new-collection/token-attributes');
+        } else {
+          history.push(`/builder/collections/${collectionId}/token-attributes`);
+        }
+
+        break;
+    }
+  }, [collectionId, history, disabled]);
 
   return (
     <div className='stepper-main shadow-block'>
       <div className='steps'>
         <div
-          className={`${location.pathname.includes('/main-information') ? 'step active-step' : 'step'}`}
+          className={mainInformationStepClassName}
+          onClick={onStepClick.bind(null, 1)}
         >
           1
         </div>
         <div className='step-line' />
         <div
-          className={`${location.pathname.includes('/cover') ? 'step active-step' : 'step'}`}
+          className={coverStepClassName}
+          onClick={onStepClick.bind(null, 2)}
         >
           2
         </div>
         <div className='step-line' />
         <div
-          className={`${location.pathname.includes('/token-attributes') ? 'step active-step' : 'step'}`}
+          className={attributesStepClassName}
+          onClick={onStepClick.bind(null, 3)}
         >
           3
         </div>

@@ -65,8 +65,8 @@ interface AttributesRowEditableProps {
   attributeType: ArtificialFieldType;
   attributeCountType: ArtificialFieldRuleType;
   attributeValues: string[];
+  canSaveAttributes: boolean;
   id: number;
-  isOwner: boolean;
   removeItem: (index: number) => void;
   setEmptyEnums: (prevErrors: number[]) => void;
   setFormErrors: (arr: (prevErrors: number[]) => number[]) => void;
@@ -79,7 +79,7 @@ interface AttributesRowEditableProps {
 }
 
 function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement {
-  const { attributeCountType, attributeName, attributeType, attributeValues, attributes, formErrors, id, isOwner, removeItem, setAttributeCountType, setAttributeName, setAttributeType, setAttributeValues, setEmptyEnums, setFormErrors } = props;
+  const { attributeCountType, attributeName, attributeType, attributeValues, attributes, canSaveAttributes, formErrors, id, removeItem, setAttributeCountType, setAttributeName, setAttributeType, setAttributeValues, setEmptyEnums, setFormErrors } = props;
   const [currentAttributeName, setCurrentAttributeName] = useState<string>(attributeName);
   const [isAttributeNameError, setIsAttributeNameError] = useState<boolean>(false);
   const attrName = useRef<string>();
@@ -237,7 +237,7 @@ function AttributesRowEditable (props: AttributesRowEditableProps): ReactElement
           className='deleteIcon'
           onClick={onRemoveItem}
           src={trashIcon as string}
-          style={{ cursor: isOwner ? 'pointer' : 'not-allowed' }}
+          style={{ cursor: canSaveAttributes ? 'pointer' : 'not-allowed' }}
         />
 
       </div>

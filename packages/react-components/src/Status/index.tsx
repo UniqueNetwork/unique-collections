@@ -111,11 +111,6 @@ function renderItem ({ error, extrinsic, id, removeItem, rpc, status }: QueueTx)
   }
 
   const icon = signerIconName(status) as 'ban' | 'spinner';
-  const errorMessage = error?.message.includes('Inability to pay some fees') ? 'Error. Balance too low' : '';
-
-  if (!errorMessage) {
-    return null;
-  }
 
   return (
     <div
@@ -141,7 +136,7 @@ function renderItem ({ error, extrinsic, id, removeItem, rpc, status }: QueueTx)
               {section}.{method}
             </div>
             <div className='status'>
-              {errorMessage}
+              {error ? (error.message || error) : status}
             </div>
           </div>
         </div>
@@ -163,7 +158,7 @@ function filterTx (txqueue?: QueueTx[]): [QueueTx[], QueueTx[]] {
 function Status ({ className = '' }: Props): React.ReactElement<Props> | null {
   const { stqueue, txqueue } = useContext(StatusContext);
   const [allSt, setAllSt] = useState<QueueStatus[]>([]);
-  const [[allTx, completedTx], setAllTx] = useState<[QueueTx[], QueueTx[]]>([[], []]);
+  const [[allTx], setAllTx] = useState<[QueueTx[], QueueTx[]]>([[], []]);
 
   useEffect((): void => {
     setAllSt(filterSt(stqueue));
@@ -173,18 +168,30 @@ function Status ({ className = '' }: Props): React.ReactElement<Props> | null {
     setAllTx(filterTx(txqueue));
   }, [txqueue]);
 
-  console.log('allTx', allTx, 'completedTx', completedTx, 'allSt', allSt);
+  allSt.forEach((eventItem) => {
+    if (eventItem?.message) {
+      console.log('st.message', eventItem.message);
+    }
+  });
 
-  const txWithFeeError = allTx.filter((txItem) => txItem.error?.message.includes('Inability to pay some fees'));
+  allTx.forEach((eventItem) => {
+    if (eventItem?.error?.message) {
+      console.log('tx.message', eventItem.error.message);
+    }
+  });
+
   const customEvents = allSt.filter((eventItem) => eventItem.action.includes('Custom'));
+  const customFessError = allSt.filter((eventItem) => eventItem?.message?.includes('NotSufficientFounds')).map((eventItem) => ({ ...eventItem, message: 'Error. Balance too low' }));
+  const feesError = allTx.filter((eventItem) => eventItem?.error?.message.includes('Inability to pay some fees')).map((eventItem) => ({ ...eventItem, error: { ...eventItem.error, message: 'Error. Balance too low' } }) as QueueTx);
 
-  if (!txWithFeeError.length && !customEvents.length) {
+  if (!allSt.length && !allTx.length) {
     return null;
   }
 
   return (
     <div className={`ui--Status ${className}`}>
-      {txWithFeeError.map(renderItem)}
+      {customFessError.map(renderStatus)}
+      {feesError.map(renderItem)}
       {customEvents.map(renderStatus)}
     </div>
   );

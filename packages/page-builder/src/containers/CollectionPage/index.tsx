@@ -8,18 +8,19 @@ import { Route, Switch, useHistory } from 'react-router';
 import { useLocation, useParams } from 'react-router-dom';
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header';
 
+import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
 import CollectionPreview from '@polkadot/app-builder/components/CollectionPreview';
 import Cover from '@polkadot/app-builder/components/Cover';
 import MainInformation from '@polkadot/app-builder/components/MainInformation';
 import Stepper from '@polkadot/app-builder/components/Stepper';
 import TokenAttributes from '@polkadot/app-builder/components/TokenAttributes';
-import { ArtificialAttributeItemType } from '@polkadot/app-builder/components/TokenAttributes/AttributesRowEditable';
 import TokenPreview from '@polkadot/app-builder/components/TokenPreview';
 import NftPage from '@polkadot/app-builder/containers/NftPage';
 import { AppCtx } from '@polkadot/apps/AppContext';
 import { UnqButton } from '@polkadot/react-components';
 import { useScreenWidthFromThreshold, useTokenAttributes } from '@polkadot/react-hooks';
-import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/useCollection';
+
+import { useCollectionInfo } from '../../hooks';
 
 interface CollectionPageProps {
   account: string;
@@ -35,34 +36,20 @@ interface CollectionPageProps {
 function CollectionPage ({ account, basePath }: CollectionPageProps): ReactElement {
   const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
   const [lessThanThreshold] = useScreenWidthFromThreshold(1023);
-  const [collectionName, setCollectionName] = useState<string>('');
-  const [avatarImg, setAvatarImg] = useState<File | null>(null);
-  const [tokenImg, setTokenImg] = useState<File | null>(null);
-  const [collectionDescription, setCollectionDescription] = useState<string>('');
-  const [attributes, setAttributes] = useState<ArtificialAttributeItemType[]>([]);
-  const [tokenPrefix, setTokenPrefix] = useState<string>('');
+  const { collectionId }: { collectionId: string } = useParams();
+  const collectionIdParam = collectionId && collectionId !== 'new-collection' ? collectionId : undefined;
+
+  const { collectionInfo } = useCollectionInfo(collectionIdParam);
   const history = useHistory();
   const location = useLocation();
-  const { collectionId }: { collectionId: string } = useParams();
-  const { getDetailedCollectionInfo } = useCollection();
-  const [collectionInfo, setCollectionInfo] = useState<NftCollectionInterface>();
   const { constAttributes, constOnChainSchema, resetAttributes, setTokenConstAttributes, tokenConstAttributes } = useTokenAttributes(collectionInfo);
   const { setPreviewButtonDisplayed } = useContext(AppCtx);
+  const { mintFest, name, tokenPrefix } = useContext(CollectionFormContext);
   const previewMode = lessThanThreshold;
 
   const handleOnBtnClick = useCallback(() => {
     setIsPreviewOpen((prev) => !prev);
   }, []);
-
-  const fetchCollectionInfo = useCallback(async () => {
-    if (collectionId) {
-      const info: NftCollectionInterface | null = await getDetailedCollectionInfo(collectionId);
-
-      if (info) {
-        setCollectionInfo(info);
-      }
-    }
-  }, [collectionId, getDetailedCollectionInfo]);
 
   // set previewButtonDisplayed to AppContext
   useEffect(() => {
@@ -86,10 +73,6 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
     }
   }, [collectionId, history, location]);
 
-  useEffect(() => {
-    void fetchCollectionInfo();
-  }, [fetchCollectionInfo]);
-
   return (
     <div className='collection-page'>
       {location.pathname !== `/builder/collections/${collectionId}/new-nft` && (
@@ -111,7 +94,10 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
       <div className='page-main'>
         <div className={`main-section ${isPreviewOpen ? 'hidden' : ''}`}>
           {location.pathname !== `/builder/collections/${collectionId}/new-nft` && (
-            <Stepper />
+            <Stepper
+              collectionId={collectionId}
+              disabled={(!collectionId && (!mintFest || !name || !tokenPrefix))}
+            />
           )}
           <Switch>
             <Route
@@ -120,12 +106,17 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
             >
               <MainInformation
                 account={account}
-                description={collectionDescription}
-                name={collectionName}
-                setDescription={setCollectionDescription}
-                setName={setCollectionName}
-                setTokenPrefix={setTokenPrefix}
-                tokenPrefix={tokenPrefix}
+              />
+            </Route>
+            <Route path={`${basePath}/new-collection/cover`}>
+              <Cover
+                account={account}
+              />
+            </Route>
+            <Route path={`${basePath}/new-collection/token-attributes`}>
+              <TokenAttributes
+                account={account}
+                collectionInfo={collectionInfo}
               />
             </Route>
             <Route
@@ -135,18 +126,14 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
                 <Route path={`${basePath}/collections/${collectionId}/cover`}>
                   <Cover
                     account={account}
-                    avatarImg={avatarImg}
-                    collectionId={collectionId}
-                    setAvatarImg={setAvatarImg}
+                    collectionId={collectionIdParam}
                   />
                 </Route>
                 <Route path={`${basePath}/collections/${collectionId}/token-attributes`}>
                   <TokenAttributes
                     account={account}
-                    attributes={attributes}
-                    collectionId={collectionId}
+                    collectionId={collectionIdParam}
                     collectionInfo={collectionInfo}
-                    setAttributes={setAttributes}
                   />
                 </Route>
                 <Route path={`${basePath}/collections/${collectionId}/new-nft`}>
@@ -158,9 +145,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
                     constOnChainSchema={constOnChainSchema}
                     resetAttributes={resetAttributes}
                     setTokenConstAttributes={setTokenConstAttributes}
-                    setTokenImg={setTokenImg}
                     tokenConstAttributes={tokenConstAttributes}
-                    tokenImg={tokenImg}
                   />
                 </Route>
               </Switch>
@@ -169,19 +154,12 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
         </div>
         <div className={`preview-cards ${!isPreviewOpen ? 'hidden' : ''}`}>
           <CollectionPreview
-            avatarImg={avatarImg}
-            collectionDescription={collectionDescription}
             collectionInfo={collectionInfo}
-            collectionName={collectionName}
           />
           <TokenPreview
-            attributes={attributes}
             collectionInfo={collectionInfo}
-            collectionName={collectionName}
             constAttributes={constAttributes}
             tokenConstAttributes={tokenConstAttributes}
-            tokenImg={tokenImg}
-            tokenPrefix={tokenPrefix}
           />
         </div>
         {previewMode && (

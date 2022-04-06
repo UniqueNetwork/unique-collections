@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
+// Copyright 2017-2022 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import BN from 'bn.js';
@@ -51,10 +51,30 @@ export interface NftCollectionInterface {
 }
 
 interface TransactionCallBacks {
-  onFailed?: () => void;
+  onFailed?: (result: SubmittableResult | null) => void;
   onStart?: () => void;
   onSuccess?: (result: SubmittableResult) => void;
   onUpdate?: () => void;
+}
+
+export interface CreateCollectionEx {
+  access?: string // AllowList
+  account: string;
+  description: number[];
+  mode: { Fungible: 8 } | { nft: null };
+  name: number[];
+  tokenPrefix: number[];
+  offchainSchema?: string;
+  schemaVersion: 'Unique' | 'ImageUrl';
+  pendingSponsor?: string;
+  limits: {
+    ownerCanTransfer?: boolean;
+    ownerCanDestroy?: boolean;
+    tokenLimit?: string;
+  },
+  variableOnChainSchema?: string;
+  constOnChainSchema: string;
+  metaUpdatePermission?: string; // 'Admin'
 }
 
 export function useCollection () {
@@ -107,8 +127,14 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => {
-        callBacks?.onFailed && callBacks.onFailed();
+      txFailedCb: (res) => {
+        callBacks?.onFailed && callBacks.onFailed(res);
+
+        queueAction({
+          action: 'Custom. Create collection',
+          message: 'Collection creation failed',
+          status: 'error'
+        });
 
         console.log('create collection failed');
       },
@@ -117,6 +143,12 @@ export function useCollection () {
       },
       txSuccessCb: (result: SubmittableResult) => {
         callBacks?.onSuccess && callBacks.onSuccess(result);
+
+        queueAction({
+          action: 'Custom. Create collection',
+          message: 'Collection successfully created',
+          status: 'success'
+        });
 
         console.log('create collection success');
       },
@@ -135,10 +167,18 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('set collection sponsor fail'); errorCallback && errorCallback(); },
-      txStartCb: () => { console.log('set collection sponsor start'); },
-      txSuccessCb: () => { console.log('set collection sponsor success'); successCallback && successCallback(); },
-      txUpdateCb: () => { console.log('set collection sponsor update'); }
+      txFailedCb: () => {
+        console.log('set collection sponsor fail'); errorCallback && errorCallback();
+      },
+      txStartCb: () => {
+        console.log('set collection sponsor start');
+      },
+      txSuccessCb: () => {
+        console.log('set collection sponsor success'); successCallback && successCallback();
+      },
+      txUpdateCb: () => {
+        console.log('set collection sponsor update');
+      }
     });
   }, [api, queueExtrinsic]);
 
@@ -149,10 +189,18 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('remove collection sponsor fail'); errorCallback && errorCallback(); },
-      txStartCb: () => { console.log('remove collection sponsor start'); },
-      txSuccessCb: () => { console.log('remove collection sponsor success'); successCallback && successCallback(); },
-      txUpdateCb: () => { console.log('remove collection sponsor update'); }
+      txFailedCb: () => {
+        console.log('remove collection sponsor fail'); errorCallback && errorCallback();
+      },
+      txStartCb: () => {
+        console.log('remove collection sponsor start');
+      },
+      txSuccessCb: () => {
+        console.log('remove collection sponsor success'); successCallback && successCallback();
+      },
+      txUpdateCb: () => {
+        console.log('remove collection sponsor update');
+      }
     });
   }, [api, queueExtrinsic]);
 
@@ -163,10 +211,18 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('confirm sponsorship fail'); errorCallback && errorCallback(); },
-      txStartCb: () => { console.log('confirm sponsorship start'); },
-      txSuccessCb: () => { console.log('confirm sponsorship success'); successCallback && successCallback(); },
-      txUpdateCb: () => { console.log('confirm sponsorship update'); }
+      txFailedCb: () => {
+        console.log('confirm sponsorship fail'); errorCallback && errorCallback();
+      },
+      txStartCb: () => {
+        console.log('confirm sponsorship start');
+      },
+      txSuccessCb: () => {
+        console.log('confirm sponsorship success'); successCallback && successCallback();
+      },
+      txUpdateCb: () => {
+        console.log('confirm sponsorship update');
+      }
     });
   }, [api, queueExtrinsic]);
 
@@ -203,26 +259,40 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('set schema version fail'); errorCallback && errorCallback(); },
-      txStartCb: () => { console.log('set schema version  start'); },
-      txSuccessCb: () => { console.log('set schema version  success'); successCallback && successCallback(); },
-      txUpdateCb: () => { console.log('set schema version  update'); }
+      txFailedCb: () => {
+        console.log('set schema version fail'); errorCallback && errorCallback();
+      },
+      txStartCb: () => {
+        console.log('set schema version  start');
+      },
+      txSuccessCb: () => {
+        console.log('set schema version  success'); successCallback && successCallback();
+      },
+      txUpdateCb: () => {
+        console.log('set schema version  update');
+      }
     });
   }, [api, queueExtrinsic]);
 
   const setOffChainSchema = useCallback(({ account, collectionId, errorCallback, schema, successCallback }: { account: string, schema: string, collectionId: string, successCallback?: () => void, errorCallback?: () => void }) => {
     const transaction = api.tx.unique.setOffchainSchema(collectionId, schema);
 
-    console.log('schema!!!', schema);
-
     queueExtrinsic({
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('set offChain schema fail'); errorCallback && errorCallback(); },
-      txStartCb: () => { console.log('set offChain schema start'); },
-      txSuccessCb: () => { console.log('set offChain schema success'); successCallback && successCallback(); },
-      txUpdateCb: () => { console.log('set offChain schema update'); }
+      txFailedCb: () => {
+        console.log('set offChain schema fail'); errorCallback && errorCallback();
+      },
+      txStartCb: () => {
+        console.log('set offChain schema start');
+      },
+      txSuccessCb: () => {
+        console.log('set offChain schema success'); successCallback && successCallback();
+      },
+      txUpdateCb: () => {
+        console.log('set offChain schema update');
+      }
     });
   }, [api, queueExtrinsic]);
 
@@ -233,10 +303,18 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('add collection admin fail'); errorCallback && errorCallback(); },
-      txStartCb: () => { console.log('add collection admin start'); },
-      txSuccessCb: () => { console.log('add collection admin success'); successCallback && successCallback(); },
-      txUpdateCb: () => { console.log('add collection admin update'); }
+      txFailedCb: () => {
+        console.log('add collection admin fail'); errorCallback && errorCallback();
+      },
+      txStartCb: () => {
+        console.log('add collection admin start');
+      },
+      txSuccessCb: () => {
+        console.log('add collection admin success'); successCallback && successCallback();
+      },
+      txUpdateCb: () => {
+        console.log('add collection admin update');
+      }
     });
   }, [api, queueExtrinsic]);
 
@@ -247,10 +325,18 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('remove collection admin fail'); errorCallback && errorCallback(); },
-      txStartCb: () => { console.log('remove collection admin start'); },
-      txSuccessCb: () => { console.log('remove collection admin success'); successCallback && successCallback(); },
-      txUpdateCb: () => { console.log('remove collection admin update'); }
+      txFailedCb: () => {
+        console.log('remove collection admin fail'); errorCallback && errorCallback();
+      },
+      txStartCb: () => {
+        console.log('remove collection admin start');
+      },
+      txSuccessCb: () => {
+        console.log('remove collection admin success'); successCallback && successCallback();
+      },
+      txUpdateCb: () => {
+        console.log('remove collection admin update');
+      }
     });
   }, [api, queueExtrinsic]);
 
@@ -273,12 +359,36 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('set collection constOnChain fail'); errorCallback && errorCallback(); },
-      txStartCb: () => { console.log('set collection constOnChain start'); },
-      txSuccessCb: () => { console.log('set collection constOnChain success'); successCallback && successCallback(); },
-      txUpdateCb: () => { console.log('set collection constOnChain update'); }
+      txFailedCb: () => {
+        console.log('set collection constOnChain fail');
+
+        queueAction({
+          action: 'Custom. Attributes',
+          message: 'Setting attributes failed',
+          status: 'error'
+        });
+
+        errorCallback && errorCallback();
+      },
+      txStartCb: () => {
+        console.log('set collection constOnChain start');
+      },
+      txSuccessCb: () => {
+        console.log('set collection constOnChain success');
+
+        queueAction({
+          action: 'Custom. Attributes',
+          message: 'Attributes successfully set',
+          status: 'success'
+        });
+
+        successCallback && successCallback();
+      },
+      txUpdateCb: () => {
+        console.log('set collection constOnChain update');
+      }
     });
-  }, [api, queueExtrinsic]);
+  }, [api.tx.unique, queueAction, queueExtrinsic]);
 
   const calculateSetVariableOnChainSchemaFee = useCallback(async ({ account, collectionId, schema }: { account: string, schema: string, collectionId: string }): Promise<BN | null> => {
     try {
@@ -299,12 +409,36 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('set collection varOnChain fail'); errorCallback && errorCallback(); },
-      txStartCb: () => { console.log('set collection varOnChain start'); },
-      txSuccessCb: () => { console.log('set collection varOnChain success'); successCallback && successCallback(); },
-      txUpdateCb: () => { console.log('set collection varOnChain update'); }
+      txFailedCb: () => {
+        console.log('set collection varOnChain fail');
+
+        queueAction({
+          action: 'Custom. Cover image',
+          message: 'Setting cover image failed',
+          status: 'error'
+        });
+
+        errorCallback && errorCallback();
+      },
+      txStartCb: () => {
+        console.log('set collection varOnChain start');
+      },
+      txSuccessCb: () => {
+        console.log('set collection varOnChain success');
+
+        queueAction({
+          action: 'Custom. Cover image',
+          message: 'Cover image successfully set',
+          status: 'success'
+        });
+
+        successCallback && successCallback();
+      },
+      txUpdateCb: () => {
+        console.log('set collection varOnChain update');
+      }
     });
-  }, [api, queueExtrinsic]);
+  }, [api.tx.unique, queueAction, queueExtrinsic]);
 
   const destroyCollection = useCallback(({ account, collectionId, errorCallback, successCallback }: { account: string, collectionId: string, successCallback?: () => void, errorCallback?: () => void }) => {
     const transaction = api.tx.unique.destroyCollection(collectionId);
@@ -313,10 +447,18 @@ export function useCollection () {
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
-      txFailedCb: () => { console.log('set collection varOnChain fail'); errorCallback && errorCallback(); },
-      txStartCb: () => { console.log('set collection varOnChain start'); },
-      txSuccessCb: () => { console.log('set collection varOnChain success'); successCallback && successCallback(); },
-      txUpdateCb: () => { console.log('set collection varOnChain update'); }
+      txFailedCb: () => {
+        console.log('set collection varOnChain fail'); errorCallback && errorCallback();
+      },
+      txStartCb: () => {
+        console.log('set collection varOnChain start');
+      },
+      txSuccessCb: () => {
+        console.log('set collection varOnChain success'); successCallback && successCallback();
+      },
+      txUpdateCb: () => {
+        console.log('set collection varOnChain update');
+      }
     });
   }, [api, queueExtrinsic]);
 
@@ -386,14 +528,105 @@ export function useCollection () {
     return [];
   }, [api]);
 
+  const calculateCreateCollectionExFee = useCallback(async ({ access, account, constOnChainSchema, description, limits, metaUpdatePermission, mode, name, offchainSchema, pendingSponsor, schemaVersion, tokenPrefix, variableOnChainSchema }: CreateCollectionEx): Promise<BN | null> => {
+    if (!limits.tokenLimit) {
+      delete limits.tokenLimit;
+    }
+
+    try {
+      const extrinsic = api.tx.unique.createCollectionEx({
+        access,
+        constOnChainSchema,
+        description,
+        limits,
+        metaUpdatePermission,
+        mode,
+        name,
+        offchainSchema,
+        pendingSponsor,
+        schemaVersion,
+        tokenPrefix,
+        variableOnChainSchema
+      });
+      const fee = (await extrinsic.paymentInfo(account) as { partialFee: BN }).partialFee;
+      const collectionCreationPrice = api.consts.common.collectionCreationPrice as unknown as BN;
+      const createCollectionChainFee = collectionCreationPrice || new BN(100).mul(new BN(10).pow(new BN(formatBalance.getDefaults().decimals)));
+
+      return fee.add(createCollectionChainFee);
+    } catch (error) {
+      console.error((error as Error).message);
+
+      return null;
+    }
+  }, [api]);
+
+  const createCollectionEx = useCallback(({ access, account, constOnChainSchema, description, limits, metaUpdatePermission, mode, name, offchainSchema, pendingSponsor, schemaVersion, tokenPrefix, variableOnChainSchema }: CreateCollectionEx, callBacks?: TransactionCallBacks) => {
+    if (!limits.tokenLimit) {
+      delete limits.tokenLimit;
+    }
+
+    const extrinsic = api.tx.unique.createCollectionEx({
+      access,
+      constOnChainSchema,
+      description,
+      limits,
+      metaUpdatePermission,
+      mode,
+      name,
+      offchainSchema,
+      pendingSponsor,
+      schemaVersion,
+      tokenPrefix,
+      variableOnChainSchema
+    });
+
+    queueExtrinsic({
+      accountId: account && account.toString(),
+      extrinsic: extrinsic,
+      isUnsigned: false,
+      txFailedCb: (result: SubmittableResult | null) => {
+        callBacks?.onFailed && callBacks.onFailed(result);
+
+        queueAction({
+          action: 'Custom. Create collection',
+          message: 'Collection creation failed',
+          status: 'error'
+        });
+
+        console.log('create collection failed');
+      },
+      txStartCb: () => {
+        callBacks?.onStart && callBacks.onStart();
+      },
+      txSuccessCb: (result: SubmittableResult) => {
+        callBacks?.onSuccess && callBacks.onSuccess(result);
+
+        queueAction({
+          action: 'Custom. Create collection',
+          message: 'Collection successfully created',
+          status: 'success'
+        });
+
+        console.log('create collection success');
+      },
+      txUpdateCb: () => {
+        callBacks?.onUpdate && callBacks.onUpdate();
+
+        console.log('create collection update');
+      }
+    });
+  }, [api, queueAction, queueExtrinsic]);
+
   return {
     addCollectionAdmin,
+    calculateCreateCollectionExFee,
     calculateCreateCollectionFee,
     calculateSetConstOnChainSchemaFees,
     calculateSetSchemaVersionFee,
     calculateSetVariableOnChainSchemaFee,
     confirmSponsorship,
     createCollection,
+    createCollectionEx,
     destroyCollection,
     getCollectionAdminList,
     getCollectionOnChainSchema,

@@ -1,25 +1,22 @@
-// Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
+// Copyright 2017-2022 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import './styles.scss';
 
-import React, { memo } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { memo, useContext } from 'react';
 
+import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
 import defaultIcon from '@polkadot/app-builder/images/defaultIcon.svg';
 import { useCollectionCover, useDecoder } from '@polkadot/react-hooks';
 import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
 interface CollectionPreviewProps {
-  avatarImg: File | null;
   collectionInfo?: NftCollectionInterface;
-  collectionDescription: string
-  collectionName: string;
 }
 
-function CollectionPreview ({ avatarImg, collectionDescription, collectionInfo, collectionName }: CollectionPreviewProps): React.ReactElement {
+function CollectionPreview ({ collectionInfo }: CollectionPreviewProps): React.ReactElement {
   const { imgUrl } = useCollectionCover(collectionInfo);
-  const { collectionId }: { collectionId: string } = useParams();
+  const { avatarImg, description, name } = useContext(CollectionFormContext);
   const { collectionName16Decoder } = useDecoder();
 
   return (
@@ -44,11 +41,8 @@ function CollectionPreview ({ avatarImg, collectionDescription, collectionInfo, 
           }
         </div>
         <div className='content-description'>
-          <h3 className='content-header'>{collectionInfo ? collectionName16Decoder(collectionInfo.name) : (collectionName || 'Name')}</h3>
-          <p className='content-text'>{collectionInfo ? collectionName16Decoder(collectionInfo?.description) : collectionDescription || 'Description'}</p>
-          { collectionId && (
-            <p className='content-info'><span>ID:</span> {collectionId}</p>
-          )}
+          <h3 className='content-header'>{collectionInfo ? collectionName16Decoder(collectionInfo.name) : (name || 'Name')}</h3>
+          <p className='content-text'>{collectionInfo ? collectionName16Decoder(collectionInfo?.description) : description || 'Description'}</p>
         </div>
       </div>
     </div>

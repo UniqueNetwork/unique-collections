@@ -1,22 +1,25 @@
-// Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
+// Copyright 2017-2022 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import './styles.scss';
 
 import type { AttributeItemType, ProtobufAttributeType } from '@polkadot/react-components/util/protobufUtils';
 
-import BN from 'bn.js';
 import _maxBy from 'lodash/maxBy';
 import React, { memo, ReactElement, useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import Confirm from 'semantic-ui-react/dist/commonjs/addons/Confirm';
 
+import { CollectionFormContext, defaultAttributesWithTokenIpfs } from '@polkadot/app-builder/CollectionFormContext';
+import { useCollectionFees } from '@polkadot/app-builder/hooks';
 import TransactionContext from '@polkadot/app-builder/TransactionContext/TransactionContext';
-import { HelpTooltip, StatusContext, UnqButton } from '@polkadot/react-components';
+import { Checkbox, HelpTooltip, Input, UnqButton } from '@polkadot/react-components';
 import { fillAttributes, fillProtobufJson } from '@polkadot/react-components/util/protobufUtils';
-import { useCollection } from '@polkadot/react-hooks';
-import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
+import { useCollection, useIsMountedRef } from '@polkadot/react-hooks';
+import { CreateCollectionEx, NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
+import { str2vec } from '@polkadot/react-hooks/utils';
 
+import expanderIcon from '../../images/expanderIcon.svg';
 import plusIcon from '../../images/plusIcon.svg';
 import AttributesRowEditable, { ArtificialAttributeItemType, ArtificialFieldRuleType, ArtificialFieldType } from '../TokenAttributes/AttributesRowEditable';
 import WarningText from '../WarningText';
@@ -24,107 +27,110 @@ import AttributesRow from './AttributesRow';
 
 interface TokenAttributes {
   account: string;
-  attributes: ArtificialAttributeItemType[];
-  collectionId: string;
+  collectionId?: string;
   collectionInfo?: NftCollectionInterface;
-  setAttributes: (param: any) => void
 }
-
-const defaultAttributesWithTokenIpfs: ArtificialAttributeItemType[] = [
-  {
-    fieldType: 'string',
-    id: 0,
-    name: 'ipfsJson',
-    rule: 'required',
-    values: []
-  }
-];
 
 const stepTexts = [
   'Setting collection traits',
   'Setting image location'
 ];
 
-function TokenAttributes ({ account, attributes, collectionId, collectionInfo, setAttributes }: TokenAttributes): ReactElement {
-  const { calculateSetConstOnChainSchemaFees, calculateSetSchemaVersionFee, getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
+const creatingCollectionText = 'Creating collection';
+const maxTokenLimit = 4294967295;
+
+function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttributes): ReactElement {
+  const { createCollectionEx, getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<number[]>([]);
   const [emptyEnums, setEmptyEnums] = useState<number[]>([]);
-  const [fees, setFees] = useState<BN | null>(null);
+  const [opened, setOpened] = useState(false);
   const history = useHistory();
-  const { queueAction } = useContext(StatusContext);
+  const { calculateFee, calculateFeeEx, fees } = useCollectionFees(account, collectionId);
   const isOwner = collectionInfo?.owner === account;
+  const canSaveAttributes = isOwner || !collectionId;
   const { setTransactions } = useContext(TransactionContext);
+  const { attributes, description, imgAddress, name, ownerCanDestroy, ownerCanTransfer, setAttributes, setOwnerCanDestroy, setTokenLimit, tokenLimit, tokenPrefix } = useContext(CollectionFormContext);
+  const mountedRef = useIsMountedRef();
 
   const onAddItem = useCallback(() => {
     const newAttributes = [...attributes];
-    const findNextId = (_maxBy(newAttributes, 'id') as AttributeItemType).id;
+    const findNextId = (_maxBy(newAttributes, 'id') as AttributeItemType)?.id ?? 0;
 
     newAttributes.push({
       fieldType: 'string',
       id: findNextId + 1,
-      name: `attribute${attributes.length}`,
+      name: `attribute${findNextId}`,
       rule: 'required',
       values: []
     });
 
-    setAttributes(newAttributes);
-  }, [attributes, setAttributes]);
+    mountedRef.current && setAttributes(newAttributes);
+  }, [attributes, mountedRef, setAttributes]);
 
   const closeSaveConfirmation = useCallback(() => {
     setIsSaveConfirmationOpen(false);
   }, []);
 
   const onSuccess = useCallback(() => {
-    setTransactions([
-      {
-        state: 'finished',
-        step: 1,
-        text: stepTexts[0]
-      },
-      {
-        state: 'finished',
-        step: 2,
-        text: stepTexts[1]
-      }
-    ]);
-    setTimeout(() => {
-      setTransactions([]);
-    }, 3000);
+    if (collectionId) {
+      const transactions = [
+        {
+          state: 'finished',
+          text: stepTexts[0]
+        }
+      ];
 
-    queueAction({
-      action: '',
-      message: 'Collection successfully created',
-      status: 'success'
-    });
-    history.push('/builder');
-  }, [setTransactions, queueAction, history]);
+      if (collectionInfo?.schemaVersion !== 'Unique') {
+        transactions.push({
+          state: 'finished',
+          text: stepTexts[1]
+        });
+      }
+
+      mountedRef.current && setTransactions(transactions);
+    } else {
+      mountedRef.current && setTransactions([
+        {
+          state: 'finished',
+          text: creatingCollectionText
+        }
+      ]);
+    }
+
+    setTimeout(() => {
+      mountedRef.current && setTransactions([]);
+
+      history.push('/builder');
+    }, 3000);
+  }, [collectionId, history, collectionInfo?.schemaVersion, mountedRef, setTransactions]);
 
   const setUniqueSchemaVersion = useCallback(() => {
     if (collectionInfo?.schemaVersion === 'Unique') {
       onSuccess();
     } else {
-      setTransactions([
-        {
-          state: 'finished',
-          step: 1,
-          text: stepTexts[0]
-        },
-        {
-          state: 'active',
-          step: 2,
-          text: stepTexts[1]
-        }
-      ]);
-      setSchemaVersion({
-        account,
-        collectionId,
-        errorCallback: setTransactions.bind(null, []),
-        schemaVersion: 'Unique',
-        successCallback: onSuccess
-      });
+      if (collectionId) {
+        mountedRef.current && setTransactions([
+          {
+            state: 'finished',
+            text: stepTexts[0]
+          },
+          {
+            state: 'active',
+            text: stepTexts[1]
+          }
+        ]);
+
+        mountedRef.current && setSchemaVersion({
+          account,
+          collectionId,
+          errorCallback: setTransactions.bind(null, []),
+          schemaVersion: 'Unique',
+          successCallback: onSuccess
+        });
+      }
     }
-  }, [account, collectionId, collectionInfo?.schemaVersion, onSuccess, setSchemaVersion, setTransactions]);
+  }, [account, collectionId, collectionInfo?.schemaVersion, mountedRef, onSuccess, setSchemaVersion, setTransactions]);
 
   const convertArtificialAttributesToProtobuf = useCallback((attributes: ArtificialAttributeItemType[]): AttributeItemType[] => {
     return attributes.map((attr: ArtificialAttributeItemType): AttributeItemType => {
@@ -150,23 +156,6 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
     });
   }, []);
 
-  const calculateFees = useCallback(async () => {
-    try {
-      const converted: AttributeItemType[] = convertArtificialAttributesToProtobuf(attributes);
-      const protobufJson: ProtobufAttributeType = fillProtobufJson(converted);
-
-      if (account && collectionId) {
-        const constOnChainSchemaFees = await calculateSetConstOnChainSchemaFees({ account, collectionId, schema: JSON.stringify(protobufJson) }) || new BN(0);
-        const schemaVersionFee = await calculateSetSchemaVersionFee({ account, collectionId, schemaVersion: 'Unique' }) || new BN(0);
-        const fees = constOnChainSchemaFees.add(schemaVersionFee);
-
-        setFees(fees);
-      }
-    } catch (e) {
-      console.log('save onChain schema error', e);
-    }
-  }, [account, attributes, calculateSetConstOnChainSchemaFees, calculateSetSchemaVersionFee, collectionId, convertArtificialAttributesToProtobuf]);
-
   const onSaveForm = useCallback(() => {
     setIsSaveConfirmationOpen(false);
 
@@ -174,32 +163,73 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
       const converted: AttributeItemType[] = convertArtificialAttributesToProtobuf(attributes);
       const protobufJson: ProtobufAttributeType = fillProtobufJson(converted);
 
-      setTransactions([
-        {
-          state: 'active',
-          step: 1,
-          text: stepTexts[0]
-        },
-        {
-          state: 'not-active',
-          step: 2,
-          text: stepTexts[1]
-        }
-      ]);
+      if (account) {
+        if (collectionId) {
+          const transactions = [
+            {
+              state: 'active',
+              text: stepTexts[0]
+            }
+          ];
 
-      if (account && collectionId) {
-        saveConstOnChainSchema({
-          account,
-          collectionId,
-          errorCallback: setTransactions.bind(null, []),
-          schema: JSON.stringify(protobufJson),
-          successCallback: setUniqueSchemaVersion
-        });
+          if (collectionInfo?.schemaVersion !== 'Unique') {
+            transactions.push({
+              state: 'not-active',
+              text: stepTexts[1]
+            });
+          }
+
+          setTransactions(transactions);
+
+          saveConstOnChainSchema({
+            account,
+            collectionId,
+            errorCallback: setTransactions.bind(null, []),
+            schema: JSON.stringify(protobufJson),
+            successCallback: setUniqueSchemaVersion
+          });
+        } else {
+          setTransactions([
+            {
+              state: 'active',
+              text: creatingCollectionText
+            }
+          ]);
+
+          const collectionData: CreateCollectionEx = {
+            account,
+            constOnChainSchema: JSON.stringify(protobufJson),
+            description: str2vec(description),
+            limits: {
+              ownerCanDestroy,
+              ownerCanTransfer,
+              tokenLimit
+            },
+            mode: { nft: null },
+            name: str2vec(name),
+            schemaVersion: 'Unique',
+            tokenPrefix: str2vec(tokenPrefix),
+            variableOnChainSchema: JSON.stringify({
+              collectionCover: imgAddress
+            })
+          };
+
+          createCollectionEx({
+            ...collectionData
+          }, {
+            onFailed: (result) => {
+              console.log('Collection creation failed', result);
+
+              setTransactions([]);
+            },
+            onSuccess
+          });
+        }
       }
     } catch (e) {
       console.log('save onChain schema error', e);
     }
-  }, [convertArtificialAttributesToProtobuf, attributes, setTransactions, account, collectionId, saveConstOnChainSchema, setUniqueSchemaVersion]);
+  }, [convertArtificialAttributesToProtobuf, attributes, account, collectionId, collectionInfo?.schemaVersion, setTransactions, saveConstOnChainSchema, setUniqueSchemaVersion, description, ownerCanDestroy, ownerCanTransfer, tokenLimit, name, tokenPrefix, imgAddress, createCollectionEx, onSuccess]);
 
   const deleteAttribute = useCallback((id: number) => {
     setAttributes(attributes.filter((attribute: ArtificialAttributeItemType) => attribute.id !== id));
@@ -250,16 +280,49 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
       } else {
         setAttributes([...converted, ...defaultAttributesWithTokenIpfs]);
       }
+    } else {
+      setAttributes([...defaultAttributesWithTokenIpfs]);
     }
   }, [collectionInfo, convertProtobufToArtificialAttributes, getCollectionOnChainSchema, setAttributes]);
+
+  const toggleAdvanced = useCallback(() => {
+    mountedRef.current && setOpened((prevOpen) => !prevOpen);
+  }, [mountedRef]);
+
+  const onLimitChange = useCallback((value: string) => {
+    if (!value) {
+      setTokenLimit('');
+
+      return;
+    }
+
+    const numVal = Number(value);
+
+    if (numVal > maxTokenLimit || numVal < 0) {
+      return;
+    }
+
+    setTokenLimit(numVal.toString());
+  }, [setTokenLimit]);
 
   useEffect(() => {
     fillCollectionAttributes();
   }, [fillCollectionAttributes]);
 
   useEffect(() => {
-    void calculateFees();
-  }, [calculateFees]);
+    if (collectionId) {
+      void calculateFee();
+    } else {
+      void calculateFeeEx();
+    }
+  }, [calculateFee, calculateFeeEx, collectionId]);
+
+  // if we have no collection name filled, lets fill in in
+  useEffect(() => {
+    if (!collectionId && !name) {
+      history.push('/builder/new-collection/main-information');
+    }
+  });
 
   return (
     <div className='token-attributes shadow-block'>
@@ -301,7 +364,7 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
           />
         </div>
       </div>
-      { !isOwner && attributes.map((attribute: ArtificialAttributeItemType, index: number) => {
+      { !canSaveAttributes && attributes.map((attribute: ArtificialAttributeItemType, index: number) => {
         if (attribute.name !== 'ipfsJson') {
           return (
             <AttributesRow
@@ -309,7 +372,6 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
               attributeName={attribute.name}
               attributeType={attribute.fieldType}
               attributeValues={attribute.values}
-              isOwner={isOwner}
               key={`${attribute.name}-${index}`}
             />
           );
@@ -317,7 +379,7 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
           return null;
         }
       })}
-      { isOwner && attributes.map((attribute: ArtificialAttributeItemType) => {
+      { canSaveAttributes && attributes.map((attribute: ArtificialAttributeItemType) => {
         if (attribute.name !== 'ipfsJson') {
           return (
             <AttributesRowEditable
@@ -326,9 +388,9 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
               attributeType={attribute.fieldType}
               attributeValues={attribute.values}
               attributes={attributes}
+              canSaveAttributes={canSaveAttributes}
               formErrors={formErrors}
               id={attribute.id}
-              isOwner={isOwner}
               key={`${attribute.id}`}
               removeItem={deleteAttribute}
               setAttributeCountType={setAttributeCountType}
@@ -354,6 +416,70 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
           src={plusIcon as string}
         />
       </UnqButton>
+
+      { !collectionId && (
+        <div className='custom-expander'>
+          <div
+            className='custom-expander--header'
+            onClick={toggleAdvanced}
+          >
+            <span>Advanced settings</span>
+            <img
+              alt='expander'
+              className={opened ? 'expanded' : ''}
+              src={expanderIcon as string}
+            >
+            </img>
+          </div>
+          { opened && (
+            <div className='custom-expander--inner'>
+              <span>These settings are intended for users who want to place their collection on the marketplace. Take note: once set, these parameters cannot be modified later on.</span>
+              <form>
+                <div className='form-item'>
+                  <div className='form-item--with-tooltip'>
+                    <Checkbox
+                      label='Owner can destroy collection'
+                      onChange={setOwnerCanDestroy}
+                      value={ownerCanDestroy}
+                    />
+                    <HelpTooltip
+                      className={'help'}
+                      content={
+                        <span>
+                    Should you decide to keep the right to destroy the collection, a marketplace could reject it depending on its policies as it gives the author the power to arbitrarily destroy a collection at any moment in the future
+                        </span>
+                      }
+                    />
+                  </div>
+                </div>
+                <div className='form-item'>
+                  <div className='form-item--with-tooltip'>
+                    Token limit
+                    <HelpTooltip
+                      className={'help'}
+                      content={
+                        <span>
+                    The token limit (collection size) is a mandatory parameter if you want to list your collection on a marketplace.
+                        </span>
+                      }
+                    />
+                  </div>
+                  <br />
+                  <Input
+                    className='isSmall'
+                    max={maxTokenLimit}
+                    onChange={onLimitChange}
+                    placeholder='Token limit'
+                    type='number'
+                    value={tokenLimit}
+                  />
+                </div>
+              </form>
+            </div>
+          )}
+        </div>
+      )}
+
       { fees && (
         <WarningText fee={fees} />
       )}
@@ -370,7 +496,7 @@ function TokenAttributes ({ account, attributes, collectionId, collectionInfo, s
         />
         <UnqButton
           content='Confirm'
-          isDisabled={formErrors?.length > 0 || emptyEnums?.length > 0}
+          isDisabled={formErrors?.length > 0 || emptyEnums?.length > 0 || tokenLimit === '0'}
           isFilled
           onClick={onSaveAll}
           size='medium'

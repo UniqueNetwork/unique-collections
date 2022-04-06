@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/react-components authors & contributors
+// Copyright 2017-2022 @polkadot/react-components authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import React, { useCallback } from 'react';
@@ -25,9 +25,11 @@ function Checkbox ({ className = '', isDisabled, label, onChange, value }: Props
       className={`ui--Checkbox${isDisabled ? ' isDisabled' : ''} ${className}`}
       onClick={_onClick}
     >
-      <input checked={value}
+      <input
+        checked={value}
         onChange={_onClick}
-        type='checkbox'/>
+        type='checkbox'
+      />
       {label && <label>{label}</label>}
     </div>
   );
@@ -99,5 +101,9 @@ export default React.memo(styled(Checkbox)`
         left: 6.5px;
       }
     }
+  }
+
+  @media (max-width: 1023px) {
+    grid-column-gap: var(--gap);
   }
 `);
