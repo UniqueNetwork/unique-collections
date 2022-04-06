@@ -171,7 +171,7 @@ function CollectionCard ({ account, collectionId, resetCollections }: Collection
             </div>
             <div className='content-links'>
               <UnqButton
-                content='Go to Block Explorer'
+                content='Go to Unique Scan'
                 isDisabled
               />
               <UnqButton
