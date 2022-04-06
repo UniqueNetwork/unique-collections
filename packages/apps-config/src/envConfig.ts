@@ -32,6 +32,7 @@ declare global {
       UNIQUE_SUBSTRATE_API: string;
       UNQ_TELEGRAM: string;
       UNQ_WALLET: string;
+      UNQ_SCAN: string;
       WHITE_LABEL_URL: string;
     }
   }
@@ -50,6 +51,7 @@ const envConfig: EnvConfigType = {
   uniqueSubstrateApi: window.ENV?.UNIQUE_SUBSTRATE_API || process.env.UNIQUE_SUBSTRATE_API,
   uniqueTelegram: window.ENV?.UNQ_TELEGRAM === "" ? "" : process.env.UNQ_TELEGRAM,
   uniqueWallet: window.ENV?.UNQ_WALLET || process.env.UNQ_WALLET,
+  uniqueScan: window.ENV?.UNQ_SCAN || process.env.UNQ_SCAN,
   whiteLabelUrl: window.ENV?.WHITE_LABEL_URL || process.env.WHITE_LABEL_URL
 };
 
