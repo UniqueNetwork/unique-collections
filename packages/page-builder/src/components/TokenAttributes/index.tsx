@@ -289,6 +289,11 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     mountedRef.current && setOpened((prevOpen) => !prevOpen);
   }, [mountedRef]);
 
+  const onLimitKeyDown = useCallback((event: React.KeyboardEvent) => {
+    ((event.key === ',' || event.key === '.') && !tokenLimit.length) && event.preventDefault();
+    ['e', 'E', '+', '-'].includes(event.key) && event.preventDefault();
+  }, [tokenLimit]);
+
   const onLimitChange = useCallback((value: string) => {
     if (!value) {
       setTokenLimit('');
@@ -469,6 +474,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
                     className='isSmall'
                     max={maxTokenLimit}
                     onChange={onLimitChange}
+                    onKeyDown={onLimitKeyDown}
                     placeholder='Token limit'
                     type='number'
                     value={tokenLimit}
