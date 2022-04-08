@@ -89,7 +89,9 @@ const definitions: OverrideBundleDefinition = {
         },
         SchemaVersion: {
           _enum: [
+            'Custom',
             'ImageURL',
+            'TokenURI',
             'Unique'
           ]
         },
