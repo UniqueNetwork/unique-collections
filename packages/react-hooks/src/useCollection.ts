@@ -82,6 +82,7 @@ export function useCollection () {
   const { queueAction, queueExtrinsic } = useContext(StatusContext);
   const { hex2a } = useDecoder();
 
+  // todo - remove burn count from api.query.nonfungible.tokensBurnt
   const getCollectionTokensCount = useCallback(async (collectionId: string): Promise<number> => {
     if (!api || !collectionId) {
       return 0;
