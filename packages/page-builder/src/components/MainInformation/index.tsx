@@ -17,7 +17,7 @@ interface MainInformationProps {
 }
 
 function MainInformation ({ account }: MainInformationProps): React.ReactElement {
-  const { description, mintFest, name, setDescription, setMintFest, setName, setTokenPrefix, tokenPrefix } = useContext(CollectionFormContext);
+  const { description, name, setDescription, setName, setTokenPrefix, tokenPrefix } = useContext(CollectionFormContext);
   const { calculateFeeEx, fees } = useCollectionFees(account);
   const history = useHistory();
 
@@ -82,23 +82,12 @@ function MainInformation ({ account }: MainInformationProps): React.ReactElement
           value={tokenPrefix}
         />
       </div>
-      <div className='info-block'>
-        <Checkbox
-          label={<> By participating in the MintFest you are agreeing to the <a
-            href='https://unique.network/terms/mintfest/'
-            rel='noreferrer nooperer'
-            target='_blank'
-          >Terms and Service</a> of the contest</>}
-          onChange={setMintFest}
-          value={mintFest}
-        />
-      </div>
       { fees && (
         <WarningText fee={fees} />
       )}
       <UnqButton
         content='Confirm'
-        isDisabled={!name || !tokenPrefix || !mintFest}
+        isDisabled={!name || !tokenPrefix}
         isFilled
         onClick={goToNextStep}
         size='medium'

@@ -13,7 +13,6 @@ export interface CollectionFormProps {
   coverImg: File | null;
   description: string;
   imgAddress?: string;
-  mintFest: boolean;
   name: string;
   ownerCanDestroy: boolean;
   ownerCanTransfer: boolean;
@@ -22,7 +21,6 @@ export interface CollectionFormProps {
   setCoverImg: (coverImg: File | null) => void;
   setDescription: (description: string) => void;
   setImgAddress: (imgAddress?: string) => void;
-  setMintFest: (mintFest: boolean) => void;
   setName: (name: string) => void;
   setOwnerCanDestroy: (ownerCanDestroy: boolean) => void;
   setOwnerCanTransfer: (ownerCanTransfer: boolean) => void;
