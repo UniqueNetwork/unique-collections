@@ -61,6 +61,7 @@ export default React.memo(styled(Checkbox)`
     position: relative;
     cursor: pointer;
     width: 22px;
+    min-width: 22px;
 
     &:before {
       content: "";
