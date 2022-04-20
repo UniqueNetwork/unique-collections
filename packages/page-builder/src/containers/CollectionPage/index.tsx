@@ -44,7 +44,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
   const location = useLocation();
   const { constAttributes, constOnChainSchema, resetAttributes, setTokenConstAttributes, tokenConstAttributes } = useTokenAttributes(collectionInfo);
   const { setPreviewButtonDisplayed } = useContext(AppCtx);
-  const { mintFest, name, tokenPrefix } = useContext(CollectionFormContext);
+  const { name, tokenPrefix } = useContext(CollectionFormContext);
   const previewMode = lessThanThreshold;
 
   const handleOnBtnClick = useCallback(() => {
@@ -55,7 +55,9 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
   useEffect(() => {
     setPreviewButtonDisplayed(previewMode);
 
-    return () => { setPreviewButtonDisplayed(false); };
+    return () => {
+      setPreviewButtonDisplayed(false);
+    };
   }, [previewMode, setPreviewButtonDisplayed]);
 
   useEffect(() => {
@@ -96,7 +98,7 @@ function CollectionPage ({ account, basePath }: CollectionPageProps): ReactEleme
           {location.pathname !== `/builder/collections/${collectionId}/new-nft` && (
             <Stepper
               collectionId={collectionId}
-              disabled={(!collectionId && (!mintFest || !name || !tokenPrefix))}
+              disabled={(!collectionId && (!name || !tokenPrefix))}
             />
           )}
           <Switch>
