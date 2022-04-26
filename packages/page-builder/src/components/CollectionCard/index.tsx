@@ -18,7 +18,7 @@ import { useCollection, useDecoder } from '@polkadot/react-hooks';
 import burnIcon from '../../images/burnIcon.svg';
 import CollectionCover from './CollectionCover';
 
-const { uniqueWallet } = envConfig;
+const { uniqueScan, uniqueWallet } = envConfig;
 
 interface CollectionCardProps {
   account: string;
@@ -103,6 +103,10 @@ function CollectionCard ({ account, collectionId, resetCollections }: Collection
     void fetchCollectionInfo();
   }, [fetchCollectionInfo]);
 
+  const handleOpenScanCollection = () => {
+    window.open(`${uniqueScan}/collections/${collectionId}`, '_blank', 'noopener, noreferrer');
+  };
+
   return (
     <div className='collection-card shadow-block'>
       { collectionInfoLoading && (
@@ -171,8 +175,8 @@ function CollectionCard ({ account, collectionId, resetCollections }: Collection
             </div>
             <div className='content-links'>
               <UnqButton
-                content='Go to Block Explorer'
-                isDisabled
+                content='Go to Unique Scan'
+                onClick={handleOpenScanCollection}
               />
               <UnqButton
                 content='Go to Wallet'

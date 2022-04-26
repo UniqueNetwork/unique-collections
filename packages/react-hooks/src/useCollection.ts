@@ -12,7 +12,7 @@ import { useDecoder } from '@polkadot/react-hooks/useDecoder';
 import { strToUTF16 } from '@polkadot/react-hooks/utils';
 import { formatBalance } from '@polkadot/util';
 
-export type SchemaVersionTypes = 'ImageURL' | 'Unique';
+export type SchemaVersionTypes = 'Custom' | 'ImageURL' | 'TokenURI' | 'Unique';
 
 export interface NftCollectionInterface {
   access?: 'Normal' | 'WhiteList'
@@ -65,7 +65,7 @@ export interface CreateCollectionEx {
   name: number[];
   tokenPrefix: number[];
   offchainSchema?: string;
-  schemaVersion: 'Unique' | 'ImageUrl';
+  schemaVersion: SchemaVersionTypes;
   pendingSponsor?: string;
   limits: {
     ownerCanTransfer?: boolean;
@@ -82,6 +82,7 @@ export function useCollection () {
   const { queueAction, queueExtrinsic } = useContext(StatusContext);
   const { hex2a } = useDecoder();
 
+  // todo - remove burn count from api.query.nonfungible.tokensBurnt, the better way - rpc total_supply
   const getCollectionTokensCount = useCallback(async (collectionId: string): Promise<number> => {
     if (!api || !collectionId) {
       return 0;
