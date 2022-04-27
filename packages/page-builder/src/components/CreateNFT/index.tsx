@@ -153,9 +153,9 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
       setTransactions([]);
     }, 3000);
 
-    if (createAnother) {
-      resetData();
-    } else {
+    resetData();
+
+    if (!createAnother) {
       history.push('/builder');
     }
   }, [createAnother, history, resetData, setTransactions]);
