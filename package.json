@@ -11,7 +11,7 @@
   "sideEffects": [
     "*.scss"
   ],
-  "version": "3.0.8-7.13.1",
+  "version": "3.0.9-7.13.1",
   "workspaces": [
     "packages/*"
   ],
