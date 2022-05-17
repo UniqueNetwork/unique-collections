@@ -32,7 +32,7 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
   const { uploadImg } = useImageService();
   const history = useHistory();
   const { coverImg, imgAddress, name, setCoverImg, setImgAddress, setVariableSchema } = useContext(CollectionFormContext);
-  const { saveVariableOnChainSchema } = useCollection();
+  const { setCollectionProperties } = useCollection();
   const { setTransactions, transactions } = useContext(TransactionContext);
 
   const inputFileRef = useRef<HTMLInputElement>(null);
@@ -106,19 +106,18 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
           text: stepText
         }
       ]);
-      const varDataWithImage = {
-        collectionCover: imgAddress
-      };
 
-      saveVariableOnChainSchema({
+      setCollectionProperties({
         account,
         collectionId,
         errorCallback: setTransactions.bind(null, []),
-        schema: JSON.stringify(varDataWithImage),
+        properties: {
+          coverImageURL: imgAddress
+        },
         successCallback: onSuccess
       });
     }
-  }, [account, collectionId, imgAddress, onSuccess, saveVariableOnChainSchema, setTransactions]);
+  }, [account, collectionId, imgAddress, onSuccess, setCollectionProperties, setTransactions]);
 
   const closeSaveConfirmation = useCallback(() => {
     setIsSaveConfirmationOpen(false);
