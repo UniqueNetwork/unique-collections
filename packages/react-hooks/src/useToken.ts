@@ -13,26 +13,28 @@ import { normalizeAccountId } from './utils';
 export interface TokenDetailsInterface {
   owner?: { Ethereum?: string, Substrate?: string };
   constData?: string;
+  variableData?: string;
 }
 
 interface UseTokenInterface {
-  calculateCreateItemFee: (obj: { account: string, collectionId: string, constData: string, owner: string }) => Promise<BN | null>;
-  createNft: (obj: { account: string, collectionId: string, constData: string, successCallback?: () => void, errorCallback?: () => void, owner: string }) => void;
+  calculateCreateItemFee: (obj: { account: string, collectionId: string, constData: string, variableData: string, owner: string }) => Promise<BN | null>;
+  createNft: (obj: { account: string, collectionId: string, constData: string, variableData: string, successCallback?: () => void, errorCallback?: () => void, owner: string }) => void;
   getDetailedReFungibleTokenInfo: (collectionId: string, tokenId: string) => Promise<TokenDetailsInterface>;
   getDetailedTokenInfo: (collectionId: string, tokenId: string) => Promise<TokenDetailsInterface>
   getTokenInfo: (collectionInfo: NftCollectionInterface, tokenId: string) => Promise<TokenDetailsInterface>;
-  setVariableMetadata: (obj: { account: string, collectionId: string, successCallback?: () => void, errorCallback?: () => void, tokenId: string }) => void;
+  setVariableMetadata: (obj: { account: string, collectionId: string, variableData: string, successCallback?: () => void, errorCallback?: () => void, tokenId: string }) => void;
 }
 
 export function useToken (): UseTokenInterface {
   const { api } = useApi();
   const { queueAction, queueExtrinsic } = useContext(StatusContext);
 
-  const calculateCreateItemFee = useCallback(async ({ account, collectionId, constData, owner }: { account: string, collectionId: string, constData: string, owner: string }): Promise<BN | null> => {
+  const calculateCreateItemFee = useCallback(async ({ account, collectionId, constData, owner, variableData }: { account: string, collectionId: string, constData: string, owner: string, variableData: string }): Promise<BN | null> => {
     try {
       const fee = await api.tx.unique.createItem(collectionId, { Substrate: owner }, {
         nft: {
           const_data: constData,
+          variable_data: variableData
         }
       }).paymentInfo(account) as { partialFee: BN };
 
@@ -75,9 +77,9 @@ export function useToken (): UseTokenInterface {
   }, [api, queueAction, queueExtrinsic]);
 
   const setVariableMetadata = useCallback((
-    { account, collectionId, errorCallback, successCallback, tokenId }:
-    { account: string, collectionId: string, successCallback?: () => void, errorCallback?: () => void, tokenId: string }) => {
-    const transaction = api.tx.unique.setVariableMetaData(collectionId, tokenId);
+    { account, collectionId, errorCallback, successCallback, tokenId, variableData }:
+    { account: string, collectionId: string, variableData: string, successCallback?: () => void, errorCallback?: () => void, tokenId: string }) => {
+    const transaction = api.tx.unique.setVariableMetaData(collectionId, tokenId, variableData);
 
     queueExtrinsic({
       accountId: account && account.toString(),
@@ -109,12 +111,14 @@ export function useToken (): UseTokenInterface {
     try {
       let tokenInfo: TokenDetailsInterface = {};
 
+      const variableData = (await api.rpc.unique.variableMetadata(collectionId, tokenId)).toJSON() as string;
       const constData: string = (await api.rpc.unique.constMetadata(collectionId, tokenId)).toString() as string;
       const crossAccount = normalizeAccountId((await api.query.nonfungible.tokenData(collectionId, tokenId)).toJSON().owner as string) as { Substrate?: string, Ethereum?: string };
 
       tokenInfo = {
         constData,
         owner: crossAccount,
+        variableData
       };
 
       console.log('tokenInfo.toJSON()', tokenInfo);

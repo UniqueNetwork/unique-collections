@@ -187,7 +187,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
     if (account) {
       const constData = buildAttributes();
 
-      const fees = await calculateCreateItemFee({ account, collectionId, constData, owner: account });
+      const fees = await calculateCreateItemFee({ account, collectionId, constData, owner: account, variableData: '' });
 
       setCreateFees(fees);
     }
@@ -210,7 +210,8 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
         constData,
         errorCallback: setTransactions.bind(null, []),
         owner: account,
-        successCallback: onCreateSuccess
+        successCallback: onCreateSuccess,
+        variableData: ''
       });
     }
   }, [account, buildAttributes, setTransactions, createNft, collectionId, onCreateSuccess]);

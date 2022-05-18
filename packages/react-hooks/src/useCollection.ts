@@ -14,10 +14,6 @@ import { formatBalance } from '@polkadot/util';
 
 export type SchemaVersionTypes = 'Custom' | 'ImageURL' | 'TokenURI' | 'Unique';
 
-export interface NftCollectionProperties {
-  coverImageURL: string | null;
-}
-
 export interface NftCollectionInterface {
   access?: 'Normal' | 'WhiteList'
   id: string;
@@ -50,8 +46,8 @@ export interface NftCollectionInterface {
     ownerCanTransfer: boolean;
     ownerCanDestroy: boolean;
   },
+  variableOnChainSchema: string;
   constOnChainSchema: string;
-  properties: NftCollectionProperties;
 }
 
 interface TransactionCallBacks {
@@ -76,9 +72,9 @@ export interface CreateCollectionEx {
     ownerCanDestroy?: boolean;
     tokenLimit?: string;
   },
+  variableOnChainSchema?: string;
   constOnChainSchema: string;
   metaUpdatePermission?: string; // 'Admin'
-  properties?: NftCollectionProperties
 }
 
 export function useCollection () {
@@ -395,9 +391,9 @@ export function useCollection () {
     });
   }, [api.tx.unique, queueAction, queueExtrinsic]);
 
-  const calculateSetCollectionPropertiesFees = useCallback(async ({ account, collectionId, properties }: { account: string, properties: NftCollectionProperties, collectionId: string }): Promise<BN | null> => {
+  const calculateSetVariableOnChainSchemaFee = useCallback(async ({ account, collectionId, schema }: { account: string, schema: string, collectionId: string }): Promise<BN | null> => {
     try {
-      const fee = await api.rpc.unique.setCollectionProperty(collectionId, properties).paymentInfo(account) as { partialFee: BN };
+      const fee = await api.tx.unique.setVariableOnChainSchema(collectionId, schema).paymentInfo(account) as { partialFee: BN };
 
       return fee.partialFee;
     } catch (error) {
@@ -407,15 +403,15 @@ export function useCollection () {
     }
   }, [api]);
 
-  const setCollectionProperties = useCallback(({ account, collectionId, errorCallback, properties, successCallback }: { account: string, collectionId: string, properties: NftCollectionProperties, successCallback?: () => void, errorCallback?: () => void }) => {
-    const transaction = api.rpc.unique.setCollectionProperty(collectionId, properties);
+  const saveVariableOnChainSchema = useCallback(({ account, collectionId, errorCallback, schema, successCallback }: { account: string, collectionId: string, schema: string, successCallback?: () => void, errorCallback?: () => void }) => {
+    const transaction = api.tx.unique.setVariableOnChainSchema(collectionId, schema);
 
     queueExtrinsic({
       accountId: account && account.toString(),
       extrinsic: transaction,
       isUnsigned: false,
       txFailedCb: () => {
-        console.log('set collection properties fail');
+        console.log('set collection varOnChain fail');
 
         queueAction({
           action: 'Custom. Cover image',
@@ -426,10 +422,10 @@ export function useCollection () {
         errorCallback && errorCallback();
       },
       txStartCb: () => {
-        console.log('set collection properties start');
+        console.log('set collection varOnChain start');
       },
       txSuccessCb: () => {
-        console.log('set collection properties success');
+        console.log('set collection varOnChain success');
 
         queueAction({
           action: 'Custom. Cover image',
@@ -440,10 +436,10 @@ export function useCollection () {
         successCallback && successCallback();
       },
       txUpdateCb: () => {
-        console.log('set collection properties update');
+        console.log('set collection varOnChain update');
       }
     });
-  }, [api.rpc.unique, queueAction, queueExtrinsic]);
+  }, [api.tx.unique, queueAction, queueExtrinsic]);
 
   const destroyCollection = useCallback(({ account, collectionId, errorCallback, successCallback }: { account: string, collectionId: string, successCallback?: () => void, errorCallback?: () => void }) => {
     const transaction = api.tx.unique.destroyCollection(collectionId);
@@ -501,9 +497,14 @@ export function useCollection () {
 
     try {
       const constSchema = hex2a(collectionInfo.constOnChainSchema);
+      const varSchema = hex2a(collectionInfo.variableOnChainSchema);
 
       if (constSchema && constSchema.length) {
         result.constSchema = JSON.parse(constSchema) as ProtobufAttributeType;
+      }
+
+      if (varSchema && varSchema.length) {
+        result.variableSchema = JSON.parse(varSchema) as { collectionCover: string } | undefined;
       }
 
       return result;
@@ -528,7 +529,7 @@ export function useCollection () {
     return [];
   }, [api]);
 
-  const calculateCreateCollectionExFee = useCallback(async ({ access, account, constOnChainSchema, description, limits, metaUpdatePermission, mode, name, offchainSchema, pendingSponsor, properties, schemaVersion, tokenPrefix }: CreateCollectionEx): Promise<BN | null> => {
+  const calculateCreateCollectionExFee = useCallback(async ({ access, account, constOnChainSchema, description, limits, metaUpdatePermission, mode, name, offchainSchema, pendingSponsor, schemaVersion, tokenPrefix, variableOnChainSchema }: CreateCollectionEx): Promise<BN | null> => {
     if (!limits.tokenLimit) {
       delete limits.tokenLimit;
     }
@@ -544,9 +545,9 @@ export function useCollection () {
         name,
         offchainSchema,
         pendingSponsor,
-        properties,
         schemaVersion,
-        tokenPrefix
+        tokenPrefix,
+        variableOnChainSchema
       });
       const fee = (await extrinsic.paymentInfo(account) as { partialFee: BN }).partialFee;
       const collectionCreationPrice = api.consts.common.collectionCreationPrice as unknown as BN;
@@ -560,7 +561,7 @@ export function useCollection () {
     }
   }, [api]);
 
-  const createCollectionEx = useCallback(({ access, account, constOnChainSchema, description, limits, metaUpdatePermission, mode, name, offchainSchema, pendingSponsor, properties, schemaVersion, tokenPrefix }: CreateCollectionEx, callBacks?: TransactionCallBacks) => {
+  const createCollectionEx = useCallback(({ access, account, constOnChainSchema, description, limits, metaUpdatePermission, mode, name, offchainSchema, pendingSponsor, schemaVersion, tokenPrefix, variableOnChainSchema }: CreateCollectionEx, callBacks?: TransactionCallBacks) => {
     if (!limits.tokenLimit) {
       delete limits.tokenLimit;
     }
@@ -575,9 +576,9 @@ export function useCollection () {
       name,
       offchainSchema,
       pendingSponsor,
-      properties,
       schemaVersion,
-      tokenPrefix
+      tokenPrefix,
+      variableOnChainSchema
     });
 
     queueExtrinsic({
@@ -621,9 +622,9 @@ export function useCollection () {
     addCollectionAdmin,
     calculateCreateCollectionExFee,
     calculateCreateCollectionFee,
-    calculateSetCollectionPropertiesFees,
     calculateSetConstOnChainSchemaFees,
     calculateSetSchemaVersionFee,
+    calculateSetVariableOnChainSchemaFee,
     confirmSponsorship,
     createCollection,
     createCollectionEx,
@@ -637,7 +638,7 @@ export function useCollection () {
     removeCollectionAdmin,
     removeCollectionSponsor,
     saveConstOnChainSchema,
-    setCollectionProperties,
+    saveVariableOnChainSchema,
     setCollectionSponsor,
     setOffChainSchema,
     setSchemaVersion

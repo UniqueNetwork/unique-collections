@@ -4,20 +4,31 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import envConfig from '@polkadot/apps-config/envConfig';
-import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
+import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/useCollection';
 
 const { ipfsGateway } = envConfig;
 
 export function useCollectionCover (collectionInfo: NftCollectionInterface | undefined): { imgUrl: string | undefined } {
+  const { getCollectionOnChainSchema } = useCollection();
   const [imgUrl, setImgUrl] = useState<string>();
 
   const fillCollectionCover = useCallback(() => {
-    if (collectionInfo?.properties?.coverImageURL) {
-      setImgUrl(`${ipfsGateway}/${collectionInfo.properties.coverImageURL}`);
+    if (collectionInfo?.variableOnChainSchema) {
+      const onChainSchema = getCollectionOnChainSchema(collectionInfo);
+
+      if (onChainSchema) {
+        const { variableSchema } = onChainSchema;
+
+        if (variableSchema?.collectionCover) {
+          setImgUrl(`${ipfsGateway}/${variableSchema.collectionCover}`);
+        } else {
+          console.log('variableSchema is empty');
+        }
+      }
     } else {
       console.log('onChainSchema is empty');
     }
-  }, [collectionInfo]);
+  }, [collectionInfo, getCollectionOnChainSchema]);
 
   useEffect(() => {
     fillCollectionCover();

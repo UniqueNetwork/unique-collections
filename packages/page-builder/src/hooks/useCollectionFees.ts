@@ -12,7 +12,7 @@ import { str2vec } from '@polkadot/react-hooks/utils';
 
 export const useCollectionFees = (account: string, collectionId?: string) => {
   const { attributes, description, imgAddress, name, ownerCanDestroy, ownerCanTransfer, tokenLimit, tokenPrefix } = useContext(CollectionFormContext);
-  const { calculateCreateCollectionExFee, calculateSetCollectionPropertiesFees, calculateSetConstOnChainSchemaFees, calculateSetSchemaVersionFee } = useCollection();
+  const { calculateCreateCollectionExFee, calculateSetConstOnChainSchemaFees, calculateSetSchemaVersionFee, calculateSetVariableOnChainSchemaFee } = useCollection();
   const [fees, setFees] = useState<BN | null>(null);
   const mountedRef = useIsMountedRef();
 
@@ -28,19 +28,19 @@ export const useCollectionFees = (account: string, collectionId?: string) => {
 
   const calculateCoverFee = useCallback(async () => {
     if (account && collectionId) {
-      let setCollectionPropertiesFee: BN = new BN(0);
+      let setVariableOnChainSchemaFee: BN = new BN(0);
 
       if (account && collectionId && imgAddress) {
         const varDataWithImage = {
-          coverImageURL: imgAddress
+          collectionCover: imgAddress
         };
 
-        setCollectionPropertiesFee = (await calculateSetCollectionPropertiesFees({ account, collectionId, properties: varDataWithImage })) || new BN(0);
+        setVariableOnChainSchemaFee = (await calculateSetVariableOnChainSchemaFee({ account, collectionId, schema: JSON.stringify(varDataWithImage) })) || new BN(0);
       }
 
-      mountedRef.current && setFees(setCollectionPropertiesFee);
+      mountedRef.current && setFees(setVariableOnChainSchemaFee);
     }
-  }, [account, calculateSetCollectionPropertiesFees, collectionId, imgAddress, mountedRef]);
+  }, [account, calculateSetVariableOnChainSchemaFee, collectionId, imgAddress, mountedRef]);
 
   const calculateFee = useCallback(async () => {
     if (account && collectionId) {
@@ -69,8 +69,9 @@ export const useCollectionFees = (account: string, collectionId?: string) => {
     const converted: AttributeItemType[] = convertArtificialAttributesToProtobuf(attributes);
     const protobufJson: ProtobufAttributeType = fillProtobufJson(converted);
     const varDataWithImage = {
-      coverImageURL: imgAddress ?? null
+      collectionCover: imgAddress
     };
+    const variableOnChainSchema = JSON.stringify(varDataWithImage);
 
     if (account) {
       const createCollectionFees = await calculateCreateCollectionExFee({
@@ -84,9 +85,9 @@ export const useCollectionFees = (account: string, collectionId?: string) => {
         },
         mode: { nft: null },
         name: str2vec(name),
-        properties: varDataWithImage,
         schemaVersion: 'Unique',
-        tokenPrefix: str2vec(tokenPrefix)
+        tokenPrefix: str2vec(tokenPrefix),
+        variableOnChainSchema
       }) || new BN(0);
 
       mountedRef.current && setFees(createCollectionFees);
