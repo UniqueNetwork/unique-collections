@@ -4,8 +4,6 @@
 import { gql, useApolloClient, useQuery } from '@apollo/client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
-
 export type UserCollection = {
   'collection_id': string;
   description: string;
@@ -36,16 +34,33 @@ export type UseGraphQlInterface = {
 
 const USER_COLLECTIONS = gql`
   query Collections($limit: Int!, $offset: Int!, $owner: String!, $name: String!) {
-    collections(limit: $limit, offset: $offset, order_by: {collection_id: desc}, where: { owner: { _eq: $owner }, name: { _ilike: $name } }) {
+    collections(limit: $limit, offset: $offset, order_by: {collection_id: desc},
+      where: {
+        _or: [
+          { owner: { _eq: $owner } },
+          { owner_normalized: { _eq: $owner } }
+        ]
+      name: { _ilike: $name }
+      }
+    ) {
       collection_id
       description
       name
       offchain_schema
       owner
+      owner_normalized
       token_limit
       mode
     }
-    collections_aggregate( where: { owner: { _eq: $owner }, name: { _ilike: $name } }) {
+    collections_aggregate(
+      where: {
+        _or: [
+          { owner: { _eq: $owner } },
+          { owner_normalized: { _eq: $owner } }
+        ],
+        name: { _ilike: $name }
+      }
+      ) {
       aggregate {
         count
       }
@@ -53,14 +68,12 @@ const USER_COLLECTIONS = gql`
   }
 `;
 
-const normalizeSubstrate = (account: string) => encodeAddress(decodeAddress(account));
-
 export const useGraphQlCollections = (account: string, limit: number, offset: number, name: string): UseGraphQlInterface => {
   // can be useLazyQuery
   const { data, error: userCollectionsError, loading: userCollectionsLoading } = useQuery(USER_COLLECTIONS, {
     fetchPolicy: 'network-only', // Used for first execution
     nextFetchPolicy: 'cache-first',
-    variables: { limit, name: name.length === 0 ? '%' : `%${name}%`, offset, owner: normalizeSubstrate(account) }
+    variables: { limit, name: name.length === 0 ? '%' : `%${name}%`, offset, owner: account }
   }) as unknown as { data: UserCollections, error: string, loading: boolean };
   const [userCollections, setUserCollections] = useState<UserCollection[]>([]);
   const [collectionsCount, setCollectionsCount] = useState<number>(0);
