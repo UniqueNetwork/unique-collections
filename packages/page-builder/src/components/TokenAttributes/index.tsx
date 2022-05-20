@@ -207,9 +207,9 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
             },
             mode: { nft: null },
             name: str2vec(name),
-            properties: {
-              coverImageURL: imgAddress ?? null
-            },
+            properties: [
+              { coverImageURL: imgAddress ?? null }
+            ],
             schemaVersion: 'Unique',
             tokenPrefix: str2vec(tokenPrefix)
           };

@@ -12,8 +12,10 @@ export function useCollectionCover (collectionInfo: NftCollectionInterface | und
   const [imgUrl, setImgUrl] = useState<string>();
 
   const fillCollectionCover = useCallback(() => {
-    if (collectionInfo?.properties?.coverImageURL) {
-      setImgUrl(`${ipfsGateway}/${collectionInfo.properties.coverImageURL}`);
+    const coverImg = collectionInfo?.properties?.find((prop) => prop.coverImageURL)?.coverImageURL;
+
+    if (coverImg) {
+      setImgUrl(`${ipfsGateway}/${coverImg}`);
     } else {
       console.log('onChainSchema is empty');
     }

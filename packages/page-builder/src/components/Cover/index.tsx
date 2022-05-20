@@ -111,9 +111,9 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
         account,
         collectionId,
         errorCallback: setTransactions.bind(null, []),
-        properties: {
-          coverImageURL: imgAddress
-        },
+        properties: [
+          { coverImageURL: imgAddress }
+        ],
         successCallback: onSuccess
       });
     }

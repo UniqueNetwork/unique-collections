@@ -35,7 +35,7 @@ export const useCollectionFees = (account: string, collectionId?: string) => {
           coverImageURL: imgAddress
         };
 
-        setCollectionPropertiesFee = (await calculateSetCollectionPropertiesFees({ account, collectionId, properties: varDataWithImage })) || new BN(0);
+        setCollectionPropertiesFee = (await calculateSetCollectionPropertiesFees({ account, collectionId, properties: [varDataWithImage] })) || new BN(0);
       }
 
       mountedRef.current && setFees(setCollectionPropertiesFee);

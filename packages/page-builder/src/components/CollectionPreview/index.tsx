@@ -19,6 +19,8 @@ function CollectionPreview ({ collectionInfo }: CollectionPreviewProps): React.R
   const { avatarImg, description, name } = useContext(CollectionFormContext);
   const { collectionName16Decoder } = useDecoder();
 
+  console.log('collectionInfo', collectionInfo);
+
   return (
     <div className='collection-preview shadow-block'>
       <div className='collection-preview-header'>Collection preview</div>

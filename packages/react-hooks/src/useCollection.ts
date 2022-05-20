@@ -14,7 +14,7 @@ import { formatBalance } from '@polkadot/util';
 
 export type SchemaVersionTypes = 'Custom' | 'ImageURL' | 'TokenURI' | 'Unique';
 
-export interface NftCollectionProperties {
+export interface NftCollectionProperty {
   coverImageURL: string | null;
 }
 
@@ -51,7 +51,7 @@ export interface NftCollectionInterface {
     ownerCanDestroy: boolean;
   },
   constOnChainSchema: string;
-  properties: NftCollectionProperties;
+  properties: NftCollectionProperty[];
 }
 
 interface TransactionCallBacks {
@@ -78,7 +78,7 @@ export interface CreateCollectionEx {
   },
   constOnChainSchema: string;
   metaUpdatePermission?: string; // 'Admin'
-  properties?: NftCollectionProperties
+  properties?: NftCollectionProperty[];
 }
 
 export function useCollection () {
@@ -395,7 +395,7 @@ export function useCollection () {
     });
   }, [api.tx.unique, queueAction, queueExtrinsic]);
 
-  const calculateSetCollectionPropertiesFees = useCallback(async ({ account, collectionId, properties }: { account: string, properties: NftCollectionProperties, collectionId: string }): Promise<BN | null> => {
+  const calculateSetCollectionPropertiesFees = useCallback(async ({ account, collectionId, properties }: { account: string, properties: NftCollectionProperty[], collectionId: string }): Promise<BN | null> => {
     try {
       const fee = await api.rpc.unique.setCollectionProperty(collectionId, properties).paymentInfo(account) as { partialFee: BN };
 
@@ -407,7 +407,7 @@ export function useCollection () {
     }
   }, [api]);
 
-  const setCollectionProperties = useCallback(({ account, collectionId, errorCallback, properties, successCallback }: { account: string, collectionId: string, properties: NftCollectionProperties, successCallback?: () => void, errorCallback?: () => void }) => {
+  const setCollectionProperties = useCallback(({ account, collectionId, errorCallback, properties, successCallback }: { account: string, collectionId: string, properties: NftCollectionProperty[], successCallback?: () => void, errorCallback?: () => void }) => {
     const transaction = api.rpc.unique.setCollectionProperty(collectionId, properties);
 
     queueExtrinsic({
@@ -607,7 +607,7 @@ export function useCollection () {
           status: 'success'
         });
 
-        console.log('create collection success');
+        console.log('create collection success', result);
       },
       txUpdateCb: () => {
         callBacks?.onUpdate && callBacks.onUpdate();
