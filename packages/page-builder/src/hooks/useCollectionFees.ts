@@ -84,7 +84,7 @@ export const useCollectionFees = (account: string, collectionId?: string) => {
         },
         mode: { nft: null },
         name: str2vec(name),
-        properties: varDataWithImage,
+        properties: [varDataWithImage],
         schemaVersion: 'Unique',
         tokenPrefix: str2vec(tokenPrefix)
       }) || new BN(0);

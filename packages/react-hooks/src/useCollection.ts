@@ -78,7 +78,7 @@ export interface CreateCollectionEx {
   },
   constOnChainSchema: string;
   metaUpdatePermission?: string; // 'Admin'
-  properties?: NftCollectionProperty[];
+  properties?: [NftCollectionProperty];
 }
 
 export function useCollection () {
