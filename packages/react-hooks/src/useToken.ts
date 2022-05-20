@@ -134,7 +134,7 @@ export function useToken (): UseTokenInterface {
 
     try {
       // in old version reFungibleItemList
-      return (await api.query.unique.nftItemList(collectionId, tokenId) as unknown as TokenDetailsInterface);
+      return (await api.query.nonfungible.tokenData(collectionId, tokenId) as unknown as TokenDetailsInterface);
     } catch (e) {
       console.log('getDetailedReFungibleTokenInfo error', e);
 

@@ -514,20 +514,6 @@ export function useCollection () {
     return result;
   }, [hex2a]);
 
-  const getTokensOfCollection = useCallback(async (collectionId: string, ownerId: string) => {
-    if (!api || !collectionId || !ownerId) {
-      return [];
-    }
-
-    try {
-      return await api.query.unique.accountTokens(collectionId, { Substrate: ownerId });
-    } catch (e) {
-      console.log('getTokensOfCollection error', e);
-    }
-
-    return [];
-  }, [api]);
-
   const calculateCreateCollectionExFee = useCallback(async ({ access, account, constOnChainSchema, description, limits, metaUpdatePermission, mode, name, offchainSchema, pendingSponsor, properties, schemaVersion, tokenPrefix }: CreateCollectionEx): Promise<BN | null> => {
     if (!limits.tokenLimit) {
       delete limits.tokenLimit;
@@ -633,7 +619,6 @@ export function useCollection () {
     getCollectionTokensCount,
     getCreatedCollectionCount,
     getDetailedCollectionInfo,
-    getTokensOfCollection,
     removeCollectionAdmin,
     removeCollectionSponsor,
     saveConstOnChainSchema,
