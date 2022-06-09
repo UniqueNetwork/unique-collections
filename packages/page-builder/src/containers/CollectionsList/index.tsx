@@ -16,7 +16,7 @@ import CreateCollectionOrSearch from '@polkadot/app-builder/components/CreateCol
 import NoCollections from '@polkadot/app-builder/components/NoCollections';
 import NoCollectionsFound from '@polkadot/app-builder/components/NoCollectionsFound';
 import CollectionPage from '@polkadot/app-builder/containers/CollectionPage';
-import { useCollection, useGraphQlCollections } from '@polkadot/react-hooks';
+import { useGraphQlCollections } from '@polkadot/react-hooks';
 
 interface Props {
   account: string;
