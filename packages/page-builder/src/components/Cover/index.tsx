@@ -13,6 +13,7 @@ import { useCollectionFees } from '@polkadot/app-builder/hooks';
 import clearIcon from '@polkadot/app-builder/images/closeIcon.svg';
 import { UnqButton } from '@polkadot/react-components';
 import { useCollection, useImageService } from '@polkadot/react-hooks';
+import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
 
 import uploadIcon from '../../images/uploadIcon.svg';
 import TransactionContext from '../../TransactionContext/TransactionContext';
@@ -21,12 +22,13 @@ import WarningText from '../WarningText';
 interface CoverProps {
   account: string;
   collectionId?: string;
+  collectionInfo?: NftCollectionInterface;
 }
 
 const stepText = 'Uploading collection cover to IPFS';
 
-function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
-  const { calculateCoverFee, calculateFeeEx, fees } = useCollectionFees(account);
+function Cover ({ account, collectionId, collectionInfo }: CoverProps): React.ReactElement {
+  const { calculateFeeEx, calculatePropertiesFee, fees } = useCollectionFees(account);
   const [imageUploading, setImageUploading] = useState<boolean>(false);
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const { uploadImg } = useImageService();
@@ -112,12 +114,13 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
         collectionId,
         errorCallback: setTransactions.bind(null, []),
         properties: [
-          { coverImageURL: imgAddress }
+          ...collectionInfo?.properties ?? [],
+          { key: '_old_variableOnChainSchema', value: JSON.stringify({ collectionCover: imgAddress ?? null }) }
         ],
         successCallback: onSuccess
       });
     }
-  }, [account, collectionId, imgAddress, onSuccess, setCollectionProperties, setTransactions]);
+  }, [account, collectionId, collectionInfo?.properties, imgAddress, onSuccess, setCollectionProperties, setTransactions]);
 
   const closeSaveConfirmation = useCallback(() => {
     setIsSaveConfirmationOpen(false);
@@ -157,11 +160,11 @@ function Cover ({ account, collectionId }: CoverProps): React.ReactElement {
 
   useEffect(() => {
     if (collectionId) {
-      void calculateCoverFee();
+      void calculatePropertiesFee();
     } else {
       void calculateFeeEx();
     }
-  }, [calculateCoverFee, calculateFeeEx, collectionId]);
+  }, [calculatePropertiesFee, calculateFeeEx, collectionId]);
 
   // if we have no collection name filled, lets fill in in
   useEffect(() => {

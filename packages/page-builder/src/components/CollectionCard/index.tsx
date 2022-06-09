@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
+// Copyright 2017-2022 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import './styles.scss';
@@ -103,9 +103,9 @@ function CollectionCard ({ account, collectionId, resetCollections }: Collection
     void fetchCollectionInfo();
   }, [fetchCollectionInfo]);
 
-  const handleOpenScanCollection = () => {
+  const handleOpenScanCollection = useCallback(() => {
     window.open(`${uniqueScan}/collections/${collectionId}`, '_blank', 'noopener, noreferrer');
-  };
+  }, [collectionId]);
 
   return (
     <div className='collection-card shadow-block'>
@@ -168,7 +168,7 @@ function CollectionCard ({ account, collectionId, resetCollections }: Collection
             </div>
             <div className='collection-info'>
               <p><span>ID:</span> {collectionId}</p>
-              <p><span>Symbol:</span> {collectionInfo.tokenPrefix && hex2a(collectionInfo.tokenPrefix)}</p>
+              <p><span>Symbol:</span> {collectionInfo.tokenPrefix ?? ''}</p>
               { !!collectionTokensCount && (
                 <p><span>Items:</span> {collectionTokensCount}</p>
               )}

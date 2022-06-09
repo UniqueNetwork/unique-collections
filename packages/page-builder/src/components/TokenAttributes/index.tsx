@@ -40,13 +40,13 @@ const creatingCollectionText = 'Creating collection';
 const maxTokenLimit = 4294967295;
 
 function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttributes): ReactElement {
-  const { createCollectionEx, getCollectionOnChainSchema, saveConstOnChainSchema, setSchemaVersion } = useCollection();
+  const { createCollectionEx, getCollectionOnChainSchema, setCollectionProperties } = useCollection();
   const [isSaveConfirmationOpen, setIsSaveConfirmationOpen] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<number[]>([]);
   const [emptyEnums, setEmptyEnums] = useState<number[]>([]);
   const [opened, setOpened] = useState(false);
   const history = useHistory();
-  const { calculateFee, calculateFeeEx, fees } = useCollectionFees(account, collectionId);
+  const { calculateFeeEx, calculatePropertiesFee, fees } = useCollectionFees(account, collectionId);
   const isOwner = collectionInfo?.owner === account;
   const canSaveAttributes = isOwner || !collectionId;
   const { setTransactions } = useContext(TransactionContext);
@@ -72,6 +72,10 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     setIsSaveConfirmationOpen(false);
   }, []);
 
+  const getCollectionPropertyValueByKey = useCallback((key: string) => {
+    return collectionInfo?.properties.find((property) => property.key === key)?.value;
+  }, [collectionInfo?.properties]);
+
   const onSuccess = useCallback(() => {
     if (collectionId) {
       const transactions = [
@@ -81,7 +85,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
         }
       ];
 
-      if (collectionInfo?.schemaVersion !== 'Unique') {
+      if (getCollectionPropertyValueByKey('_old_schemaVersion') !== 'Unique') {
         transactions.push({
           state: 'finished',
           text: stepTexts[1]
@@ -103,34 +107,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
 
       history.push('/builder');
     }, 3000);
-  }, [collectionId, history, collectionInfo?.schemaVersion, mountedRef, setTransactions]);
-
-  const setUniqueSchemaVersion = useCallback(() => {
-    if (collectionInfo?.schemaVersion === 'Unique') {
-      onSuccess();
-    } else {
-      if (collectionId) {
-        mountedRef.current && setTransactions([
-          {
-            state: 'finished',
-            text: stepTexts[0]
-          },
-          {
-            state: 'active',
-            text: stepTexts[1]
-          }
-        ]);
-
-        mountedRef.current && setSchemaVersion({
-          account,
-          collectionId,
-          errorCallback: setTransactions.bind(null, []),
-          schemaVersion: 'Unique',
-          successCallback: onSuccess
-        });
-      }
-    }
-  }, [account, collectionId, collectionInfo?.schemaVersion, mountedRef, onSuccess, setSchemaVersion, setTransactions]);
+  }, [collectionId, getCollectionPropertyValueByKey, mountedRef, setTransactions, history]);
 
   const convertArtificialAttributesToProtobuf = useCallback((attributes: ArtificialAttributeItemType[]): AttributeItemType[] => {
     return attributes.map((attr: ArtificialAttributeItemType): AttributeItemType => {
@@ -172,7 +149,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
             }
           ];
 
-          if (collectionInfo?.schemaVersion !== 'Unique') {
+          if (getCollectionPropertyValueByKey('_old_schemaVersion') !== 'Unique') {
             transactions.push({
               state: 'not-active',
               text: stepTexts[1]
@@ -181,12 +158,13 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
 
           setTransactions(transactions);
 
-          saveConstOnChainSchema({
+          setCollectionProperties({
             account,
             collectionId,
-            errorCallback: setTransactions.bind(null, []),
-            schema: JSON.stringify(protobufJson),
-            successCallback: setUniqueSchemaVersion
+            properties: [
+              ...collectionInfo?.properties ?? [],
+              { key: '_old_schemaVersion', value: 'Unique' }
+            ]
           });
         } else {
           setTransactions([
@@ -198,7 +176,6 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
 
           const collectionData: CreateCollectionEx = {
             account,
-            constOnChainSchema: JSON.stringify(protobufJson),
             description: str2vec(description),
             limits: {
               ownerCanDestroy,
@@ -207,11 +184,25 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
             },
             mode: { nft: null },
             name: str2vec(name),
+            permissions: {
+              access: 'Normal',
+              mintMode: false,
+              nesting: {
+                owner: null
+              }
+            },
             properties: [
-              { coverImageURL: imgAddress ?? null }
+              { key: '_old_offchainSchema', value: '' },
+              { key: '_old_schemaVersion', value: 'Unique' },
+              { key: '_old_variableOnChainSchema', value: JSON.stringify({ collectionCover: imgAddress ?? null }) },
+              { key: '_old_constOnChainSchema', value: JSON.stringify(protobufJson) }
             ],
-            schemaVersion: 'Unique',
-            tokenPrefix: str2vec(tokenPrefix)
+            tokenPrefix: str2vec(tokenPrefix),
+            tokenPropertyPermissions: [
+              {
+                key: '_old_constData', permission: { collectionAdmin: true, mutable: false, tokenOwner: false }
+              }
+            ]
           };
 
           createCollectionEx({
@@ -229,7 +220,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
     } catch (e) {
       console.log('save onChain schema error', e);
     }
-  }, [convertArtificialAttributesToProtobuf, attributes, account, collectionId, collectionInfo?.schemaVersion, setTransactions, saveConstOnChainSchema, setUniqueSchemaVersion, description, ownerCanDestroy, ownerCanTransfer, tokenLimit, name, tokenPrefix, imgAddress, createCollectionEx, onSuccess]);
+  }, [convertArtificialAttributesToProtobuf, attributes, account, collectionId, getCollectionPropertyValueByKey, setTransactions, setCollectionProperties, collectionInfo?.properties, description, ownerCanDestroy, ownerCanTransfer, tokenLimit, name, imgAddress, tokenPrefix, createCollectionEx, onSuccess]);
 
   const deleteAttribute = useCallback((id: number) => {
     setAttributes(attributes.filter((attribute: ArtificialAttributeItemType) => attribute.id !== id));
@@ -261,7 +252,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   }, [setAttributes]);
 
   const fillCollectionAttributes = useCallback(() => {
-    if (collectionInfo?.constOnChainSchema) {
+    if (collectionInfo?.properties) {
       const onChainSchema = getCollectionOnChainSchema(collectionInfo);
       let previousAttributes: AttributeItemType[] = [];
       let converted: ArtificialAttributeItemType[] = [];
@@ -290,13 +281,13 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
   }, [mountedRef]);
 
   const onLimitKeyDown = useCallback((event: React.KeyboardEvent) => {
-    ((event.key === ',' || event.key === '.') && !tokenLimit.length) && event.preventDefault();
+    ((event.key === ',' || event.key === '.') && tokenLimit > 0) && event.preventDefault();
     ['e', 'E', '+', '-'].includes(event.key) && event.preventDefault();
   }, [tokenLimit]);
 
   const onLimitChange = useCallback((value: string) => {
     if (!value) {
-      setTokenLimit('');
+      setTokenLimit(0);
 
       return;
     }
@@ -307,7 +298,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
       return;
     }
 
-    setTokenLimit(numVal.toString());
+    setTokenLimit(numVal);
   }, [setTokenLimit]);
 
   useEffect(() => {
@@ -316,18 +307,18 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
 
   useEffect(() => {
     if (collectionId) {
-      void calculateFee();
+      void calculatePropertiesFee();
     } else {
       void calculateFeeEx();
     }
-  }, [calculateFee, calculateFeeEx, collectionId]);
+  }, [calculateFeeEx, calculatePropertiesFee, collectionId]);
 
   // if we have no collection name filled, lets fill in in
   useEffect(() => {
     if (!collectionId && !name) {
       history.push('/builder/new-collection/main-information');
     }
-  });
+  }, [collectionId, history, name]);
 
   return (
     <div className='token-attributes shadow-block'>
@@ -477,7 +468,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
                     onKeyDown={onLimitKeyDown}
                     placeholder='Token limit'
                     type='number'
-                    value={tokenLimit}
+                    value={tokenLimit.toString()}
                   />
                 </div>
               </form>
@@ -502,7 +493,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
         />
         <UnqButton
           content='Confirm'
-          isDisabled={formErrors?.length > 0 || emptyEnums?.length > 0 || tokenLimit === '0'}
+          isDisabled={formErrors?.length > 0 || emptyEnums?.length > 0 || tokenLimit === 0}
           isFilled
           onClick={onSaveAll}
           size='medium'

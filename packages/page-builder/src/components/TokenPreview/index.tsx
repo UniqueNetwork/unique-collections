@@ -22,7 +22,7 @@ interface TokenPreviewProps {
 }
 
 function TokenPreview ({ collectionInfo, constAttributes, tokenConstAttributes }: TokenPreviewProps): React.ReactElement {
-  const { collectionName16Decoder, hex2a } = useDecoder();
+  const { collectionName16Decoder } = useDecoder();
   const { attributes, name, tokenImg, tokenPrefix } = useContext(CollectionFormContext);
   const [values, setValues] = useState<{ [key: string]: string | string[] | number | undefined }>({});
   const location = useLocation();
@@ -74,7 +74,7 @@ function TokenPreview ({ collectionInfo, constAttributes, tokenConstAttributes }
         </div>
         <div className='content-description'>
           <h3 className='content-header'>
-            {collectionInfo ? hex2a(collectionInfo.tokenPrefix) : (tokenPrefix || 'Symbol')} #1
+            {collectionInfo ? collectionInfo.tokenPrefix : (tokenPrefix || 'Symbol')} #1
           </h3>
           <p className='content-text'>{ collectionInfo ? collectionName16Decoder(collectionInfo.name) : (name || 'Collection name')}</p>
           { !!tokenAttributes.length && (

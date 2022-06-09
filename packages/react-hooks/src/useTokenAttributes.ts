@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/apps, UseTech authors & contributors
+// Copyright 2017-2022 @polkadot/apps, UseTech authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import { useCallback, useEffect, useState } from 'react';
@@ -22,7 +22,7 @@ export function useTokenAttributes (collectionInfo: NftCollectionInterface | und
   const [tokenConstAttributes, setTokenConstAttributes] = useState<{ [key: string]: TokenAttribute }>({});
 
   const presetCollectionForm = useCallback(() => {
-    if (collectionInfo?.constOnChainSchema) {
+    if (collectionInfo?.properties) {
       const onChainSchema = getCollectionOnChainSchema(collectionInfo);
 
       if (onChainSchema) {
