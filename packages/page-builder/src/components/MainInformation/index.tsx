@@ -8,7 +8,7 @@ import { useHistory } from 'react-router';
 
 import CollectionFormContext from '@polkadot/app-builder/CollectionFormContext/CollectionFormContext';
 import { useCollectionFees } from '@polkadot/app-builder/hooks';
-import { Checkbox, Input, TextArea, UnqButton } from '@polkadot/react-components';
+import { Input, TextArea, UnqButton } from '@polkadot/react-components';
 
 import WarningText from '../WarningText';
 

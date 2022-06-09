@@ -16,7 +16,7 @@ interface CollectionPreviewProps {
 
 function CollectionPreview ({ collectionInfo }: CollectionPreviewProps): React.ReactElement {
   const { imgUrl } = useCollectionCover(collectionInfo);
-  const { avatarImg, description, name } = useContext(CollectionFormContext);
+  const { coverImg, description, name } = useContext(CollectionFormContext);
   const { collectionName16Decoder } = useDecoder();
 
   return (
@@ -24,12 +24,12 @@ function CollectionPreview ({ collectionInfo }: CollectionPreviewProps): React.R
       <div className='collection-preview-header'>Collection preview</div>
       <div className='collection-preview-content'>
         <div className='collection-img'>
-          {avatarImg
+          {coverImg
             ? (
               <img
                 alt='token-img'
                 className='token-img'
-                src={URL.createObjectURL(avatarImg)}
+                src={URL.createObjectURL(coverImg)}
               />
             )
             : (

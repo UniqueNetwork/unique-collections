@@ -9,26 +9,30 @@ import { NftCollectionInterface, useCollection } from '@polkadot/react-hooks/use
 const { ipfsGateway } = envConfig;
 
 export function useCollectionCover (collectionInfo: NftCollectionInterface | undefined): { imgUrl: string | undefined } {
-  const { getCollectionOnChainSchema } = useCollection();
   const [imgUrl, setImgUrl] = useState<string>();
+  const { getCollectionPropertyValueByKey } = useCollection();
 
   const fillCollectionCover = useCallback(() => {
-    if (collectionInfo?.variableOnChainSchema) {
-      const onChainSchema = getCollectionOnChainSchema(collectionInfo);
+    try {
+      if (collectionInfo) {
+        const coverImgObj = getCollectionPropertyValueByKey(collectionInfo, '_old_variableOnChainSchema');
 
-      if (onChainSchema) {
-        const { variableSchema } = onChainSchema;
+        if (!coverImgObj) {
+          return;
+        }
 
-        if (variableSchema?.collectionCover) {
-          setImgUrl(`${ipfsGateway}/${variableSchema.collectionCover}`);
+        const coverImgJson = JSON.parse(coverImgObj) as { collectionCover: string };
+
+        if (coverImgJson?.collectionCover) {
+          setImgUrl(`${ipfsGateway}/${coverImgJson?.collectionCover}`);
         } else {
-          console.log('variableSchema is empty');
+          console.log('onChainSchema is empty');
         }
       }
-    } else {
-      console.log('onChainSchema is empty');
+    } catch (e) {
+      console.log('fillCollectionCover error', e);
     }
-  }, [collectionInfo, getCollectionOnChainSchema]);
+  }, [collectionInfo, getCollectionPropertyValueByKey]);
 
   useEffect(() => {
     fillCollectionCover();

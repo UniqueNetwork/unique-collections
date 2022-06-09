@@ -19,6 +19,7 @@
   "version": "0.83.2-28",
   "main": "index.js",
   "dependencies": {
-    "@babel/runtime": "^7.15.4"
+    "@babel/runtime": "^7.15.4",
+    "@polkadot/hw-ledger": "^9.4.1"
   }
 }

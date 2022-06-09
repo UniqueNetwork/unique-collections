@@ -6,35 +6,29 @@ import { useCallback, useContext } from 'react';
 
 import { StatusContext } from '@polkadot/react-components';
 import { useApi } from '@polkadot/react-hooks/useApi';
-import { NftCollectionInterface } from '@polkadot/react-hooks/useCollection';
-
-import { normalizeAccountId } from './utils';
 
 export interface TokenDetailsInterface {
   owner?: { Ethereum?: string, Substrate?: string };
-  constData?: string;
-  variableData?: string;
+  properties: [
+    { key: '_old_constData', value: string }
+  ]
 }
 
 interface UseTokenInterface {
   calculateCreateItemFee: (obj: { account: string, collectionId: string, constData: string, variableData: string, owner: string }) => Promise<BN | null>;
   createNft: (obj: { account: string, collectionId: string, constData: string, variableData: string, successCallback?: () => void, errorCallback?: () => void, owner: string }) => void;
-  getDetailedReFungibleTokenInfo: (collectionId: string, tokenId: string) => Promise<TokenDetailsInterface>;
-  getDetailedTokenInfo: (collectionId: string, tokenId: string) => Promise<TokenDetailsInterface>
-  getTokenInfo: (collectionInfo: NftCollectionInterface, tokenId: string) => Promise<TokenDetailsInterface>;
-  setVariableMetadata: (obj: { account: string, collectionId: string, variableData: string, successCallback?: () => void, errorCallback?: () => void, tokenId: string }) => void;
+  getDetailedTokenInfo: (collectionId: string, tokenId: string) => Promise<TokenDetailsInterface | null>;
 }
 
 export function useToken (): UseTokenInterface {
   const { api } = useApi();
   const { queueAction, queueExtrinsic } = useContext(StatusContext);
 
-  const calculateCreateItemFee = useCallback(async ({ account, collectionId, constData, owner, variableData }: { account: string, collectionId: string, constData: string, owner: string, variableData: string }): Promise<BN | null> => {
+  const calculateCreateItemFee = useCallback(async ({ account, collectionId, constData, owner }: { account: string, collectionId: string, constData: string, owner: string }): Promise<BN | null> => {
     try {
       const fee = await api.tx.unique.createItem(collectionId, { Substrate: owner }, {
         nft: {
-          const_data: constData,
-          variable_data: variableData
+          properties: [{ key: '_old_constData', value: constData }]
         }
       }).paymentInfo(account) as { partialFee: BN };
 
@@ -47,9 +41,9 @@ export function useToken (): UseTokenInterface {
   }, [api]);
 
   const createNft = useCallback((
-    { account, collectionId, constData, errorCallback, owner, successCallback, variableData }:
-    { account: string, collectionId: string, constData: string, variableData: string, successCallback?: () => void, errorCallback?: () => void, owner: string }) => {
-    const transaction = api.tx.unique.createItem(collectionId, { Substrate: owner }, { nft: { const_data: constData, variable_data: variableData } });
+    { account, collectionId, constData, errorCallback, owner, successCallback }:
+    { account: string, collectionId: string, constData: string, successCallback?: () => void, errorCallback?: () => void, owner: string }) => {
+    const transaction = api.tx.unique.createItem(collectionId, { Substrate: owner }, { nft: { properties: [{ key: '_old_constData', value: constData }] } });
 
     queueExtrinsic({
       accountId: account && account.toString(),
@@ -76,92 +70,27 @@ export function useToken (): UseTokenInterface {
     });
   }, [api, queueAction, queueExtrinsic]);
 
-  const setVariableMetadata = useCallback((
-    { account, collectionId, errorCallback, successCallback, tokenId, variableData }:
-    { account: string, collectionId: string, variableData: string, successCallback?: () => void, errorCallback?: () => void, tokenId: string }) => {
-    const transaction = api.tx.unique.setVariableMetaData(collectionId, tokenId, variableData);
-
-    queueExtrinsic({
-      accountId: account && account.toString(),
-      extrinsic: transaction,
-      isUnsigned: false,
-      txFailedCb: () => {
-        console.log('set variable metadata fail');
-        errorCallback && errorCallback();
-      },
-      txStartCb: () => {
-        console.log('set variable metadata start');
-      },
-      txSuccessCb: () => {
-        console.log('set variable metadata success');
-
-        successCallback && successCallback();
-      },
-      txUpdateCb: () => {
-        console.log('set variable metadata update');
-      }
-    });
-  }, [api, queueExtrinsic]);
-
-  const getDetailedTokenInfo = useCallback(async (collectionId: string, tokenId: string): Promise<TokenDetailsInterface> => {
+  const getDetailedTokenInfo = useCallback(async (collectionId: string, tokenId: string): Promise<TokenDetailsInterface | null> => {
     if (!api) {
-      return {};
+      return null;
     }
 
     try {
-      let tokenInfo: TokenDetailsInterface = {};
+      const tokenInfo = (await api.rpc.unique.tokenData(collectionId, tokenId)).toHuman() as TokenDetailsInterface;
 
-      const variableData = (await api.rpc.unique.variableMetadata(collectionId, tokenId)).toJSON() as string;
-      const constData: string = (await api.rpc.unique.constMetadata(collectionId, tokenId)).toString() as string;
-      const crossAccount = normalizeAccountId((await api.query.nonfungible.tokenData(collectionId, tokenId)).toJSON().owner as string) as { Substrate?: string, Ethereum?: string };
-
-      tokenInfo = {
-        constData,
-        owner: crossAccount,
-        variableData
-      };
-
-      console.log('tokenInfo.toJSON()', tokenInfo);
+      console.log('tokenInfo', tokenInfo);
 
       return tokenInfo;
     } catch (e) {
       console.log('getDetailedTokenInfo error', e);
 
-      return {};
+      return null;
     }
   }, [api]);
-
-  const getDetailedReFungibleTokenInfo = useCallback(async (collectionId: string, tokenId: string): Promise<TokenDetailsInterface> => {
-    if (!api) {
-      return {};
-    }
-
-    try {
-      // in old version reFungibleItemList
-      return (await api.query.unique.nftItemList(collectionId, tokenId) as unknown as TokenDetailsInterface);
-    } catch (e) {
-      console.log('getDetailedReFungibleTokenInfo error', e);
-
-      return {};
-    }
-  }, [api]);
-
-  const getTokenInfo = useCallback(async (collectionInfo: NftCollectionInterface, tokenId: string): Promise<TokenDetailsInterface> => {
-    let tokenDetailsData: TokenDetailsInterface = {};
-
-    if (tokenId && collectionInfo) {
-      tokenDetailsData = await getDetailedTokenInfo(collectionInfo.id, tokenId);
-    }
-
-    return tokenDetailsData;
-  }, [getDetailedTokenInfo]);
 
   return {
     calculateCreateItemFee,
     createNft,
-    getDetailedReFungibleTokenInfo,
-    getDetailedTokenInfo,
-    getTokenInfo,
-    setVariableMetadata
+    getDetailedTokenInfo
   };
 }
