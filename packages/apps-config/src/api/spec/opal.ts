@@ -3,8 +3,6 @@
 
 import type { OverrideBundleDefinition } from '@polkadot/types/types';
 
-import { unique } from '@unique-nft/types/definitions';
+import { fullOverrideBundle } from '@sora-substrate/type-definitions';
 
-export default {
-  rpc: { unique: unique.rpc }
-} as OverrideBundleDefinition;
+export default fullOverrideBundle.spec.sora as OverrideBundleDefinition;

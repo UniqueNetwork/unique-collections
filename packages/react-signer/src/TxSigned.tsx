@@ -3,13 +3,12 @@
 
 import type { SignerOptions } from '@polkadot/api/submittable/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
-import type { Ledger } from '@polkadot/hw-ledger';
 import type { KeyringPair } from '@polkadot/keyring/types';
 import type { QueueTx, QueueTxMessageSetStatus } from '@polkadot/react-components/Status/types';
 import type { Option } from '@polkadot/types';
 import type { Multisig, Timepoint } from '@polkadot/types/interfaces';
-import type { HexString } from '@polkadot/util/types';
-import type { AddressFlags, AddressProxy, QrState } from './types';
+import type { Ledger } from '@polkadot/ui-keyring';
+import type { AddressProxy, QrState } from './types';
 
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -20,7 +19,6 @@ import { Button, ErrorBoundary, Modal, StatusContext } from '@polkadot/react-com
 import { useApi, useLedger, useToggle } from '@polkadot/react-hooks';
 import { keyring } from '@polkadot/ui-keyring';
 import { assert, BN_ZERO } from '@polkadot/util';
-import { addressEq } from '@polkadot/util-crypto';
 
 import Address from './Address';
 import Qr from './Qr';
@@ -150,26 +148,16 @@ async function extractParams (api: ApiPromise, address: string, options: Partial
     return ['signing', address, { ...options, signer: injected.signer }];
   }
 
-  assert(addressEq(address, pair.address), `Unable to retrieve keypair for ${address}`);
-
-  return ['signing', address, { ...options, signer: new AccountSigner(api.registry, pair) }];
-}
-
-function tryExtract (address: string | null): AddressFlags {
-  try {
-    return extractExternal(address);
-  } catch {
-    return {} as AddressFlags;
-  }
+  return ['signing', pair.address, { ...options, signer: new AccountSigner(api.registry, pair) }];
 }
 
 function TxSigned ({ className, currentItem, requestAddress }: Props): React.ReactElement<Props> | null {
   const { api } = useApi();
   const { getLedger } = useLedger();
   const { queueSetTxStatus } = useContext(StatusContext);
-  const [flags, setFlags] = useState(() => tryExtract(requestAddress));
+  const [flags, setFlags] = useState(() => extractExternal(requestAddress));
   const [error, setError] = useState<Error | null>(null);
-  const [{ isQrHashed, qrAddress, qrPayload, qrResolve }, setQrState] = useState<QrState>(() => ({ isQrHashed: false, qrAddress: '', qrPayload: new Uint8Array() }));
+  const [{ isQrHashed, qrAddress, qrPayload, qrResolve }, setQrState] = useState<QrState>({ isQrHashed: false, qrAddress: '', qrPayload: new Uint8Array() });
   const [isBusy, setBusy] = useState(false);
   const [isRenderError, toggleRenderError] = useToggle();
   const [isSubmit] = useState(true);
@@ -182,7 +170,7 @@ function TxSigned ({ className, currentItem, requestAddress }: Props): React.Rea
   const [tip] = useState(BN_ZERO);
 
   useEffect((): void => {
-    setFlags(tryExtract(senderInfo.signAddress));
+    setFlags(extractExternal(senderInfo.signAddress));
     setPasswordError(null);
   }, [senderInfo]);
 
@@ -200,7 +188,7 @@ function TxSigned ({ className, currentItem, requestAddress }: Props): React.Rea
   const _addQrSignature = useCallback(
     ({ signature }: { signature: string }) => qrResolve && qrResolve({
       id: ++qrId,
-      signature: signature as HexString
+      signature
     }),
     [qrResolve]
   );
@@ -369,7 +357,7 @@ function TxSigned ({ className, currentItem, requestAddress }: Props): React.Rea
             flags.isQr
               ? 'Sign via Qr'
               : isSubmit
-                ? 'Sign and submit'
+                ? 'Sign and Submit'
                 : 'Sign (no submission)'
           }
           onClick={_doStart}
