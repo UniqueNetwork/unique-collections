@@ -11,7 +11,6 @@ import { SubmittableResult } from '@polkadot/api';
 import { StatusContext } from '@polkadot/react-components';
 import { ProtobufAttributeType } from '@polkadot/react-components/util/protobufUtils';
 import { useApi } from '@polkadot/react-hooks/useApi';
-import { useDecoder } from '@polkadot/react-hooks/useDecoder';
 import { strToUTF16 } from '@polkadot/react-hooks/utils';
 import { formatBalance } from '@polkadot/util';
 
