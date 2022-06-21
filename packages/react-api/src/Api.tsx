@@ -13,7 +13,6 @@ import store from 'store';
 import { ApiPromise } from '@polkadot/api/promise';
 import { deriveMapCache, setDeriveCache } from '@polkadot/api-derive/util';
 import { ethereumChains, typesBundle, typesChain } from '@polkadot/apps-config';
-import envConfig from '@polkadot/apps-config/envConfig';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { TokenUnit } from '@polkadot/react-components/InputNumber';
 import { StatusContext } from '@polkadot/react-components/Status';
@@ -24,6 +23,7 @@ import { keyring } from '@polkadot/ui-keyring';
 import { settings } from '@polkadot/ui-settings';
 import { formatBalance, isTestChain } from '@polkadot/util';
 import { defaults as addressDefaults } from '@polkadot/util-crypto/address/defaults';
+import { unique } from '@unique-nft/unique-mainnet-types/definitions';
 
 import ApiContext from './ApiContext';
 import { decodeUrlTypes } from './urlTypes';
@@ -200,7 +200,7 @@ function Api ({ children, store, url }: Props): React.ReactElement<Props> | null
     api = new ApiPromise({ provider,
       registry,
       rpc: {
-        unique: require('@unique-nft/types/definitions').unique.rpc
+        unique: unique.rpc
       },
       signer,
       types,
