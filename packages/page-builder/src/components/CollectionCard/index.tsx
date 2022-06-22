@@ -15,7 +15,7 @@ import envConfig from '@polkadot/apps-config/envConfig';
 import { UnqButton } from '@polkadot/react-components';
 import { useCollection, useDecoder } from '@polkadot/react-hooks';
 
-import burnIcon from '../../images/burnIcon.svg';
+// import burnIcon from '../../images/burnIcon.svg';
 import CollectionCover from './CollectionCover';
 
 const { uniqueScan, uniqueWallet } = envConfig;
@@ -35,7 +35,7 @@ function CollectionCard ({ account, collectionId, resetCollections }: Collection
   const [isBurnCollectionOpen, setIsBurnCollectionOpen] = useState<boolean>(false);
   const { destroyCollection, getCollectionTokensCount, getDetailedCollectionInfo } = useCollection();
   const history = useHistory();
-  const { collectionName16Decoder, hex2a } = useDecoder();
+  const { collectionName16Decoder } = useDecoder();
   const { setTransactions } = useContext(TransactionContext);
 
   const fetchCollectionInfo = useCallback(async () => {
@@ -70,9 +70,9 @@ function CollectionCard ({ account, collectionId, resetCollections }: Collection
     history.push(`/builder/collections/${collectionId}/new-nft`);
   }, [collectionId, history]);
 
-  const onBurnNft = useCallback(() => {
-    setIsBurnCollectionOpen(true);
-  }, []);
+  // const onBurnNft = useCallback(() => {
+  //   setIsBurnCollectionOpen(true);
+  // }, []);
 
   const closeBurnModal = useCallback(() => {
     setIsBurnCollectionOpen(false);
@@ -154,16 +154,16 @@ function CollectionCard ({ account, collectionId, resetCollections }: Collection
                   onConfirm={onBurnCollection}
                   open={isBurnCollectionOpen}
                 />
-                <UnqButton
-                  className='burn'
-                  content='Burn'
-                  onClick={onBurnNft}
-                >
-                  <img
-                    alt='burnToken'
-                    src={burnIcon as string}
-                  />
-                </UnqButton>
+                {/*<UnqButton*/}
+                {/*  className='burn'*/}
+                {/*  content='Burn'*/}
+                {/*  onClick={onBurnNft}*/}
+                {/*>*/}
+                {/*  <img*/}
+                {/*    alt='burnToken'*/}
+                {/*    src={burnIcon as string}*/}
+                {/*  />*/}
+                {/*</UnqButton>*/}
               </div>
             </div>
             <div className='collection-info'>
