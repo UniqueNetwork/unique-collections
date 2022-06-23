@@ -468,7 +468,7 @@ function TokenAttributes ({ account, collectionId, collectionInfo }: TokenAttrib
                     onKeyDown={onLimitKeyDown}
                     placeholder='Token limit'
                     type='number'
-                    value={tokenLimit.toString()}
+                    value={tokenLimit?.toString()}
                   />
                 </div>
               </form>

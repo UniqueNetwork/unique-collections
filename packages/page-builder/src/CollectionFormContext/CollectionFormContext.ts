@@ -29,7 +29,7 @@ export interface CollectionFormProps {
   setTokenPrefix: (tokenPrefix: string) => void;
   setVariableSchema: (variableSchema: string) => void;
   tokenImg: File | null;
-  tokenLimit: number;
+  tokenLimit: number | undefined;
   tokenPrefix: string;
   variableSchema: string;
 }

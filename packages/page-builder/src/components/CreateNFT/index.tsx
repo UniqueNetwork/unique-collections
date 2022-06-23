@@ -51,7 +51,7 @@ interface IValueType {
 const transactionText = 'Creating token and saving it to blockchain';
 
 function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, constOnChainSchema, isOwner, resetAttributes, setTokenConstAttributes, setTokenImg, tokenConstAttributes, tokenImg }: CreateNFTProps): React.ReactElement {
-  const { calculateCreateItemFee, createNft, getDetailedTokenInfo } = useToken();
+  const { calculateCreateItemFee, createNft } = useToken();
   const [createFees, setCreateFees] = useState<BN | null>(null);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [imageUploading, setImageUploading] = useState<boolean>(false);
@@ -172,6 +172,7 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
 
           payload[tokenConstAttributes[key].name] = attributeValue || attributeValue === 0 ? attributeValue : null;
         });
+
         const cData = serializeNft(constOnChainSchema, payload);
 
         constData = '0x' + Buffer.from(cData).toString('hex');
@@ -223,12 +224,6 @@ function CreateNFT ({ account, collectionId, collectionInfo, constAttributes, co
   useEffect(() => {
     void calculateFee();
   }, [calculateFee]);
-
-  useEffect(() => {
-    if (collectionInfo) {
-      void getDetailedTokenInfo(collectionId, '1');
-    }
-  }, [collectionInfo, collectionId, getDetailedTokenInfo]);
 
   if (collectionInfo && !isOwner) {
     return (
