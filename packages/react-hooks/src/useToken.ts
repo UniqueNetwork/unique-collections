@@ -76,11 +76,12 @@ export function useToken (): UseTokenInterface {
     }
 
     try {
-      const tokenInfo = (await api.rpc.unique.tokenData(collectionId, tokenId)).toHuman() as TokenDetailsInterface;
+      const tokenInfo = (await api.rpc.unique.tokenData(collectionId, tokenId)) as TokenDetailsInterface;
 
-      console.log('tokenInfo', tokenInfo);
-
-      return tokenInfo;
+      return {
+        owner: tokenInfo?.owner?.toHuman(),
+        properties: tokenInfo?.properties?.map((x) => ({ key: x.key.toHuman(), value: x?.value?.toJSON() })),
+      };
     } catch (e) {
       console.log('getDetailedTokenInfo error', e);
 
